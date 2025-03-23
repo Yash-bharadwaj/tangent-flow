@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useAuth } from "./AuthProvider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [activeTab, setActiveTab] = useState("admin");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,15 +25,20 @@ export default function LoginPage() {
 
     // For demo purposes - in production this would connect to a backend
     setTimeout(() => {
-      if (username === "superuser" && password === "admin123") {
-        // Store auth state
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("userRole", "superuser");
-        
-        toast.success("Login successful!");
+      if (activeTab === "admin" && username === "superuser" && password === "admin123") {
+        login("superuser");
+        toast.success("Admin login successful!");
+        navigate("/");
+      } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
+        login("customer");
+        toast.success("Customer login successful!");
         navigate("/");
       } else {
-        toast.error("Invalid credentials. Try with username: superuser, password: admin123");
+        toast.error(
+          activeTab === "admin" 
+            ? "Invalid admin credentials. Try with username: superuser, password: admin123" 
+            : "Invalid customer credentials. Try with username: customer, password: customer123"
+        );
       }
       setIsLoading(false);
     }, 1000);
@@ -52,40 +61,78 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <form onSubmit={handleLogin}>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Input
-                  id="username"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  autoComplete="username"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Authenticating..." : "Sign In"}
-              </Button>
-            </div>
-          </form>
+          <Tabs defaultValue="admin" value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="admin">Admin</TabsTrigger>
+              <TabsTrigger value="customer">Customer</TabsTrigger>
+            </TabsList>
+            <TabsContent value="admin" className="mt-4">
+              <form onSubmit={handleLogin}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Input
+                      id="admin-username"
+                      placeholder="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      autoComplete="username"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Input
+                      id="admin-password"
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Authenticating..." : "Sign In as Admin"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+            <TabsContent value="customer" className="mt-4">
+              <form onSubmit={handleLogin}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Input
+                      id="customer-username"
+                      placeholder="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      autoComplete="username"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Input
+                      id="customer-password"
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Authenticating..." : "Sign In as Customer"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+          </Tabs>
         </CardContent>
         <CardFooter className="flex flex-col">
           <p className="text-xs text-muted-foreground text-center">
             <span className="font-semibold">Demo credentials:</span><br />
-            Username: superuser<br />
-            Password: admin123
+            Admin: superuser / admin123<br />
+            Customer: customer / customer123
           </p>
         </CardFooter>
       </Card>

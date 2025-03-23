@@ -53,16 +53,50 @@ interface SidebarProps {
 
 export function Sidebar({ className = "" }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { logout, userRole } = useAuth();
+  const { logout, userRole, hasPermission } = useAuth();
 
+  // Define navigation items with permission checks
   const navItems = [
-    { to: "/", icon: <BarChart size={20} />, text: "Dashboard" },
-    { to: "/modules", icon: <Cpu size={20} />, text: "Modules" },
-    { to: "/sales-orders", icon: <ShoppingCart size={20} />, text: "Sales Orders" },
-    { to: "/inventory", icon: <Package size={20} />, text: "Inventory" },
-    { to: "/users", icon: <Users size={20} />, text: "Users" },
-    { to: "/deliveries", icon: <Truck size={20} />, text: "Deliveries" },
+    { 
+      to: "/", 
+      icon: <BarChart size={20} />, 
+      text: "Dashboard",
+      visible: true // Everyone can see dashboard
+    },
+    { 
+      to: "/modules", 
+      icon: <Cpu size={20} />, 
+      text: "Modules",
+      visible: hasPermission("canViewModules")
+    },
+    { 
+      to: "/sales-orders", 
+      icon: <ShoppingCart size={20} />, 
+      text: "Sales Orders",
+      visible: hasPermission("canViewSalesOrders")
+    },
+    { 
+      to: "/inventory", 
+      icon: <Package size={20} />, 
+      text: "Inventory",
+      visible: hasPermission("canViewInventory")
+    },
+    { 
+      to: "/users", 
+      icon: <Users size={20} />, 
+      text: "Users",
+      visible: hasPermission("canViewUsers")
+    },
+    { 
+      to: "/deliveries", 
+      icon: <Truck size={20} />, 
+      text: "Deliveries",
+      visible: hasPermission("canViewDeliveries")
+    },
   ];
+
+  // Filter to only show visible items
+  const visibleNavItems = navItems.filter(item => item.visible);
 
   return (
     <>
@@ -93,7 +127,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
 
         <div className="overflow-y-auto flex-1 py-4 px-3">
           <nav className="space-y-1">
-            {navItems.map((item, index) => (
+            {visibleNavItems.map((item, index) => (
               <SidebarLink
                 key={index}
                 to={item.to}
