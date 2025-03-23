@@ -8,11 +8,14 @@ import {
   ChevronRight, 
   Cpu, 
   Layers, 
+  LogOut,
   Package, 
   ShoppingCart, 
   Truck, 
   Users 
 } from "lucide-react";
+import { useAuth } from "../auth/AuthProvider";
+import { Button } from "@/components/ui/button";
 
 interface SidebarLinkProps {
   to: string;
@@ -50,6 +53,7 @@ interface SidebarProps {
 
 export function Sidebar({ className = "" }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { logout, userRole } = useAuth();
 
   const navItems = [
     { to: "/", icon: <BarChart size={20} />, text: "Dashboard" },
@@ -63,8 +67,8 @@ export function Sidebar({ className = "" }: SidebarProps) {
   return (
     <>
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20 -translate-x-0" : "-translate-x-0"
+        className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out ${
+          isCollapsed ? "w-20 -translate-x-0" : "w-72 -translate-x-0"
         } ${className} bg-sidebar flex flex-col border-r border-sidebar-border`}
       >
         <div className="p-4 flex items-center justify-between">
@@ -102,17 +106,37 @@ export function Sidebar({ className = "" }: SidebarProps) {
         </div>
 
         <div className="p-4 border-t border-sidebar-border">
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             {!isCollapsed && (
               <>
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Box className="h-4 w-4 text-primary" />
+                <div className="flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Box className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-xs font-medium text-sidebar-foreground">{userRole || "Tangent Flow"}</p>
+                    <p className="text-xs text-sidebar-foreground/60">v1.0.0</p>
+                  </div>
                 </div>
-                <div className="ml-3">
-                  <p className="text-xs font-medium text-sidebar-foreground">Tangent Flow</p>
-                  <p className="text-xs text-sidebar-foreground/60">v1.0.0</p>
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={logout}
+                  className="h-8 w-8"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </>
+            )}
+            {isCollapsed && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={logout}
+                className="h-8 w-8 mx-auto"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
             )}
           </div>
         </div>
