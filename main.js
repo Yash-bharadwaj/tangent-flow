@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Set app name
+app.name = "Tangent";
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -16,7 +19,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     autoHideMenuBar: false,
-    show: false
+    show: false,
+    title: "Tangent"
   });
 
   // Load the app
