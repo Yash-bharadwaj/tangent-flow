@@ -11,7 +11,7 @@ type Message = {
 };
 
 export function ChatBot() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);  // Set to true by default
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {

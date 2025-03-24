@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 export function SidebarCalendar() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);  // Keep this closed by default
 
   return (
     <div className="p-3 bg-sidebar-accent/30 rounded-md">

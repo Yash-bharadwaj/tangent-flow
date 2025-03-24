@@ -15,7 +15,7 @@ export function Calculator() {
   const [operation, setOperation] = useState<string | null>(null);
   const [prevValue, setPrevValue] = useState<number | null>(null);
   const [resetDisplay, setResetDisplay] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const buttons: CalculatorButton[] = [
     { value: "7", label: "7", variant: "outline" },
