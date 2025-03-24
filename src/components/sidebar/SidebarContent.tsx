@@ -2,6 +2,7 @@
 import { WorldClocks } from "./WorldClocks";
 import { SidebarCalendar } from "./SidebarCalendar";
 import { Calculator } from "./Calculator";
+import { ChatBot } from "./ChatBot";
 import { useAuth } from "../auth/AuthProvider";
 
 export function SidebarContent() {
@@ -12,6 +13,7 @@ export function SidebarContent() {
       <WorldClocks />
       <SidebarCalendar />
       <Calculator />
+      <ChatBot />
       {userRole === "customer" && (
         <div className="px-3 py-4 bg-sidebar-accent/30 rounded-md">
           <h3 className="text-sm font-medium mb-2">Customer Portal</h3>

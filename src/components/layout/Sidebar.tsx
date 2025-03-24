@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { 
@@ -55,7 +54,6 @@ export function Sidebar({ className = "" }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { logout, userRole, hasPermission } = useAuth();
 
-  // Define navigation items with permission checks
   const navItems = [
     { 
       to: "/", 
@@ -95,14 +93,13 @@ export function Sidebar({ className = "" }: SidebarProps) {
     },
   ];
 
-  // Filter to only show visible items
   const visibleNavItems = navItems.filter(item => item.visible);
 
   return (
     <>
       <div
         className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20 -translate-x-0" : "w-72 -translate-x-0"
+          isCollapsed ? "w-16" : "w-64"
         } ${className} bg-sidebar flex flex-col border-r border-sidebar-border`}
       >
         <div className="p-4 flex items-center justify-between">

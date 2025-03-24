@@ -1,7 +1,7 @@
-
 import { useState } from "react";
-import { Calculator as CalculatorIcon } from "lucide-react";
+import { Calculator as CalculatorIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type CalculatorButton = {
   value: string;
@@ -15,6 +15,7 @@ export function Calculator() {
   const [operation, setOperation] = useState<string | null>(null);
   const [prevValue, setPrevValue] = useState<number | null>(null);
   const [resetDisplay, setResetDisplay] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const buttons: CalculatorButton[] = [
     { value: "7", label: "7", variant: "outline" },
@@ -109,27 +110,40 @@ export function Calculator() {
 
   return (
     <div className="p-3 bg-sidebar-accent/30 rounded-md">
-      <div className="flex items-center gap-2 mb-2">
-        <CalculatorIcon className="h-4 w-4 text-sidebar-foreground/70" />
-        <span className="text-xs font-medium text-sidebar-foreground/70">Calculator</span>
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            <CalculatorIcon className="h-4 w-4 text-sidebar-foreground/70" />
+            <span className="text-xs font-medium text-sidebar-foreground/70">Calculator</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-xs mr-2">{display}</span>
+            {isOpen ? (
+              <ChevronUp className="h-3 w-3 text-sidebar-foreground/70" />
+            ) : (
+              <ChevronDown className="h-3 w-3 text-sidebar-foreground/70" />
+            )}
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-2">
+          <div className="bg-background border border-border rounded-md p-2 mb-2 text-right font-mono">
+            {display}
+          </div>
 
-      <div className="bg-background border border-border rounded-md p-2 mb-2 text-right font-mono">
-        {display}
-      </div>
-
-      <div className="grid grid-cols-4 gap-1">
-        {buttons.map((button, index) => (
-          <Button
-            key={index}
-            variant={button.variant || "outline"}
-            className={`h-8 text-xs font-medium ${button.className || ""}`}
-            onClick={() => handleButtonClick(button.value)}
-          >
-            {button.label}
-          </Button>
-        ))}
-      </div>
+          <div className="grid grid-cols-4 gap-1">
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                variant={button.variant || "outline"}
+                className={`h-8 text-xs font-medium ${button.className || ""}`}
+                onClick={() => handleButtonClick(button.value)}
+              >
+                {button.label}
+              </Button>
+            ))}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
