@@ -22,7 +22,12 @@ const config = {
         arch: ["x64", "arm64"]
       }
     ],
-    darkModeSupport: true
+    darkModeSupport: true,
+    hardenedRuntime: true,
+    gatekeeperAssess: false,
+    entitlements: "build/entitlements.mac.plist",
+    entitlementsInherit: "build/entitlements.mac.plist",
+    identity: null // Set to null for no signing, or specify identity for signing
   },
   win: {
     target: [
@@ -30,7 +35,8 @@ const config = {
         target: "nsis",
         arch: ["x64"]
       }
-    ]
+    ],
+    artifactName: "${productName}-Setup-${version}.${ext}"
   },
   nsis: {
     oneClick: true,
@@ -38,7 +44,8 @@ const config = {
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
     runAfterFinish: false,
-    allowToChangeInstallationDirectory: false
+    allowToChangeInstallationDirectory: false,
+    deleteAppDataOnUninstall: false
   },
   dmg: {
     contents: [
@@ -56,7 +63,13 @@ const config = {
     window: {
       width: 540,
       height: 380
-    }
+    },
+    sign: false
+  },
+  afterSign: "notarize.js", // Optional, only if you have a notarize.js script
+  protocols: {
+    name: "Tangent Protocol",
+    schemes: ["tangent"]
   }
 };
 
