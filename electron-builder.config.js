@@ -27,7 +27,8 @@ const config = {
     gatekeeperAssess: false,
     entitlements: "build/entitlements.mac.plist",
     entitlementsInherit: "build/entitlements.mac.plist",
-    identity: null // Set to null for no signing, or specify identity for signing
+    identity: null, // Set to null for no signing, or specify identity for signing
+    notarize: false
   },
   win: {
     target: [
@@ -66,7 +67,6 @@ const config = {
     },
     sign: false
   },
-  afterSign: "notarize.js", // Optional, only if you have a notarize.js script
   protocols: {
     name: "Tangent Protocol",
     schemes: ["tangent"]

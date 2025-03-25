@@ -65,6 +65,23 @@ function fixPackageJson() {
   return modified;
 }
 
+// Ensure electron is installed
+function ensureElectronInstalled() {
+  try {
+    // Check if electron is in node_modules
+    const electronPath = path.join(__dirname, 'node_modules', 'electron');
+    if (!fs.existsSync(electronPath)) {
+      console.log('Electron is not installed. Installing now...');
+      execSync('npm install --save-dev electron@latest', { stdio: 'inherit' });
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking/installing electron:', error);
+    return false;
+  }
+}
+
 // Ensure dist directory exists
 if (!fs.existsSync(path.join(__dirname, 'dist'))) {
   console.log('Building Vite project first...');
@@ -73,6 +90,9 @@ if (!fs.existsSync(path.join(__dirname, 'dist'))) {
 
 // Fix package.json before building
 fixPackageJson();
+
+// Ensure electron is installed
+ensureElectronInstalled();
 
 // Get platform argument
 const args = process.argv.slice(2);
