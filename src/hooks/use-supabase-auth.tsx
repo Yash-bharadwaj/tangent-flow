@@ -56,7 +56,7 @@ export const useSupabaseAuth = () => {
   // Memoized signIn function to authenticate with Supabase
   const signIn = useCallback(async (email: string, password: string) => {
     try {
-      console.log("Signing in user with Supabase");
+      console.log("Signing in user with Supabase:", email);
       setLoading(true);
       
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -82,14 +82,16 @@ export const useSupabaseAuth = () => {
   // Add a signUp function to create new users
   const signUp = useCallback(async (email: string, password: string, userData: any = {}) => {
     try {
-      console.log("Signing up user with Supabase");
+      console.log("Signing up user with Supabase:", email);
       setLoading(true);
       
+      // Important: set autoconfirm option to true for development
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: userData
+          data: userData,
+          emailRedirectTo: window.location.origin
         }
       });
       

@@ -38,9 +38,16 @@ export default function LoginPage() {
 
     try {
       console.log("Attempting login with:", email);
+      
+      if (!email || !password) {
+        toast.error("Please enter both email and password");
+        setIsLoading(false);
+        return;
+      }
+      
       await login(email, password);
       // Auth provider will handle the redirect
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
       // Toast is already handled in the login function
       setIsLoading(false);
@@ -53,16 +60,47 @@ export default function LoginPage() {
 
     try {
       console.log("Attempting registration with:", email, fullName);
+      
+      if (!email || !password || !fullName) {
+        toast.error("Please fill out all fields");
+        setIsLoading(false);
+        return;
+      }
+      
       await register(email, password, { full_name: fullName, role: "customer" });
+      
       // After registration, switch to login tab
-      setActiveTab("login");
       toast.success("Registration successful! Please log in.");
-      setIsLoading(false);
-    } catch (error) {
+      setActiveTab("login");
+      setPassword(""); // Clear password for security
+    } catch (error: any) {
       console.error("Registration error:", error);
       // Toast is already handled in the register function
+    } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleDemoLogin = async () => {
+    setEmail("demo@example.com");
+    setPassword("password123");
+    // Use timeout to ensure state is updated before login
+    setTimeout(() => {
+      document.getElementById("login-form")?.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
+    }, 100);
+  };
+  
+  const handleAdminLogin = async () => {
+    setEmail("admin@example.com");
+    setPassword("admin123");
+    // Use timeout to ensure state is updated before login
+    setTimeout(() => {
+      document.getElementById("login-form")?.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
+    }, 100);
   };
 
   return (
@@ -89,7 +127,7 @@ export default function LoginPage() {
             </TabsList>
             
             <TabsContent value="login">
-              <form onSubmit={handleLogin}>
+              <form id="login-form" onSubmit={handleLogin}>
                 <div className="grid gap-4">
                   <div className="grid gap-2">
                     <Input
@@ -172,6 +210,14 @@ export default function LoginPage() {
           </Tabs>
         </CardContent>
         <CardFooter className="flex flex-col">
+          <div className="w-full grid grid-cols-2 gap-2 mb-3">
+            <Button variant="outline" onClick={handleDemoLogin} type="button">
+              Login as Demo
+            </Button>
+            <Button variant="outline" onClick={handleAdminLogin} type="button">
+              Login as Admin
+            </Button>
+          </div>
           <p className="text-xs text-muted-foreground text-center">
             <span className="font-semibold">Demo credentials:</span><br />
             Email: demo@example.com<br />

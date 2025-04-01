@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
@@ -61,7 +62,7 @@ export const createProfile = async (profile: Partial<Profile> & { id: string }):
       return existingProfile as Profile;
     }
     
-    // Insert new profile - ensure we're passing a single object, not an array
+    // Insert new profile - ensuring we pass a single object, not an array
     const { data, error } = await supabase
       .from("profiles")
       .insert(profile)
@@ -320,12 +321,15 @@ export const signUp = async (email: string, password: string, userData: { full_n
     const safeEmail = email.includes('@example.com') 
       ? email.replace('@example.com', '@demo-example.com') 
       : email;
+      
+    console.log("Using modified email for signup:", safeEmail);
     
     const { data, error } = await supabase.auth.signUp({
       email: safeEmail,
       password,
       options: {
-        data: userData
+        data: userData,
+        emailRedirectTo: window.location.origin
       }
     });
     
@@ -347,7 +351,7 @@ export const signUp = async (email: string, password: string, userData: { full_n
       });
     }
     
-    toast.success("Sign up successful. Please check your email for verification link");
+    toast.success("Sign up successful");
     return data;
   } catch (error: any) {
     toast.error(`Sign up failed: ${error.message}`);
@@ -363,6 +367,8 @@ export const signIn = async (email: string, password: string) => {
     const safeEmail = email.includes('@example.com') 
       ? email.replace('@example.com', '@demo-example.com') 
       : email;
+      
+    console.log("Using modified email for signin:", safeEmail);
     
     const { data, error } = await supabase.auth.signInWithPassword({
       email: safeEmail,
@@ -428,11 +434,42 @@ export const initializeDemoUsers = async () => {
       } catch (error) {
         console.log(`Demo user does not exist: ${demoUser.email}, creating...`);
         // If signin fails, create the user
-        await signUp(demoUser.email, demoUser.password, {
-          full_name: demoUser.full_name,
-          role: demoUser.role
+        const { data, error } = await supabase.auth.admin.createUser({
+          email: demoUser.email,
+          password: demoUser.password,
+          email_confirm: true,
+          user_metadata: {
+            full_name: demoUser.full_name,
+            role: demoUser.role
+          }
         });
-        console.log(`Created demo user: ${demoUser.email}`);
+        
+        if (error) {
+          console.error(`Error creating demo user ${demoUser.email}:`, error);
+          // Fall back to regular signup if admin create fails
+          try {
+            await signUp(demoUser.email, demoUser.password, {
+              full_name: demoUser.full_name,
+              role: demoUser.role
+            });
+            console.log(`Created demo user via regular signup: ${demoUser.email}`);
+          } catch (signupError) {
+            console.error(`Failed to create demo user via regular signup: ${demoUser.email}`, signupError);
+          }
+        } else {
+          console.log(`Created demo user via admin API: ${demoUser.email}`);
+          
+          // Ensure profile exists
+          if (data.user) {
+            await createProfile({
+              id: data.user.id,
+              full_name: demoUser.full_name,
+              role: demoUser.role,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            });
+          }
+        }
       }
     }
     

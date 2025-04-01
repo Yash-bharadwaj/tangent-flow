@@ -120,11 +120,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("Attempting login with:", email);
-      // Use the modified email if needed (using the same logic as in supabase.ts)
+      
+      // Always use the email domain workaround for demo accounts
       const modifiedEmail = email.includes('@example.com') 
         ? email.replace('@example.com', '@demo-example.com') 
         : email;
         
+      console.log("Using modified email for login:", modifiedEmail);
+      
       // signIn now returns { user, session }
       const result = await signIn(modifiedEmail, password);
       
@@ -141,12 +144,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (email: string, password: string, userData: any = {}) => {
     try {
       console.log("Attempting to register:", email, userData);
-      // Use the modified email if needed (using the same logic as in supabase.ts)
+      
+      // Always use the email domain workaround for demo accounts
       const modifiedEmail = email.includes('@example.com') 
         ? email.replace('@example.com', '@demo-example.com') 
         : email;
+      
+      console.log("Using modified email for registration:", modifiedEmail);
         
       const result = await signUp(modifiedEmail, password, userData);
+      
+      // Create profile immediately after signup
+      if (result?.user) {
+        await ensureUserProfile(
+          result.user.id,
+          userData.role || 'customer',
+          userData.full_name || ''
+        );
+      }
       
       toast.success("Registration successful");
       return result;
