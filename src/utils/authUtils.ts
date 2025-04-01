@@ -24,16 +24,16 @@ export const ensureUserProfile = async (userId: string, role = 'customer', fullN
     const existingProfile = await getProfile(userId);
     
     if (!existingProfile) {
-      // Create profile if it doesn't exist
+      // Create profile if it doesn't exist - ensure we pass a single object, not an array
       const { data, error } = await supabase
         .from('profiles')
-        .insert([{ 
+        .insert({ 
           id: userId, 
           role, 
           full_name: fullName,
-          created_at: new Date(),
-          updated_at: new Date()
-        }]);
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
         
       if (error) throw error;
       

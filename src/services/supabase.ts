@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
@@ -39,13 +40,13 @@ export const updateProfile = async (userId: string, updates: Partial<Profile>): 
 };
 
 // Create profile if it doesn't exist
-export const createProfile = async (profile: Partial<Profile>): Promise<Profile | null> => {
+export const createProfile = async (profile: Partial<Profile> & { id: string }): Promise<Profile | null> => {
   try {
     // First check if the profile already exists
     const { data: existingProfile } = await supabase
       .from("profiles")
       .select("*")
-      .eq("id", profile.id!)
+      .eq("id", profile.id)
       .single();
       
     if (existingProfile) {
@@ -53,10 +54,10 @@ export const createProfile = async (profile: Partial<Profile>): Promise<Profile 
       return existingProfile as Profile;
     }
     
-    // Insert new profile
+    // Insert new profile - ensure we're passing a single object, not an array
     const { data, error } = await supabase
       .from("profiles")
-      .insert([profile])
+      .insert(profile)
       .select()
       .single();
       
@@ -370,17 +371,16 @@ export const initializeDemoUsers = async () => {
   
   try {
     for (const demoUser of demoUsers) {
-      // Check if user exists
-      const { data: { users } } = await supabase.auth.admin.listUsers();
-      const existingUser = users.find(u => u.email === demoUser.email);
-      
-      if (!existingUser) {
-        // Create the user
+      // Check if user exists by trying to sign in
+      try {
+        await signIn(demoUser.email, demoUser.password);
+        console.log(`Demo user exists: ${demoUser.email}`);
+      } catch (error) {
+        // If signin fails, create the user
         await signUp(demoUser.email, demoUser.password, {
           full_name: demoUser.full_name,
           role: demoUser.role
         });
-        
         console.log(`Created demo user: ${demoUser.email}`);
       }
     }
