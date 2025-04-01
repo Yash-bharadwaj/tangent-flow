@@ -21,26 +21,29 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, change, className = "" }: StatCardProps) {
   return (
-    <DashboardCard className={className}>
+    <DashboardCard className={`premium-card group ${className}`}>
       <DashboardCardHeader className="pb-2">
         <div className="flex justify-between items-center">
-          <DashboardCardTitle className="text-base font-medium">{title}</DashboardCardTitle>
-          <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center text-primary">
+          <DashboardCardTitle className="text-base font-medium tracking-wide text-white/90">
+            {title}
+          </DashboardCardTitle>
+          <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary 
+                        group-hover:scale-110 transition-all duration-300">
             {icon}
           </div>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>
         <div className="flex flex-col">
-          <div className="text-2xl font-semibold">{value}</div>
+          <div className="text-2xl font-semibold premium-text-gradient">{value}</div>
           {change && (
-            <div className="flex items-center mt-1">
+            <div className="flex items-center mt-2">
               <span
                 className={`inline-flex items-center text-xs ${
                   change.trend === "up"
-                    ? "text-green-600 dark:text-green-400"
+                    ? "text-green-400"
                     : change.trend === "down"
-                    ? "text-red-600 dark:text-red-400"
+                    ? "text-red-400"
                     : "text-muted-foreground"
                 }`}
               >

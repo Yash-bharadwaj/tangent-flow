@@ -9,7 +9,9 @@ interface DashboardCardProps {
 export function DashboardCard({ className = "", children }: DashboardCardProps) {
   return (
     <div 
-      className={`bg-card text-card-foreground rounded-lg border shadow-sm overflow-hidden ${className} transition-all duration-200 hover:shadow-md animate-in`}
+      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl 
+                 border border-white/5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.8)] 
+                 overflow-hidden ${className} transition-all duration-300 hover:shadow-[0_10px_40px_rgba(0,0,0,0.85)]`}
     >
       {children}
     </div>
@@ -36,7 +38,7 @@ interface DashboardCardTitleProps {
 
 export function DashboardCardTitle({ className = "", children }: DashboardCardTitleProps) {
   return (
-    <h3 className={`text-lg font-semibold leading-none tracking-tight ${className}`}>
+    <h3 className={`text-lg font-semibold leading-none tracking-wide ${className}`}>
       {children}
     </h3>
   );

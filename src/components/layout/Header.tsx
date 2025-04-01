@@ -4,7 +4,7 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-30 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-30 w-full border-b border-white/5 bg-background/50 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/30">
       <div className="flex h-16 items-center px-6">
         <div className="flex flex-1 items-center justify-between">
           <div className="hidden md:flex md:gap-2 lg:gap-10">
@@ -15,24 +15,27 @@ export function Header() {
               </div>
               <input
                 type="text"
-                className="w-full p-2 pl-10 text-sm border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-background"
+                className="w-full p-2 pl-10 text-sm border border-white/10 rounded-xl focus:ring-2 
+                          focus:ring-primary/20 focus:border-primary outline-none bg-white/5 backdrop-blur-lg 
+                          transition-all duration-300"
                 placeholder="Search anything..."
               />
             </div>
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="inline-flex items-center justify-center rounded-md w-9 h-9 transition-colors hover:bg-muted relative">
+            <button className="inline-flex items-center justify-center rounded-xl border border-white/10 backdrop-blur-lg 
+                              bg-white/5 w-10 h-10 transition-all duration-300 hover:bg-white/10 relative">
               <Bell className="h-[1.2rem] w-[1.2rem]" />
-              <span className="absolute top-1 right-1.5 flex h-2 w-2 rounded-full bg-destructive"></span>
+              <span className="absolute top-2 right-2.5 flex h-2 w-2 rounded-full bg-destructive"></span>
             </button>
             
             <ThemeToggle />
             
             <div className="relative hidden md:flex items-center">
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                  <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+              <div className="flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-white/10">
+                  <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary">
                     AU
                   </div>
                 </div>

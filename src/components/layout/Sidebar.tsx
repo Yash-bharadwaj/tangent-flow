@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { 
@@ -31,16 +32,16 @@ const SidebarLink = ({ to, icon, text, isCollapsed }: SidebarLinkProps) => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center py-3 px-3 my-1 rounded-md transition-all duration-200 ${
+        `flex items-center py-3 px-3 my-1.5 rounded-xl transition-all duration-300 ${
           isActive
-            ? "bg-primary text-primary-foreground"
-            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            ? "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/20"
+            : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
         } ${isCollapsed ? "justify-center" : "justify-start"}`
       }
     >
       <div className="flex items-center">
         <div className={`${isCollapsed ? "mx-0" : "mr-3"}`}>{icon}</div>
-        {!isCollapsed && <span className="font-medium text-sm">{text}</span>}
+        {!isCollapsed && <span className="font-medium text-sm tracking-wide">{text}</span>}
       </div>
     </NavLink>
   );
@@ -98,31 +99,32 @@ export function Sidebar({ className = "" }: SidebarProps) {
   return (
     <>
       <div
-        className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-16" : "w-64"
-        } ${className} bg-sidebar flex flex-col border-r border-sidebar-border`}
+        className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-in-out ${
+          isCollapsed ? "w-20" : "w-72"
+        } ${className} premium-gradient flex flex-col border-r border-white/5 shadow-2xl`}
       >
         <div className="p-4 flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center">
-              <Layers className="h-6 w-6 text-primary" />
-              <span className="ml-2 text-xl font-semibold tracking-tight">Tangent</span>
+              <Layers className="h-7 w-7 text-primary" />
+              <span className="ml-2 text-xl font-semibold tracking-wider premium-text-gradient">Tangent</span>
             </div>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-md hover:bg-sidebar-accent transition-colors duration-200"
+            className="p-2 rounded-lg border border-white/10 backdrop-blur-lg bg-white/5 
+                      hover:bg-white/10 transition-all duration-300"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-5 w-5 text-white/80" />
             ) : (
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5 text-white/80" />
             )}
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 py-4 px-3">
+        <div className="overflow-y-auto flex-1 py-6 px-3">
           <nav className="space-y-1">
             {visibleNavItems.map((item, index) => (
               <SidebarLink
@@ -136,13 +138,13 @@ export function Sidebar({ className = "" }: SidebarProps) {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-white/5">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
               <>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Box className="h-4 w-4 text-primary" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Box className="h-5 w-5 text-primary" />
                   </div>
                   <div className="ml-3">
                     <p className="text-xs font-medium text-sidebar-foreground">{userRole || "Tangent Flow"}</p>
@@ -153,7 +155,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
                   variant="ghost" 
                   size="icon" 
                   onClick={logout}
-                  className="h-8 w-8"
+                  className="h-9 w-9 rounded-lg hover:bg-white/10"
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
@@ -164,7 +166,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
                 variant="ghost" 
                 size="icon" 
                 onClick={logout}
-                className="h-8 w-8 mx-auto"
+                className="h-9 w-9 mx-auto rounded-lg hover:bg-white/10"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
