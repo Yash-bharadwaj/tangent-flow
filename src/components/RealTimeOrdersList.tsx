@@ -6,6 +6,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
+import '@/styles/status-pills.css'; // We'll create this CSS file
 
 export const RealTimeOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
