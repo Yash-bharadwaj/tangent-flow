@@ -133,6 +133,7 @@ export default {
 				'gradient-premium': 'linear-gradient(110deg, rgba(26,26,26,0.9) 0%, rgba(40,40,40,0.8) 100%)',
 				'gradient-card': 'linear-gradient(145deg, rgba(26,26,26,0.9) 0%, rgba(30,30,30,0.8) 100%)',
 				'gradient-blue': 'linear-gradient(110deg, rgba(0,102,177,1) 0%, rgba(0,82,157,0.9) 100%)',
+				'dot-pattern': "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E\")",
 			},
 		}
 	},

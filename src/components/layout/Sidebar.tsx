@@ -35,7 +35,7 @@ const SidebarLink = ({ to, icon, text, isCollapsed }: SidebarLinkProps) => {
         `flex items-center py-3 px-3 my-1.5 rounded-xl transition-all duration-300 ${
           isActive
             ? "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/20"
-            : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            : "text-sidebar-foreground/80 hover:bg-white/10 dark:hover:bg-white/5 hover:text-sidebar-foreground"
         } ${isCollapsed ? "justify-center" : "justify-start"}`
       }
     >
@@ -101,7 +101,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
       <div
         className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-in-out ${
           isCollapsed ? "w-20" : "w-72"
-        } ${className} premium-gradient flex flex-col border-r border-white/5 shadow-2xl`}
+        } ${className} bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-sidebar flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
       >
         <div className="p-4 flex items-center justify-between">
           {!isCollapsed && (
@@ -112,14 +112,14 @@ export function Sidebar({ className = "" }: SidebarProps) {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg border border-white/10 backdrop-blur-lg bg-white/5 
-                      hover:bg-white/10 transition-all duration-300"
+            className="p-2 rounded-lg border border-black/5 dark:border-white/10 backdrop-blur-lg 
+                     bg-white/10 dark:bg-black/20 hover:bg-white/20 dark:hover:bg-white/5 transition-all duration-300"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
-              <ChevronRight className="h-5 w-5 text-white/80" />
+              <ChevronRight className="h-5 w-5" />
             ) : (
-              <ChevronLeft className="h-5 w-5 text-white/80" />
+              <ChevronLeft className="h-5 w-5" />
             )}
           </button>
         </div>
@@ -138,7 +138,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-black/5 dark:border-white/5">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
               <>
@@ -155,7 +155,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
                   variant="ghost" 
                   size="icon" 
                   onClick={logout}
-                  className="h-9 w-9 rounded-lg hover:bg-white/10"
+                  className="h-9 w-9 rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
@@ -166,7 +166,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
                 variant="ghost" 
                 size="icon" 
                 onClick={logout}
-                className="h-9 w-9 mx-auto rounded-lg hover:bg-white/10"
+                className="h-9 w-9 mx-auto rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
               >
                 <LogOut className="h-4 w-4" />
               </Button>

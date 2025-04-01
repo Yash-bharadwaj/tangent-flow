@@ -9,9 +9,11 @@ interface DashboardCardProps {
 export function DashboardCard({ className = "", children }: DashboardCardProps) {
   return (
     <div 
-      className={`bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl 
-                 border border-white/5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.8)] 
-                 overflow-hidden ${className} transition-all duration-300 hover:shadow-[0_10px_40px_rgba(0,0,0,0.85)]`}
+      className={`aesthetic-card backdrop-blur-xl 
+                 border border-black/5 dark:border-white/5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.2)] 
+                 dark:shadow-[0_8px_30px_rgba(0,0,0,0.8)] 
+                 overflow-hidden ${className} transition-all duration-300 
+                 hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] dark:hover:shadow-[0_10px_40px_rgba(0,0,0,0.85)]`}
     >
       {children}
     </div>

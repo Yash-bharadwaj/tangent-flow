@@ -21,10 +21,10 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, change, className = "" }: StatCardProps) {
   return (
-    <DashboardCard className={`premium-card group ${className}`}>
+    <DashboardCard className={`aesthetic-card group ${className}`}>
       <DashboardCardHeader className="pb-2">
         <div className="flex justify-between items-center">
-          <DashboardCardTitle className="text-base font-medium tracking-wide text-white/90">
+          <DashboardCardTitle className="text-base font-medium tracking-wide">
             {title}
           </DashboardCardTitle>
           <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary 
