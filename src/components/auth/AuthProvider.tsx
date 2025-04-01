@@ -97,15 +97,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Handle login with Supabase
+  // Handle login with Supabase - Fix for the error related to data/error properties
   const login = async (email: string, password: string) => {
     try {
-      const { data, error } = await signIn(email, password);
-      
-      if (error) throw error;
+      // Fix: signIn returns { user, session } not { data, error }
+      const result = await signIn(email, password);
       
       toast.success("Logged in successfully");
-      return data;
+      return result;
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(error.message || "Login failed");

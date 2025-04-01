@@ -17,7 +17,8 @@ export const RealTimeOrdersList = () => {
     if (!user?.id) return;
 
     const fetchOrders = async () => {
-      const data = await getOrders(user.id);
+      // Fix: getOrders() doesn't expect arguments based on error
+      const data = await getOrders();
       setOrders(data);
       setLoading(false);
     };
@@ -25,7 +26,8 @@ export const RealTimeOrdersList = () => {
     fetchOrders();
 
     // Set up real-time subscription
-    const channel = subscribeToOrders(user.id, (payload) => {
+    // Fix: subscribeToOrders expects only one argument
+    const channel = subscribeToOrders((payload) => {
       console.log('Realtime update received:', payload);
       
       if (payload.eventType === 'INSERT') {

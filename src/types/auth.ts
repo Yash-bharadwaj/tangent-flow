@@ -8,6 +8,12 @@ export interface UserPermissions {
   manageSalesOrders: boolean;
   manageInventory: boolean;
   manageDeliveries: boolean;
+  // Add these fields to match what's used in Sidebar.tsx
+  canViewModules: boolean;
+  canViewSalesOrders: boolean;
+  canViewInventory: boolean;
+  canViewUsers: boolean;
+  canViewDeliveries: boolean;
 }
 
 export interface AuthContextType {
@@ -33,6 +39,12 @@ const defaultPermissions: UserPermissions = {
   manageSalesOrders: false,
   manageInventory: false,
   manageDeliveries: false,
+  // Add the new permission fields
+  canViewModules: false,
+  canViewSalesOrders: false,
+  canViewInventory: false,
+  canViewUsers: false,
+  canViewDeliveries: false,
 };
 
 // Define permissions for each role
@@ -45,6 +57,11 @@ const rolePermissions: RolePermissionsMap = {
     manageSalesOrders: true,
     manageInventory: true,
     manageDeliveries: true,
+    canViewModules: true,
+    canViewSalesOrders: true,
+    canViewInventory: true,
+    canViewUsers: true,
+    canViewDeliveries: true,
   },
   // Customer has limited permissions
   "customer": {
@@ -54,6 +71,11 @@ const rolePermissions: RolePermissionsMap = {
     manageSalesOrders: true,
     manageInventory: false,
     manageDeliveries: true,
+    canViewModules: false,
+    canViewSalesOrders: true,
+    canViewInventory: false,
+    canViewUsers: false,
+    canViewDeliveries: true,
   },
   // Default user with minimal permissions
   "user": {
@@ -63,6 +85,11 @@ const rolePermissions: RolePermissionsMap = {
     manageSalesOrders: false,
     manageInventory: false,
     manageDeliveries: false,
+    canViewModules: false,
+    canViewSalesOrders: false,
+    canViewInventory: false,
+    canViewUsers: false,
+    canViewDeliveries: false,
   },
 };
 
