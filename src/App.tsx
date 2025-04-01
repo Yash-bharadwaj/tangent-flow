@@ -18,7 +18,14 @@ import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { useEffect } from "react";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -29,7 +36,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
-  // Use strict equality check to avoid re-renders and redirect loops
+  // Only render children if authenticated, otherwise redirect to login
   if (isAuthenticated === false) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
@@ -47,7 +54,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// We need this wrapper to use the AuthProvider context
+// Inner routes component wrapped with AuthProvider
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
@@ -61,6 +68,7 @@ const AppRoutes = () => (
   </Routes>
 );
 
+// App component with all providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>

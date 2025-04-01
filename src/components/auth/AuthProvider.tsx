@@ -59,7 +59,7 @@ const getRolePermissions = (role: string): UserPermissions => {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
   const { user, loading } = useSupabaseAuth(); // Get user and loading from Supabase hook
@@ -67,14 +67,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   
   // Debug state
-  const debugState = {
-    isAuthenticated,
-    userRole,
-    user: user ? { id: user.id } : null,
-    currentPath: location.pathname,
-    loading
-  };
-  console.log("Auth provider state:", debugState);
+  useEffect(() => {
+    const debugState = {
+      isAuthenticated,
+      userRole,
+      user: user ? { id: user.id } : null,
+      currentPath: location.pathname,
+      loading
+    };
+    console.log("Auth provider state:", debugState);
+  }, [isAuthenticated, userRole, user, location.pathname, loading]);
   
   // This effect handles user authentication state and navigation
   useEffect(() => {
@@ -116,13 +118,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fetchUserRole();
       }
       
-      // Redirect to home if on login page after a delay
+      // Only redirect if we're on the login page
       if (location.pathname === "/login") {
         console.log("On login page but authenticated, redirecting to home");
+        // Use a 100ms delay to ensure all state updates are processed
         const navigationTimer = setTimeout(() => {
           console.log("Executing delayed navigation to home");
           navigate("/", { replace: true });
-        }, 500);
+        }, 100);
         
         return () => clearTimeout(navigationTimer);
       }
@@ -176,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Then sign out from Supabase
     await supabaseSignOut();
     
-    // Navigate to login page
+    // Navigate to login page with replace to prevent back navigation
     navigate("/login", { replace: true });
   };
 

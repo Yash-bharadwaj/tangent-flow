@@ -11,18 +11,21 @@ export const useSupabaseAuth = () => {
   useEffect(() => {
     console.log("useSupabaseAuth hook initializing");
     
-    // Initialize auth state - use a flag to prevent duplicate state updates
     let mounted = true;
     
-    // Get current session
     const initializeAuth = async () => {
       try {
-        // First get current session (do this first to prevent flash of unauthenticated state)
+        // First get current session
         const { data } = await supabase.auth.getSession();
         if (mounted) {
           console.log("Initial session check:", data.session ? "Session exists" : "No session");
-          setSession(data.session);
-          setUser(data.session?.user ?? null);
+          
+          if (data.session) {
+            setSession(data.session);
+            setUser(data.session.user);
+          }
+          
+          // Only set loading to false after we've set the session
           setLoading(false);
         }
         
@@ -31,9 +34,11 @@ export const useSupabaseAuth = () => {
           (event, newSession) => {
             console.log("Auth state change:", event, newSession ? "Session exists" : "No session");
             if (mounted) {
-              setSession(newSession);
-              setUser(newSession?.user ?? null);
-              setLoading(false);
+              // Only update state if it actually changed to prevent loops
+              if (JSON.stringify(newSession) !== JSON.stringify(session)) {
+                setSession(newSession);
+                setUser(newSession?.user ?? null);
+              }
             }
           }
         );
@@ -60,12 +65,17 @@ export const useSupabaseAuth = () => {
   // Add signOut method
   const signOut = async () => {
     try {
+      setLoading(true); // Prevent state changes during sign out
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       console.log("Successfully signed out");
-      // Session will be updated by the onAuthStateChange listener
+      // Clear state manually to ensure consistency
+      setSession(null);
+      setUser(null);
+      setLoading(false);
     } catch (error) {
       console.error("Error signing out:", error);
+      setLoading(false);
     }
   };
 
