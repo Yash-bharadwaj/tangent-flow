@@ -56,7 +56,7 @@ export const useSupabaseAuth = () => {
   // Memoized signOut function to avoid recreating on every render
   const signOut = useCallback(async () => {
     try {
-      console.log("Signing out user");
+      console.log("Signing out user from Supabase");
       setLoading(true);
       
       const { error } = await supabase.auth.signOut();
@@ -66,9 +66,9 @@ export const useSupabaseAuth = () => {
       setSession(null);
       setUser(null);
       
-      console.log("User signed out successfully");
+      console.log("User signed out successfully from Supabase");
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Error signing out from Supabase:", error);
     } finally {
       setLoading(false);
     }

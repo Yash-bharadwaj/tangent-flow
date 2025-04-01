@@ -35,6 +35,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log(`Attempting to log in as ${activeTab} with username: ${username}`);
+      
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
         toast.success("Admin login successful!");
         login("superuser");

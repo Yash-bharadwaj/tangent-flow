@@ -7,6 +7,7 @@ import { signOut as supabaseSignOut } from "@/services/supabase";
 import { UserPermissions, getRolePermissions } from "@/types/auth";
 import AuthContext from "@/contexts/AuthContext";
 import { fetchUserRole, logAuthState } from "@/utils/authUtils";
+import { toast } from "sonner";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
   
   // Use the Supabase hook and destructure its return values
-  const { user, loading, isAuthenticated: supabaseAuth } = useSupabaseAuth();
+  const { user, loading, isAuthenticated: supabaseAuth, signOut: supabaseAuthSignOut } = useSupabaseAuth();
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,47 +50,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isAuthenticated) {
         console.log("Auth provider: setting isAuthenticated to true");
         setIsAuthenticated(true);
-      }
-      
-      // Fetch user role if needed
-      if (!userRole) {
+        
+        // Fetch user role if needed
         fetchUserRole(user.id).then(role => {
           console.log("User role fetched:", role);
           setUserRole(role);
           setPermissions(getRolePermissions(role));
         });
       }
-      
-      // Redirect away from login page when authenticated with a delay
-      if (location.pathname === "/login") {
-        console.log("Auth provider: on login page but authenticated, redirecting to home");
-        setTimeout(() => {
-          console.log("Auth provider: executing delayed navigation to home");
-          navigate("/", { replace: true });
-        }, 100);
-      }
-    } 
+    }
     // When Supabase indicates user is not authenticated
-    else if (!supabaseAuth) {
+    else if (!supabaseAuth && !loading) {
       console.log("Auth provider: detected unauthenticated state from Supabase");
       
-      // Only update if this is a change to prevent loops
-      if (isAuthenticated) {
-        console.log("Auth provider: setting isAuthenticated to false");
+      // Only update if mock login is not active
+      if (isAuthenticated && !userRole) {
+        console.log("Auth provider: setting isAuthenticated to false (no mock active)");
         setIsAuthenticated(false);
         setUserRole(null);
         setPermissions(getRolePermissions(""));
       }
-      
-      // Only redirect to login if not already there
-      if (location.pathname !== "/login") {
-        console.log("Auth provider: not on login page, redirecting to login");
-        setTimeout(() => {
-          navigate("/login", { replace: true });
-        }, 100);
-      }
     }
-  }, [supabaseAuth, user, loading, navigate, location.pathname, isAuthenticated]);
+    
+    // Handle routing based on authentication state
+    handleRouting();
+  }, [supabaseAuth, user, loading, isAuthenticated, userRole, location.pathname]);
+  
+  // Separated routing logic for clarity
+  const handleRouting = () => {
+    // Don't redirect during loading to prevent flashes
+    if (loading) return;
+    
+    // If authenticated, redirect from login page to home
+    if (isAuthenticated && location.pathname === "/login") {
+      console.log("Auth provider: on login page but authenticated, redirecting to home");
+      setTimeout(() => {
+        console.log("Auth provider: executing delayed navigation to home");
+        navigate("/", { replace: true });
+      }, 300);
+    } 
+    // If not authenticated and not on login page, redirect to login
+    else if (!isAuthenticated && location.pathname !== "/login") {
+      console.log("Auth provider: not on login page but unauthenticated, redirecting to login");
+      setTimeout(() => {
+        console.log("Auth provider: executing delayed navigation to login");
+        navigate("/login", { replace: true });
+      }, 300);
+    }
+  };
 
   // Manual login function (for mock login)
   const login = (role: string) => {
@@ -99,6 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
     setUserRole(role);
     setPermissions(getRolePermissions(role));
+    
+    toast.success(`Logged in successfully as ${role}`);
     
     // Navigate to home page with delay to ensure state updates
     console.log("Scheduling navigation to home after login");
@@ -117,13 +127,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserRole(null);
     setPermissions(getRolePermissions(""));
     
-    // Then sign out from Supabase
-    await supabaseSignOut();
+    // Then sign out from Supabase if we were using it
+    if (supabaseAuth) {
+      await supabaseAuthSignOut();
+    }
+    
+    toast.info("Logged out successfully");
     
     // Navigate with a delay
     setTimeout(() => {
       navigate("/login", { replace: true });
-    }, 100);
+    }, 300);
   };
 
   const hasPermission = (permission: keyof UserPermissions): boolean => {
