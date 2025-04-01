@@ -62,43 +62,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
-  const { user, loading } = useSupabaseAuth(); // Get user and loading from Supabase hook
+  
+  // Use the Supabase hook and destructure its return values
+  const { user, loading, isAuthenticated: supabaseAuth } = useSupabaseAuth();
+  
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Debug state
+  // Debug state with minimal re-renders
   useEffect(() => {
-    const debugState = {
+    console.log("Auth provider state:", {
       isAuthenticated,
       userRole,
       user: user ? { id: user.id } : null,
       currentPath: location.pathname,
-      loading
-    };
-    console.log("Auth provider state:", debugState);
-  }, [isAuthenticated, userRole, user, location.pathname, loading]);
+      loading,
+      supabaseAuthState: supabaseAuth
+    });
+  }, [isAuthenticated, userRole, user, location.pathname, loading, supabaseAuth]);
   
-  // This effect handles user authentication state and navigation
+  // This effect handles changes from Supabase authentication state
   useEffect(() => {
-    // Skip navigation logic during loading
+    // Skip during loading
     if (loading) {
-      console.log("Auth loading, skipping navigation logic");
+      console.log("Auth provider: still loading, skipping auth logic");
       return;
     }
     
-    console.log("Auth no longer loading, checking authentication status");
+    console.log("Auth provider: checking Supabase authentication status");
     
-    // Handle authenticated user
-    if (user) {
-      console.log("User authenticated:", user.id);
+    // When Supabase provides user authentication information
+    if (supabaseAuth && user) {
+      console.log("Auth provider: detected authenticated user from Supabase");
       
-      // Set authenticated state only if changing
+      // Only update if it's a change to prevent loops
       if (!isAuthenticated) {
-        console.log("Setting isAuthenticated to true");
+        console.log("Auth provider: setting isAuthenticated to true");
         setIsAuthenticated(true);
       }
       
-      // Fetch user role only if not already set
+      // Fetch user role if needed
       if (!userRole) {
         const fetchUserRole = async () => {
           try {
@@ -118,46 +121,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fetchUserRole();
       }
       
-      // Only redirect if we're on the login page
+      // Redirect away from login page when authenticated with a delay
       if (location.pathname === "/login") {
-        console.log("On login page but authenticated, redirecting to home");
-        // Use a 100ms delay to ensure all state updates are processed
-        const navigationTimer = setTimeout(() => {
-          console.log("Executing delayed navigation to home");
+        console.log("Auth provider: on login page but authenticated, redirecting to home");
+        setTimeout(() => {
+          console.log("Auth provider: executing delayed navigation to home");
           navigate("/", { replace: true });
         }, 100);
-        
-        return () => clearTimeout(navigationTimer);
       }
     } 
-    // Handle unauthenticated user
-    else {
-      console.log("No user, setting unauthenticated state");
+    // When Supabase indicates user is not authenticated
+    else if (!supabaseAuth) {
+      console.log("Auth provider: detected unauthenticated state from Supabase");
       
-      // Clear authentication state
+      // Only update if this is a change to prevent loops
       if (isAuthenticated) {
-        console.log("Setting isAuthenticated to false");
+        console.log("Auth provider: setting isAuthenticated to false");
         setIsAuthenticated(false);
         setUserRole(null);
         setPermissions(getRolePermissions(""));
       }
       
-      // Only redirect to login if not already on login page
+      // Only redirect to login if not already there
       if (location.pathname !== "/login") {
-        console.log("Not authenticated, redirecting to login");
-        navigate("/login", { replace: true });
+        console.log("Auth provider: not on login page, redirecting to login");
+        setTimeout(() => {
+          navigate("/login", { replace: true });
+        }, 100);
       }
     }
-  }, [user, loading, navigate, location.pathname]);
+  }, [supabaseAuth, user, loading, navigate, location.pathname, isAuthenticated]);
 
   // Manual login function (for mock login)
   const login = (role: string) => {
     console.log("Login called with role:", role);
     
-    // Update authentication state
+    // Update local authentication state
     setIsAuthenticated(true);
     setUserRole(role);
     setPermissions(getRolePermissions(role));
+    
+    // The supabaseAuth state should update separately through the listener
     
     // Navigate to home page with delay to ensure state updates
     console.log("Scheduling navigation to home after login");
@@ -179,8 +183,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Then sign out from Supabase
     await supabaseSignOut();
     
-    // Navigate to login page with replace to prevent back navigation
-    navigate("/login", { replace: true });
+    // Navigate with a delay
+    setTimeout(() => {
+      navigate("/login", { replace: true });
+    }, 100);
   };
 
   const hasPermission = (permission: keyof UserPermissions): boolean => {

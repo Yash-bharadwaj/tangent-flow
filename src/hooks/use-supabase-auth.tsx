@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 
@@ -8,82 +8,78 @@ export const useSupabaseAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Separate initial session check to run only once
   useEffect(() => {
-    console.log("useSupabaseAuth hook initializing");
+    console.log("Initial session check starting");
     
-    let mounted = true;
-    
-    const initializeAuth = async () => {
+    const getInitialSession = async () => {
       try {
-        // First get current session
         const { data } = await supabase.auth.getSession();
-        if (mounted) {
-          console.log("Initial session check:", data.session ? "Session exists" : "No session");
-          
-          if (data.session) {
-            setSession(data.session);
-            setUser(data.session.user);
-          }
-          
-          // Only set loading to false after we've set the session
-          setLoading(false);
-        }
         
-        // Then set up auth state listener
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (event, newSession) => {
-            console.log("Auth state change:", event, newSession ? "Session exists" : "No session");
-            if (mounted) {
-              // Only update state if it actually changed to prevent loops
-              if (JSON.stringify(newSession) !== JSON.stringify(session)) {
-                setSession(newSession);
-                setUser(newSession?.user ?? null);
-              }
-            }
-          }
-        );
-
-        return () => {
-          mounted = false;
-          subscription.unsubscribe();
-        };
+        console.log("Initial session:", data.session ? "Session exists" : "No session");
+        
+        // Set initial state
+        setSession(data.session);
+        setUser(data.session?.user ?? null);
+        setLoading(false);
       } catch (error) {
-        console.error("Error initializing auth:", error);
-        if (mounted) {
-          setLoading(false);
-        }
+        console.error("Error getting initial session:", error);
+        setLoading(false);
       }
     };
 
-    initializeAuth();
+    getInitialSession();
+  }, []);
+
+  // Set up auth listener separately from initial check
+  useEffect(() => {
+    console.log("Setting up auth state listener");
     
+    // This subscription handles changes to auth state
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, newSession) => {
+        console.log("Auth event:", event);
+        
+        // Important: use functional updates to avoid stale state issues
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+      }
+    );
+
+    // Cleanup on unmount
     return () => {
-      mounted = false;
+      console.log("Cleaning up auth state listener");
+      subscription.unsubscribe();
     };
   }, []);
 
-  // Add signOut method
-  const signOut = async () => {
+  // Memoized signOut function to avoid recreating on every render
+  const signOut = useCallback(async () => {
     try {
-      setLoading(true); // Prevent state changes during sign out
+      console.log("Signing out user");
+      setLoading(true);
+      
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      console.log("Successfully signed out");
-      // Clear state manually to ensure consistency
+      
+      // Clear state immediately on signout
       setSession(null);
       setUser(null);
-      setLoading(false);
+      
+      console.log("User signed out successfully");
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     user,
     session,
     loading,
     signOut,
+    isAuthenticated: !!session,
   };
 };
 
