@@ -3,10 +3,11 @@ import { useState, useEffect, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User } from "@supabase/supabase-js"; 
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
-import { fetchUserRole, logAuthState } from "@/utils/authUtils";
+import { fetchUserRole, logAuthState, ensureUserProfile } from "@/utils/authUtils";
 import { UserPermissions, getRolePermissions } from "@/types/auth";
 import AuthContext from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { initializeDemoUsers } from "@/services/supabase";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -18,6 +19,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Initialize demo users when the app starts
+  useEffect(() => {
+    if (!loading) {
+      console.log("Initializing demo users...");
+      initializeDemoUsers()
+        .then(() => console.log("Demo users initialization complete"))
+        .catch(err => console.error("Failed to initialize demo users:", err));
+    }
+  }, [loading]);
   
   // Debug state with minimal re-renders
   useEffect(() => {
@@ -49,6 +60,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isAuthenticated) {
         console.log("Auth provider: setting isAuthenticated to true");
         setIsAuthenticated(true);
+        
+        // Ensure user profile exists
+        const userData = user.user_metadata || {};
+        ensureUserProfile(
+          user.id, 
+          userData.role || 'customer', 
+          userData.full_name || ''
+        );
         
         // Fetch user role if needed
         fetchUserRole(user.id).then(role => {
@@ -100,6 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Handle login with Supabase
   const login = async (email: string, password: string) => {
     try {
+      console.log("Attempting login with:", email);
       // signIn now returns { user, session }
       const result = await signIn(email, password);
       
@@ -115,6 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Add register function to create new users
   const register = async (email: string, password: string, userData: any = {}) => {
     try {
+      console.log("Attempting to register:", email, userData);
       const result = await signUp(email, password, userData);
       
       toast.success("Registration successful");

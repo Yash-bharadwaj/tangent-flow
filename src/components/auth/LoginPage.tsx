@@ -37,11 +37,12 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login with:", email);
       await login(email, password);
+      // Auth provider will handle the redirect
     } catch (error) {
       console.error("Login error:", error);
       // Toast is already handled in the login function
-    } finally {
       setIsLoading(false);
     }
   };
@@ -51,14 +52,15 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log("Attempting registration with:", email, fullName);
       await register(email, password, { full_name: fullName, role: "customer" });
       // After registration, switch to login tab
       setActiveTab("login");
       toast.success("Registration successful! Please log in.");
+      setIsLoading(false);
     } catch (error) {
       console.error("Registration error:", error);
       // Toast is already handled in the register function
-    } finally {
       setIsLoading(false);
     }
   };
@@ -173,7 +175,9 @@ export default function LoginPage() {
           <p className="text-xs text-muted-foreground text-center">
             <span className="font-semibold">Demo credentials:</span><br />
             Email: demo@example.com<br />
-            Password: password123
+            Password: password123<br /><br />
+            Admin Email: admin@example.com<br />
+            Admin Password: admin123
           </p>
         </CardFooter>
       </Card>

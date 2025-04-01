@@ -20,10 +20,12 @@ export const fetchUserRole = async (userId: string) => {
 // Create or update profile if it doesn't exist
 export const ensureUserProfile = async (userId: string, role = 'customer', fullName = '') => {
   try {
+    console.log("Ensuring user profile for:", userId, role, fullName);
     // First check if profile exists
     const existingProfile = await getProfile(userId);
     
     if (!existingProfile) {
+      console.log("Creating new profile for user:", userId);
       // Create profile if it doesn't exist - ensure we pass a single object, not an array
       const { data, error } = await supabase
         .from('profiles')
@@ -35,12 +37,17 @@ export const ensureUserProfile = async (userId: string, role = 'customer', fullN
           updated_at: new Date().toISOString()
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Error creating profile:", error);
+        throw error;
+      }
       
       console.log("Created new user profile:", data);
+      return true;
+    } else {
+      console.log("Profile already exists for user:", userId);
+      return true;
     }
-    
-    return true;
   } catch (error) {
     console.error("Error ensuring user profile:", error);
     return false;

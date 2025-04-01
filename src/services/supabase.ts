@@ -3,17 +3,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import { ensureUserProfile } from "@/utils/authUtils";
 
 // Profile related functions
 export const getProfile = async (userId: string): Promise<Profile | null> => {
   try {
+    console.log("Fetching profile for user:", userId);
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
       
-    if (error) throw error;
+    if (error) {
+      console.error("Error fetching profile:", error);
+      throw error;
+    }
+    
+    console.log("Profile data:", data);
     return data as Profile;
   } catch (error: any) {
     console.error(`Error fetching profile: ${error.message}`);
@@ -42,6 +49,7 @@ export const updateProfile = async (userId: string, updates: Partial<Profile>): 
 // Create profile if it doesn't exist
 export const createProfile = async (profile: Partial<Profile> & { id: string }): Promise<Profile | null> => {
   try {
+    console.log("Creating profile:", profile);
     // First check if the profile already exists
     const { data: existingProfile } = await supabase
       .from("profiles")
@@ -61,7 +69,12 @@ export const createProfile = async (profile: Partial<Profile> & { id: string }):
       .select()
       .single();
       
-    if (error) throw error;
+    if (error) {
+      console.error("Error creating profile:", error);
+      throw error;
+    }
+    
+    console.log("Created profile:", data);
     return data as Profile;
   } catch (error: any) {
     console.error(`Error creating profile: ${error.message}`);
@@ -302,6 +315,7 @@ export const subscribeToSalesOrders = (callback: (payload: any) => void): Realti
 // Authentication functions
 export const signUp = async (email: string, password: string, userData: { full_name?: string, role?: string }) => {
   try {
+    console.log("Signing up user:", email, userData);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -310,7 +324,12 @@ export const signUp = async (email: string, password: string, userData: { full_n
       }
     });
     
-    if (error) throw error;
+    if (error) {
+      console.error("Sign up error:", error);
+      throw error;
+    }
+    
+    console.log("Sign up successful:", data);
     
     // Create profile for the new user
     if (data.user) {
@@ -333,16 +352,33 @@ export const signUp = async (email: string, password: string, userData: { full_n
 
 export const signIn = async (email: string, password: string) => {
   try {
+    console.log("Signing in user:", email);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     
-    if (error) throw error;
+    if (error) {
+      console.error("Sign in error:", error);
+      throw error;
+    }
+    
+    console.log("Sign in successful:", data);
+    
+    // Ensure profile exists
+    if (data.user) {
+      const userData = data.user.user_metadata || {};
+      await ensureUserProfile(
+        data.user.id, 
+        userData.role || 'customer', 
+        userData.full_name || ''
+      );
+    }
     
     toast.success("Sign in successful. Welcome back!");
     return data;
   } catch (error: any) {
+    console.error("Sign in error details:", error);
     toast.error(`Sign in failed: ${error.message}`);
     throw error;
   }
@@ -370,12 +406,14 @@ export const initializeDemoUsers = async () => {
   ];
   
   try {
+    console.log("Initializing demo users...");
     for (const demoUser of demoUsers) {
       // Check if user exists by trying to sign in
       try {
         await signIn(demoUser.email, demoUser.password);
         console.log(`Demo user exists: ${demoUser.email}`);
       } catch (error) {
+        console.log(`Demo user does not exist: ${demoUser.email}, creating...`);
         // If signin fails, create the user
         await signUp(demoUser.email, demoUser.password, {
           full_name: demoUser.full_name,
