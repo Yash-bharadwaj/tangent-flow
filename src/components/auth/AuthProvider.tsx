@@ -1,8 +1,10 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User } from "@supabase/supabase-js"; 
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
 import { getProfile } from "@/services/supabase";
+import { toast } from "sonner";
 
 // Expanded interface with permissions
 interface UserPermissions {
@@ -63,6 +65,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log("Auth provider state:", { isAuthenticated, userRole, user, currentPath: location.pathname });
+
   useEffect(() => {
     // Check if user is authenticated based on Supabase user
     if (user) {
@@ -78,18 +82,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       fetchUserRole();
     } else {
-      setIsAuthenticated(false);
-      setUserRole(null);
-      setPermissions(getRolePermissions(""));
-      
-      // If not authenticated and not on login page, redirect to login
-      if (location.pathname !== "/login") {
+      // Non-login pages should redirect to login when not authenticated
+      if (location.pathname !== "/login" && !isAuthenticated) {
+        console.log("Not authenticated, redirecting to login");
         navigate("/login");
       }
     }
-  }, [user, navigate, location]);
+  }, [user, navigate, location.pathname, isAuthenticated]);
 
   const login = (role: string) => {
+    console.log("Login called with role:", role);
     // This function is kept for backward compatibility
     // The actual authentication is now handled by Supabase
     setIsAuthenticated(true);
@@ -98,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    console.log("Logout called");
     // This now should call the Supabase signOut function
     // But we keep the function for compatibility
     setIsAuthenticated(false);

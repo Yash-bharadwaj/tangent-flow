@@ -9,9 +9,14 @@ export const useSupabaseAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("useSupabaseAuth hook initializing");
+    
     // Get current session
     const initializeAuth = async () => {
+      // First check for existing session
       const { data: { session } } = await supabase.auth.getSession();
+      console.log("Initial session check:", session ? "Session exists" : "No session");
+      
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -19,6 +24,7 @@ export const useSupabaseAuth = () => {
       // Listen for auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (event, session) => {
+          console.log("Auth state change:", event, session ? "Session exists" : "No session");
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);

@@ -10,29 +10,36 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuth } from "./AuthProvider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { signIn } from "@/services/supabase";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState("admin");
 
-  const handleLogin = (e: React.FormEvent) => {
+  // If user is already authenticated, redirect to dashboard
+  if (isAuthenticated) {
+    navigate("/");
+    return null;
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // For demo purposes - in production this would connect to a backend
-    setTimeout(() => {
+    try {
+      // For demo purposes - in production this would connect to a backend
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
         login("superuser");
         toast.success("Admin login successful!");
-        navigate("/");
+        setTimeout(() => navigate("/"), 500); // Add a small delay for the toast to be visible
       } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
         login("customer");
         toast.success("Customer login successful!");
-        navigate("/");
+        setTimeout(() => navigate("/"), 500); // Add a small delay for the toast to be visible
       } else {
         toast.error(
           activeTab === "admin" 
@@ -40,8 +47,12 @@ export default function LoginPage() {
             : "Invalid customer credentials. Try with username: customer, password: customer123"
         );
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("An error occurred during login");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
