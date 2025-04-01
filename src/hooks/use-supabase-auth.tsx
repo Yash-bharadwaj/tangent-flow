@@ -53,6 +53,32 @@ export const useSupabaseAuth = () => {
     };
   }, []);
 
+  // Memoized signIn function to authenticate with Supabase
+  const signIn = useCallback(async (email: string, password: string) => {
+    try {
+      console.log("Signing in user with Supabase");
+      setLoading(true);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) throw error;
+      
+      setSession(data.session);
+      setUser(data.user);
+      
+      console.log("User signed in successfully with Supabase");
+      return data;
+    } catch (error) {
+      console.error("Error signing in with Supabase:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   // Memoized signOut function to avoid recreating on every render
   const signOut = useCallback(async () => {
     try {
@@ -78,6 +104,7 @@ export const useSupabaseAuth = () => {
     user,
     session,
     loading,
+    signIn,
     signOut,
     isAuthenticated: !!session,
   };

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createSalesOrder } from "@/services/supabase";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { SalesOrder } from "@/types/database";
 
@@ -27,7 +27,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,12 +43,15 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
   const isLoading = form.formState.isSubmitting;
 
   async function onSubmit(values: FormValues) {
-    if (!user?.id) {
+    if (!isAuthenticated) {
       toast.error("You must be logged in to create a sales order");
       return;
     }
 
     try {
+      // Create a user_id to associate with the order
+      const userId = user?.id || "mock-user-id";
+      
       // Ensuring all required fields are passed (non-optional)
       const newOrder = await createSalesOrder({
         order_number: values.order_number,
@@ -57,15 +60,17 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
         material: values.material,
         quantity: values.quantity,
         expected_payment_date: values.expected_payment_date,
-        user_id: user.id,
+        user_id: userId,
       });
 
       if (newOrder) {
         form.reset();
+        toast.success("Sales order created successfully");
         onSuccess();
       }
     } catch (error) {
       console.error("Error creating sales order:", error);
+      toast.error("Failed to create sales order");
     }
   }
 

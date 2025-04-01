@@ -11,11 +11,11 @@ import { Button } from "@/components/ui/button";
 import { SalesOrderForm } from "@/components/sales/SalesOrderForm";
 import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable";
 import { EditSalesOrderDialog } from "@/components/sales/EditSalesOrderDialog";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const SalesOrders = () => {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [formVisible, setFormVisible] = useState(false);
   const [editingOrder, setEditingOrder] = useState<SalesOrder | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -25,10 +25,13 @@ const SalesOrders = () => {
   const { data: salesOrders, isLoading, isError, error } = useQuery({
     queryKey: ['salesOrders'],
     queryFn: getSalesOrders,
+    enabled: isAuthenticated, // Only fetch when authenticated
   });
 
   // Setup real-time subscription
   useEffect(() => {
+    if (!isAuthenticated) return;
+    
     // Setup real-time subscription to changes in the sales_orders table
     const channel = subscribeToSalesOrders((payload) => {
       console.log('Real-time update received:', payload);
@@ -38,14 +41,18 @@ const SalesOrders = () => {
     return () => {
       channel.unsubscribe();
     };
-  }, [queryClient]);
+  }, [queryClient, isAuthenticated]);
 
   // Setup mutation for deleting sales orders
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteSalesOrder(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['salesOrders'] });
+      toast.success("Sales order deleted successfully");
     },
+    onError: (error) => {
+      toast.error(`Error deleting sales order: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   });
 
   const handleDeleteOrder = (id: string) => {
@@ -62,7 +69,6 @@ const SalesOrders = () => {
   const handleFormSuccess = () => {
     setFormVisible(false);
     queryClient.invalidateQueries({ queryKey: ['salesOrders'] });
-    toast.success("Operation completed successfully");
   };
 
   return (
@@ -83,6 +89,15 @@ const SalesOrders = () => {
             </Button>
           </div>
         </div>
+        
+        {!isAuthenticated && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              You must be logged in to manage sales orders
+            </AlertDescription>
+          </Alert>
+        )}
         
         {formVisible && (
           <div className="mb-6">
