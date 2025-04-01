@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
 import { getProfile } from "@/services/supabase";
 import { toast } from "sonner";
+import { signOut as supabaseSignOut } from "@/services/supabase";
 
 // Expanded interface with permissions
 interface UserPermissions {
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
-  const { user } = useSupabaseAuth(); // Get user from Supabase hook
+  const { user, signOut } = useSupabaseAuth(); // Get user and signOut from Supabase hook
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -82,6 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       fetchUserRole();
     } else {
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setPermissions(getRolePermissions(""));
+      
       // Non-login pages should redirect to login when not authenticated
       if (location.pathname !== "/login" && !isAuthenticated) {
         console.log("Not authenticated, redirecting to login");
@@ -99,13 +104,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPermissions(getRolePermissions(role));
   };
 
-  const logout = () => {
+  const logout = async () => {
     console.log("Logout called");
-    // This now should call the Supabase signOut function
-    // But we keep the function for compatibility
-    setIsAuthenticated(false);
-    setUserRole(null);
-    setPermissions(getRolePermissions(""));
+    // Call the Supabase signOut function
+    await supabaseSignOut();
+    // The rest will be handled by the auth state change listener
     navigate("/login");
   };
 

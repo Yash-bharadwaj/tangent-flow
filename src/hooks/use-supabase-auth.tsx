@@ -39,10 +39,23 @@ export const useSupabaseAuth = () => {
     initializeAuth();
   }, []);
 
+  // Add signOut method
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      console.log("Successfully signed out");
+      // Session will be updated by the onAuthStateChange listener
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return {
     user,
     session,
     loading,
+    signOut,
   };
 };
 

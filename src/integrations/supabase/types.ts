@@ -163,6 +163,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sales_orders: {
+        Row: {
+          created_at: string | null
+          customer_name: string
+          expected_payment_date: string
+          id: string
+          material: string
+          order_number: string
+          order_status: string
+          quantity: number
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_name: string
+          expected_payment_date: string
+          id?: string
+          material: string
+          order_number: string
+          order_status: string
+          quantity: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_name?: string
+          expected_payment_date?: string
+          id?: string
+          material?: string
+          order_number?: string
+          order_status?: string
+          quantity?: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

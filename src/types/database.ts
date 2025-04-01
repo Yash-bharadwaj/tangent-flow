@@ -21,6 +21,20 @@ export type Order = {
   updated_at: string;
 };
 
+// Sales Order type from the sales_orders table
+export type SalesOrder = {
+  id: string;
+  order_number: string;
+  customer_name: string;
+  order_status: string;
+  material: string;
+  quantity: number;
+  expected_payment_date: string;
+  user_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 // Product type from the products table
 export type Product = {
   id: string;
