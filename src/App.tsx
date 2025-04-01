@@ -29,7 +29,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
-  if (!isAuthenticated) {
+  // Use strict equality check to avoid re-renders and redirect loops
+  if (isAuthenticated === false) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
   }

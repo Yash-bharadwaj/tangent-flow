@@ -11,36 +11,50 @@ export const useSupabaseAuth = () => {
   useEffect(() => {
     console.log("useSupabaseAuth hook initializing");
     
+    // Initialize auth state - use a flag to prevent duplicate state updates
+    let mounted = true;
+    
     // Get current session
     const initializeAuth = async () => {
       try {
-        // Set up auth state listener FIRST
+        // First get current session (do this first to prevent flash of unauthenticated state)
+        const { data } = await supabase.auth.getSession();
+        if (mounted) {
+          console.log("Initial session check:", data.session ? "Session exists" : "No session");
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+          setLoading(false);
+        }
+        
+        // Then set up auth state listener
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (event, session) => {
-            console.log("Auth state change:", event, session ? "Session exists" : "No session");
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
+          (event, newSession) => {
+            console.log("Auth state change:", event, newSession ? "Session exists" : "No session");
+            if (mounted) {
+              setSession(newSession);
+              setUser(newSession?.user ?? null);
+              setLoading(false);
+            }
           }
         );
 
-        // THEN check for existing session
-        const { data } = await supabase.auth.getSession();
-        console.log("Initial session check:", data.session ? "Session exists" : "No session");
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
-        setLoading(false);
-
         return () => {
+          mounted = false;
           subscription.unsubscribe();
         };
       } catch (error) {
         console.error("Error initializing auth:", error);
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     initializeAuth();
+    
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Add signOut method
