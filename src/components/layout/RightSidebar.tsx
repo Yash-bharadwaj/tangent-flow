@@ -11,10 +11,10 @@ export function RightSidebar() {
 
   return (
     <div className="relative h-full">
-      {/* Toggle button */}
+      {/* Toggle button - positioned to the left of the sidebar */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`absolute ${isOpen ? "left-0" : "left-10"} top-20 z-30 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full 
+        className={`fixed ${isOpen ? "right-72" : "right-0"} top-20 z-30 flex h-10 w-10 items-center justify-center rounded-full 
                    border border-white/10 bg-background/80 shadow-xl backdrop-blur-lg transition-all duration-300 
                    hover:bg-accent/20 dark:hover:bg-white/10`}
         aria-label={isOpen ? "Close sidebar" : "Open sidebar"}

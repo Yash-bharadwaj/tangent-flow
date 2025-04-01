@@ -3,10 +3,9 @@ import { useState, useEffect, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User } from "@supabase/supabase-js"; 
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
-import { signOut as supabaseSignOut } from "@/services/supabase";
+import { fetchUserRole, logAuthState } from "@/utils/authUtils";
 import { UserPermissions, getRolePermissions } from "@/types/auth";
 import AuthContext from "@/contexts/AuthContext";
-import { fetchUserRole, logAuthState } from "@/utils/authUtils";
 import { toast } from "sonner";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -15,7 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
   
   // Use the Supabase hook and destructure its return values
-  const { user, loading, isAuthenticated: supabaseAuth, signOut: supabaseAuthSignOut } = useSupabaseAuth();
+  const { user, loading, isAuthenticated: supabaseAuth, signIn, signOut } = useSupabaseAuth();
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,9 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     else if (!supabaseAuth && !loading) {
       console.log("Auth provider: detected unauthenticated state from Supabase");
       
-      // Only update if mock login is not active
-      if (isAuthenticated && !userRole) {
-        console.log("Auth provider: setting isAuthenticated to false (no mock active)");
+      if (isAuthenticated) {
+        console.log("Auth provider: setting isAuthenticated to false");
         setIsAuthenticated(false);
         setUserRole(null);
         setPermissions(getRolePermissions(""));
@@ -99,45 +97,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Manual login function (for mock login)
-  const login = (role: string) => {
-    console.log("Login called with role:", role);
-    
-    // Update local authentication state
-    setIsAuthenticated(true);
-    setUserRole(role);
-    setPermissions(getRolePermissions(role));
-    
-    toast.success(`Logged in successfully as ${role}`);
-    
-    // Navigate to home page with delay to ensure state updates
-    console.log("Scheduling navigation to home after login");
-    setTimeout(() => {
-      console.log("Executing navigation to home after login");
-      navigate("/", { replace: true });
-    }, 500);
+  // Handle login with Supabase
+  const login = async (email: string, password: string) => {
+    try {
+      const { data, error } = await signIn(email, password);
+      
+      if (error) throw error;
+      
+      toast.success("Logged in successfully");
+      return data;
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast.error(error.message || "Login failed");
+      throw error;
+    }
   };
 
-  // Logout function
+  // Handle logout with Supabase
   const logout = async () => {
-    console.log("Logout called");
-    
-    // Clear state first to prevent flash of authenticated content
-    setIsAuthenticated(false);
-    setUserRole(null);
-    setPermissions(getRolePermissions(""));
-    
-    // Then sign out from Supabase if we were using it
-    if (supabaseAuth) {
-      await supabaseAuthSignOut();
+    try {
+      await signOut();
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setPermissions(getRolePermissions(""));
+      
+      toast.info("Logged out successfully");
+      
+      setTimeout(() => {
+        navigate("/login", { replace: true });
+      }, 300);
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      toast.error(error.message || "Logout failed");
     }
-    
-    toast.info("Logged out successfully");
-    
-    // Navigate with a delay
-    setTimeout(() => {
-      navigate("/login", { replace: true });
-    }, 300);
   };
 
   const hasPermission = (permission: keyof UserPermissions): boolean => {

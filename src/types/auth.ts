@@ -1,52 +1,73 @@
 
 import { User } from "@supabase/supabase-js";
 
-// Permissions interface for user roles
 export interface UserPermissions {
-  canViewModules: boolean;
-  canViewSalesOrders: boolean;
-  canViewInventory: boolean;
-  canViewUsers: boolean;
-  canViewDeliveries: boolean;
+  viewDashboard: boolean;
+  manageUsers: boolean;
+  manageModules: boolean;
+  manageSalesOrders: boolean;
+  manageInventory: boolean;
+  manageDeliveries: boolean;
 }
 
-// Auth context interface
 export interface AuthContextType {
   isAuthenticated: boolean;
   userRole: string | null;
   permissions: UserPermissions;
   user: User | null;
-  login: (role: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<any>;
+  logout: () => Promise<void>;
   hasPermission: (permission: keyof UserPermissions) => boolean;
 }
 
-// Get role permissions utility function
-export const getRolePermissions = (role: string): UserPermissions => {
-  switch (role) {
-    case "superuser":
-      return {
-        canViewModules: true,
-        canViewSalesOrders: true,
-        canViewInventory: true,
-        canViewUsers: true,
-        canViewDeliveries: true,
-      };
-    case "customer":
-      return {
-        canViewModules: false,
-        canViewSalesOrders: true,
-        canViewInventory: false,
-        canViewUsers: false,
-        canViewDeliveries: true,
-      };
-    default:
-      return {
-        canViewModules: false,
-        canViewSalesOrders: false,
-        canViewInventory: false,
-        canViewUsers: false,
-        canViewDeliveries: false,
-      };
-  }
+// Available roles and their permissions
+type RolePermissionsMap = {
+  [key: string]: UserPermissions;
+};
+
+// Define default permissions for each role
+const defaultPermissions: UserPermissions = {
+  viewDashboard: false,
+  manageUsers: false,
+  manageModules: false,
+  manageSalesOrders: false,
+  manageInventory: false,
+  manageDeliveries: false,
+};
+
+// Define permissions for each role
+const rolePermissions: RolePermissionsMap = {
+  // Admin has all permissions
+  "admin": {
+    viewDashboard: true,
+    manageUsers: true,
+    manageModules: true,
+    manageSalesOrders: true,
+    manageInventory: true,
+    manageDeliveries: true,
+  },
+  // Customer has limited permissions
+  "customer": {
+    viewDashboard: true,
+    manageUsers: false,
+    manageModules: false,
+    manageSalesOrders: true,
+    manageInventory: false,
+    manageDeliveries: true,
+  },
+  // Default user with minimal permissions
+  "user": {
+    viewDashboard: true,
+    manageUsers: false,
+    manageModules: false,
+    manageSalesOrders: false,
+    manageInventory: false,
+    manageDeliveries: false,
+  },
+};
+
+// Helper function to get permissions for a given role
+export const getRolePermissions = (role: string | null): UserPermissions => {
+  if (!role) return defaultPermissions;
+  return rolePermissions[role] || defaultPermissions;
 };

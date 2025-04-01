@@ -11,18 +11,23 @@ import { Button } from "@/components/ui/button";
 import { SalesOrderForm } from "@/components/sales/SalesOrderForm";
 import { SalesOrdersTable } from "@/components/sales/SalesOrdersTable";
 import { EditSalesOrderDialog } from "@/components/sales/EditSalesOrderDialog";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { toast } from "sonner";
 
 const SalesOrders = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [formVisible, setFormVisible] = useState(false);
   const [editingOrder, setEditingOrder] = useState<SalesOrder | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Query sales orders
-  const { data: salesOrders, isLoading, isError, error } = useQuery({
+  const { 
+    data: salesOrders, 
+    isLoading, 
+    isError, 
+    error 
+  } = useQuery({
     queryKey: ['salesOrders'],
     queryFn: getSalesOrders,
     enabled: isAuthenticated, // Only fetch when authenticated
@@ -72,10 +77,10 @@ const SalesOrders = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background pattern-waves-bg">
       <Header />
       
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 ml-[72px] lg:ml-72 transition-all duration-500">
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>

@@ -1,16 +1,22 @@
 
+import { useQuery } from "@tanstack/react-query";
+import { getInventory } from "@/services/supabase";
 import { Header } from "../components/layout/Header";
-import { Sidebar } from "../components/layout/Sidebar";
 import { DataTable } from "../components/ui/DataTable";
-import { inventoryData } from "../lib/mockData";
 import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "../components/dashboard/DashboardCard";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const Inventory = () => {
+  // Fetch inventory data from backend
+  const { data: inventoryItems, isLoading, isError, error } = useQuery({
+    queryKey: ['inventory'],
+    queryFn: getInventory
+  });
+
   return (
-    <div className="min-h-screen flex bg-background">
-      <Sidebar />
-      
-      <main className="flex-1 lg:pl-72 transition-all duration-300 ease-in-out">
+    <div className="min-h-screen flex bg-background pattern-waves-bg">
+      <main className="flex-1 ml-[72px] lg:ml-72 transition-all duration-500">
         <Header />
         
         <div className="p-6">
@@ -21,36 +27,46 @@ const Inventory = () => {
             </p>
           </div>
           
+          {isError && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Error loading inventory: {(error as Error)?.message || "Unknown error"}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <DashboardCard>
             <DashboardCardHeader>
               <DashboardCardTitle>Current Inventory</DashboardCardTitle>
             </DashboardCardHeader>
             <DashboardCardContent>
               <DataTable
-                data={inventoryData}
+                data={inventoryItems || []}
+                isLoading={isLoading}
                 columns={[
-                  { header: "Item ID", accessor: "itemId" },
-                  { header: "Item Name", accessor: "itemName" },
-                  { header: "Category", accessor: "category" },
+                  { header: "ID", accessor: "id" },
+                  { header: "Product", accessor: "product_id" },
                   { 
-                    header: "In Stock", 
-                    accessor: "inStock",
+                    header: "Quantity", 
+                    accessor: "quantity",
                     cell: (item) => (
                       <span className={`
                         font-medium
-                        ${item.inStock < item.minStock ? "text-red-600 dark:text-red-400" : 
-                          item.inStock < item.minStock * 1.2 ? "text-yellow-600 dark:text-yellow-400" : 
+                        ${Number(item.quantity) < 50 ? "text-red-600 dark:text-red-400" : 
+                          Number(item.quantity) < 100 ? "text-yellow-600 dark:text-yellow-400" : 
                           "text-green-600 dark:text-green-400"}
                       `}>
-                        {item.inStock}
+                        {item.quantity}
                       </span>
                     )
                   },
-                  { header: "Min Stock", accessor: "minStock" },
-                  { header: "Supplier", accessor: "supplier" },
-                  { header: "Last Order", accessor: "lastOrderDate" },
+                  { header: "Location", accessor: "location" },
+                  { header: "Last Updated", accessor: "updated_at", 
+                    cell: (item) => new Date(item.updated_at).toLocaleDateString() 
+                  },
                 ]}
-                searchKeys={["itemId", "itemName", "category", "supplier"]}
+                searchKeys={["id", "product_id", "location"]}
               />
             </DashboardCardContent>
           </DashboardCard>

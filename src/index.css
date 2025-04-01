@@ -2,51 +2,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+ 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 224 71.4% 4.1%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262.1 83.3% 57.8%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 263.4 70% 50.4%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
 
@@ -56,12 +56,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Status pills for orders and deliveries */
+/* Status pill styles */
 .status-pill {
-  @apply px-2 py-1 text-xs font-medium rounded-full;
+  @apply px-2 py-1 rounded-full text-xs font-medium;
 }
 
 .status-pill-success {
@@ -80,77 +81,55 @@
   @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100;
 }
 
-/* Premium text gradient */
+/* DataTable styles */
+.data-table-container {
+  @apply overflow-hidden border rounded-lg shadow-sm;
+}
+
+.data-table {
+  @apply w-full text-sm;
+}
+
+.data-table-header th {
+  @apply bg-muted/50 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider;
+}
+
+.data-table tbody tr {
+  @apply border-t border-border hover:bg-muted/20 transition-colors;
+}
+
+.data-table td {
+  @apply px-4 py-3;
+}
+
+/* Premium card styling */
+.premium-card {
+  @apply backdrop-blur-sm bg-primary/5 border-primary/10 shadow-xl;
+}
+
 .premium-text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500;
-}
-
-/* Sidebar pattern background */
-.pattern-sidebar {
-  background-image: 
-    radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px), 
-    radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-}
-
-.dark .pattern-sidebar {
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
 }
 
 /* Wave pattern background */
-.pattern-waves {
-  background-color: hsla(0,0%,100%,.07);
-  background-image: 
-    linear-gradient(135deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(225deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(45deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(315deg, hsla(0,0%,100%,.1) 25%, transparent 25%);
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
-  background-size: 20px 20px;
-  background-repeat: repeat;
-}
-
-.dark .pattern-waves {
-  background-color: hsla(0,0%,0%,.05);
-  background-image: 
-    linear-gradient(135deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(225deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(45deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(315deg, hsla(255,255%,255%,.05) 25%, transparent 25%);
-}
-
 .pattern-waves-bg {
-  position: relative;
-}
-
-.pattern-waves-bg::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  opacity: 0.3;
+  background-color: rgba(var(--background), 1);
   background-image: 
-    linear-gradient(135deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(225deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(45deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
-    linear-gradient(315deg, hsla(0,0%,100%,.1) 25%, transparent 25%);
-  background-position: 10px 0, 10px 0, 0 0, 0 0;
-  background-size: 40px 40px;
-  background-repeat: repeat;
+    radial-gradient(circle at 50% 50%, rgba(var(--primary), 0.015) 0%, transparent 20%),
+    radial-gradient(circle at 75% 25%, rgba(var(--primary), 0.02) 0%, transparent 25%);
+  background-size: 50px 50px, 100px 100px;
+  background-position: 0 0, 25px 25px;
 }
 
-.dark .pattern-waves-bg::before {
-  opacity: 0.2;
-  background-image: 
-    linear-gradient(135deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(225deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(45deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
-    linear-gradient(315deg, hsla(255,255%,255%,.05) 25%, transparent 25%);
+/* Responsive layout adjustments */
+@media (max-width: 1024px) {
+  .ml-72 {
+    @apply ml-20;
+  }
 }
 
+@media (max-width: 640px) {
+  .ml-72, .ml-20 {
+    @apply ml-16;
+  }
+}

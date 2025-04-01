@@ -9,15 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuth } from "./AuthProvider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState("admin");
 
   useEffect(() => {
     console.log("LoginPage: isAuthenticated =", isAuthenticated);
@@ -35,31 +33,18 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      console.log(`Attempting to log in as ${activeTab} with username: ${username}`);
-      
-      if (activeTab === "admin" && username === "superuser" && password === "admin123") {
-        toast.success("Admin login successful!");
-        login("superuser");
-      } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
-        toast.success("Customer login successful!");
-        login("customer");
-      } else {
-        toast.error(
-          activeTab === "admin" 
-            ? "Invalid admin credentials. Try with username: superuser, password: admin123" 
-            : "Invalid customer credentials. Try with username: customer, password: customer123"
-        );
-      }
+      // Use the login function from AuthProvider which now uses Supabase
+      await login(email, password);
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("An error occurred during login");
+      // Toast is already handled in the login function
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="min-h-screen flex items-center justify-center bg-background pattern-waves-bg">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -71,82 +56,45 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl text-center">Tangent Flow</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access the dashboard
+            Enter your email and password to access the dashboard
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <Tabs defaultValue="admin" value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="admin">Admin</TabsTrigger>
-              <TabsTrigger value="customer">Customer</TabsTrigger>
-            </TabsList>
-            <TabsContent value="admin" className="mt-4">
-              <form onSubmit={handleLogin}>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Input
-                      id="admin-username"
-                      placeholder="Username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                      autoComplete="username"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="admin-password"
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Authenticating..." : "Sign In as Admin"}
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-            <TabsContent value="customer" className="mt-4">
-              <form onSubmit={handleLogin}>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Input
-                      id="customer-username"
-                      placeholder="Username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                      autoComplete="username"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Input
-                      id="customer-password"
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Authenticating..." : "Sign In as Customer"}
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-          </Tabs>
+          <form onSubmit={handleLogin}>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Authenticating..." : "Sign In"}
+              </Button>
+            </div>
+          </form>
         </CardContent>
         <CardFooter className="flex flex-col">
           <p className="text-xs text-muted-foreground text-center">
             <span className="font-semibold">Demo credentials:</span><br />
-            Admin: superuser / admin123<br />
-            Customer: customer / customer123
+            Email: demo@example.com<br />
+            Password: password123
           </p>
         </CardFooter>
       </Card>
