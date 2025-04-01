@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layers, UserPlus, LogIn } from "lucide-react";
@@ -25,7 +24,6 @@ export default function LoginPage() {
     console.log("LoginPage: isAuthenticated =", isAuthenticated);
     if (isAuthenticated) {
       console.log("Login page detected authenticated user, navigating to home");
-      // Use a setTimeout to ensure that the navigation happens after the render cycle
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 300);
@@ -45,19 +43,11 @@ export default function LoginPage() {
         return;
       }
       
-      // Login should now work with SQL-created users
       await login(email, password);
       // Auth provider will handle the redirect
     } catch (error: any) {
       console.error("Login error:", error);
-      
-      // More descriptive error messages
-      if (error.message.includes("Invalid login credentials")) {
-        toast.error("Invalid email or password. Please try again.");
-      } else {
-        // Toast is already handled in the login function
-        toast.error(`Login failed: ${error.message}`);
-      }
+      toast.error("Login failed: " + (error.message || "Unknown error"));
       setIsLoading(false);
     }
   };
@@ -75,32 +65,14 @@ export default function LoginPage() {
         return;
       }
       
-      // Registration should now work with our auto-confirm trigger
-      const result = await register(email, password, { full_name: fullName, role: "customer" });
+      await register(email, password, { full_name: fullName, role: "customer" });
       
-      if (result.session) {
-        // If we got a session back directly, we can just redirect
-        toast.success("Registration successful! Logging you in...");
-        setTimeout(() => {
-          navigate("/", { replace: true });
-        }, 300);
-      } else {
-        // After registration, switch to login tab
-        toast.success("Registration successful! Please log in.");
-        setActiveTab("login");
-        setPassword(""); // Clear password for security
-      }
+      toast.success("Registration successful! Please log in.");
+      setActiveTab("login");
+      setPassword(""); // Clear password for security
     } catch (error: any) {
       console.error("Registration error:", error);
-      
-      // More descriptive error messages
-      if (error.message.includes("User already registered")) {
-        toast.error("This email is already registered. Please log in instead.");
-        setActiveTab("login");
-      } else {
-        // Toast is already handled in the register function
-        toast.error(`Registration failed: ${error.message}`);
-      }
+      toast.error("Registration failed: " + (error.message || "Unknown error"));
     } finally {
       setIsLoading(false);
     }
