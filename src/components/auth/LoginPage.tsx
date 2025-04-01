@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layers } from "lucide-react";
@@ -19,9 +20,13 @@ export default function LoginPage() {
   const [activeTab, setActiveTab] = useState("admin");
 
   useEffect(() => {
+    console.log("LoginPage: isAuthenticated =", isAuthenticated);
     if (isAuthenticated) {
       console.log("Login page detected authenticated user, navigating to home");
-      navigate("/", { replace: true });
+      // Use a setTimeout to ensure that the navigation happens after the render cycle
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 300);
     }
   }, [isAuthenticated, navigate]);
 
@@ -32,14 +37,10 @@ export default function LoginPage() {
     try {
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
         toast.success("Admin login successful!");
-        setTimeout(() => {
-          login("superuser");
-        }, 100);
+        login("superuser");
       } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
         toast.success("Customer login successful!");
-        setTimeout(() => {
-          login("customer");
-        }, 100);
+        login("customer");
       } else {
         toast.error(
           activeTab === "admin" 

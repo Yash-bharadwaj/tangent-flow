@@ -34,6 +34,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
   
+  console.log("Authenticated, rendering protected content");
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />

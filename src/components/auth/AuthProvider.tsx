@@ -70,36 +70,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Only proceed when loading is false (authentication state is determined)
-    if (loading) return;
+    if (loading) {
+      console.log("Auth loading, skipping navigation logic");
+      return;
+    }
+    
+    console.log("Auth no longer loading, checking authentication status");
     
     // Check if user is authenticated based on Supabase user
     if (user) {
       console.log("User authenticated:", user.id);
-      setIsAuthenticated(true);
+      if (!isAuthenticated) {
+        setIsAuthenticated(true);
+      }
       
-      // Fetch user role from profiles table
-      const fetchUserRole = async () => {
-        try {
-          const profile = await getProfile(user.id);
-          const role = profile?.role || 'customer';
-          console.log("User role fetched:", role);
-          setUserRole(role);
-          setPermissions(getRolePermissions(role));
-        } catch (error) {
-          console.error("Error fetching user profile:", error);
-          // Default to customer role if profile fetch fails
-          setUserRole('customer');
-          setPermissions(getRolePermissions('customer'));
-        }
-      };
+      // Fetch user role from profiles table if userRole is not set yet
+      if (!userRole) {
+        const fetchUserRole = async () => {
+          try {
+            const profile = await getProfile(user.id);
+            const role = profile?.role || 'customer';
+            console.log("User role fetched:", role);
+            setUserRole(role);
+            setPermissions(getRolePermissions(role));
+          } catch (error) {
+            console.error("Error fetching user profile:", error);
+            // Default to customer role if profile fetch fails
+            setUserRole('customer');
+            setPermissions(getRolePermissions('customer'));
+          }
+        };
+        
+        fetchUserRole();
+      }
       
-      fetchUserRole();
-      
-      // Redirect to home if on login page
+      // Redirect to home if on login page with a slight delay to ensure state updates
       if (location.pathname === "/login") {
-        navigate("/", { replace: true });
+        console.log("On login page but authenticated, redirecting to home");
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 100);
       }
     } else {
+      console.log("No user, setting unauthenticated state");
       setIsAuthenticated(false);
       setUserRole(null);
       setPermissions(getRolePermissions(""));
@@ -110,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigate("/login", { replace: true });
       }
     }
-  }, [user, loading, navigate, location.pathname]);
+  }, [user, loading, navigate, location.pathname, isAuthenticated, userRole]);
 
   const login = (role: string) => {
     console.log("Login called with role:", role);
@@ -121,7 +134,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPermissions(getRolePermissions(role));
     
     // Navigate to the home page after login - using replace to prevent back button issues
-    navigate("/", { replace: true });
+    setTimeout(() => {
+      navigate("/", { replace: true });
+    }, 200);
   };
 
   const logout = async () => {
