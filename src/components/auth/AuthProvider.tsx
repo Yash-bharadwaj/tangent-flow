@@ -1,62 +1,12 @@
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User } from "@supabase/supabase-js"; 
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
-import { getProfile } from "@/services/supabase";
-import { toast } from "sonner";
 import { signOut as supabaseSignOut } from "@/services/supabase";
-
-// Expanded interface with permissions
-interface UserPermissions {
-  canViewModules: boolean;
-  canViewSalesOrders: boolean;
-  canViewInventory: boolean;
-  canViewUsers: boolean;
-  canViewDeliveries: boolean;
-}
-
-interface AuthContextType {
-  isAuthenticated: boolean;
-  userRole: string | null;
-  permissions: UserPermissions;
-  user: User | null;
-  login: (role: string) => void;
-  logout: () => void;
-  hasPermission: (permission: keyof UserPermissions) => boolean;
-}
-
-// Default permissions based on role
-const getRolePermissions = (role: string): UserPermissions => {
-  switch (role) {
-    case "superuser":
-      return {
-        canViewModules: true,
-        canViewSalesOrders: true,
-        canViewInventory: true,
-        canViewUsers: true,
-        canViewDeliveries: true,
-      };
-    case "customer":
-      return {
-        canViewModules: false,
-        canViewSalesOrders: true,
-        canViewInventory: false,
-        canViewUsers: false,
-        canViewDeliveries: true,
-      };
-    default:
-      return {
-        canViewModules: false,
-        canViewSalesOrders: false,
-        canViewInventory: false,
-        canViewUsers: false,
-        canViewDeliveries: false,
-      };
-  }
-};
-
-const AuthContext = createContext<AuthContextType | null>(null);
+import { UserPermissions, getRolePermissions } from "@/types/auth";
+import AuthContext from "@/contexts/AuthContext";
+import { fetchUserRole, logAuthState } from "@/utils/authUtils";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -71,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   // Debug state with minimal re-renders
   useEffect(() => {
-    console.log("Auth provider state:", {
+    logAuthState({
       isAuthenticated,
       userRole,
       user: user ? { id: user.id } : null,
@@ -103,22 +53,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Fetch user role if needed
       if (!userRole) {
-        const fetchUserRole = async () => {
-          try {
-            const profile = await getProfile(user.id);
-            const role = profile?.role || 'customer';
-            console.log("User role fetched:", role);
-            setUserRole(role);
-            setPermissions(getRolePermissions(role));
-          } catch (error) {
-            console.error("Error fetching user profile:", error);
-            // Default to customer role if profile fetch fails
-            setUserRole('customer');
-            setPermissions(getRolePermissions('customer'));
-          }
-        };
-        
-        fetchUserRole();
+        fetchUserRole(user.id).then(role => {
+          console.log("User role fetched:", role);
+          setUserRole(role);
+          setPermissions(getRolePermissions(role));
+        });
       }
       
       // Redirect away from login page when authenticated with a delay
@@ -160,8 +99,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
     setUserRole(role);
     setPermissions(getRolePermissions(role));
-    
-    // The supabaseAuth state should update separately through the listener
     
     // Navigate to home page with delay to ensure state updates
     console.log("Scheduling navigation to home after login");
@@ -208,10 +145,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
+// Re-export the useAuth hook from the context
+export { useAuth } from "@/contexts/AuthContext";
