@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
@@ -316,8 +315,14 @@ export const subscribeToSalesOrders = (callback: (payload: any) => void): Realti
 export const signUp = async (email: string, password: string, userData: { full_name?: string, role?: string }) => {
   try {
     console.log("Signing up user:", email, userData);
+    
+    // For demo accounts that might have domain validation issues, use a workaround
+    const safeEmail = email.includes('@example.com') 
+      ? email.replace('@example.com', '@demo-example.com') 
+      : email;
+    
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: safeEmail,
       password,
       options: {
         data: userData
@@ -353,8 +358,14 @@ export const signUp = async (email: string, password: string, userData: { full_n
 export const signIn = async (email: string, password: string) => {
   try {
     console.log("Signing in user:", email);
+    
+    // For demo accounts that might have domain validation issues, use a workaround
+    const safeEmail = email.includes('@example.com') 
+      ? email.replace('@example.com', '@demo-example.com') 
+      : email;
+    
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
+      email: safeEmail,
       password,
     });
     
@@ -400,9 +411,10 @@ export const signOut = async () => {
 
 // Initialize demo users (call this once during app startup)
 export const initializeDemoUsers = async () => {
+  // Use a workaround for the domain validation by using a different domain
   const demoUsers = [
-    { email: 'demo@example.com', password: 'password123', role: 'customer', full_name: 'Demo User' },
-    { email: 'admin@example.com', password: 'admin123', role: 'admin', full_name: 'Admin User' }
+    { email: 'demo@demo-example.com', password: 'password123', role: 'customer', full_name: 'Demo User' },
+    { email: 'admin@demo-example.com', password: 'admin123', role: 'admin', full_name: 'Admin User' }
   ];
   
   try {
@@ -410,6 +422,7 @@ export const initializeDemoUsers = async () => {
     for (const demoUser of demoUsers) {
       // Check if user exists by trying to sign in
       try {
+        console.log(`Checking if demo user exists: ${demoUser.email}`);
         await signIn(demoUser.email, demoUser.password);
         console.log(`Demo user exists: ${demoUser.email}`);
       } catch (error) {

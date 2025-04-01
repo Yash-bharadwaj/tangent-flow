@@ -120,8 +120,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("Attempting login with:", email);
+      // Use the modified email if needed (using the same logic as in supabase.ts)
+      const modifiedEmail = email.includes('@example.com') 
+        ? email.replace('@example.com', '@demo-example.com') 
+        : email;
+        
       // signIn now returns { user, session }
-      const result = await signIn(email, password);
+      const result = await signIn(modifiedEmail, password);
       
       toast.success("Logged in successfully");
       return result;
@@ -136,7 +141,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (email: string, password: string, userData: any = {}) => {
     try {
       console.log("Attempting to register:", email, userData);
-      const result = await signUp(email, password, userData);
+      // Use the modified email if needed (using the same logic as in supabase.ts)
+      const modifiedEmail = email.includes('@example.com') 
+        ? email.replace('@example.com', '@demo-example.com') 
+        : email;
+        
+      const result = await signUp(modifiedEmail, password, userData);
       
       toast.success("Registration successful");
       return result;
