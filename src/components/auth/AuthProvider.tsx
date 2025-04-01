@@ -1,6 +1,8 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { User } from "@supabase/supabase-js"; 
+import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
 
 // Expanded interface with permissions
 interface UserPermissions {
@@ -15,6 +17,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   userRole: string | null;
   permissions: UserPermissions;
+  user: User | null; // Added user property
   login: (role: string) => void;
   logout: () => void;
   hasPermission: (permission: keyof UserPermissions) => boolean;
@@ -56,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
+  const { user } = useSupabaseAuth(); // Get user from Supabase hook
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -96,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, permissions, login, logout, hasPermission }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, permissions, user, login, logout, hasPermission }}>
       {children}
     </AuthContext.Provider>
   );
