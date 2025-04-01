@@ -8,7 +8,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SalesOrder, updateSalesOrder } from "@/services/supabase";
+import { updateSalesOrder } from "@/services/supabase";
+import { SalesOrder } from "@/types/database";
 
 const formSchema = z.object({
   order_number: z.string().min(1, "Order number is required"),

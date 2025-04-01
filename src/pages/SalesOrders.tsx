@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { Header } from "../components/layout/Header";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSalesOrders, deleteSalesOrder, SalesOrder, subscribeToSalesOrders } from "@/services/supabase";
+import { getSalesOrders, deleteSalesOrder, subscribeToSalesOrders } from "@/services/supabase";
+import { SalesOrder } from "@/types/database";
 import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "../components/dashboard/DashboardCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";

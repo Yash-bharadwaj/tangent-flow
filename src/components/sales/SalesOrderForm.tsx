@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createSalesOrder } from "@/services/supabase";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { toast } from "sonner";
+import { SalesOrder } from "@/types/database";
 
 const formSchema = z.object({
   order_number: z.string().min(1, "Order number is required"),
@@ -48,8 +49,14 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
     }
 
     try {
+      // Ensuring all required fields are passed (non-optional)
       const newOrder = await createSalesOrder({
-        ...values,
+        order_number: values.order_number,
+        customer_name: values.customer_name,
+        order_status: values.order_status,
+        material: values.material,
+        quantity: values.quantity,
+        expected_payment_date: values.expected_payment_date,
         user_id: user.id,
       });
 

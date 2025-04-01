@@ -1,11 +1,11 @@
 
 import React from "react";
-import { SalesOrder } from "@/services/supabase";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { SalesOrder } from "@/types/database";
 
 interface SalesOrdersTableProps {
   data: SalesOrder[];
