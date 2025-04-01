@@ -45,11 +45,19 @@ export default function LoginPage() {
         return;
       }
       
+      // Login should now work with SQL-created users
       await login(email, password);
       // Auth provider will handle the redirect
     } catch (error: any) {
       console.error("Login error:", error);
-      // Toast is already handled in the login function
+      
+      // More descriptive error messages
+      if (error.message.includes("Invalid login credentials")) {
+        toast.error("Invalid email or password. Please try again.");
+      } else {
+        // Toast is already handled in the login function
+        toast.error(`Login failed: ${error.message}`);
+      }
       setIsLoading(false);
     }
   };
@@ -67,15 +75,32 @@ export default function LoginPage() {
         return;
       }
       
-      await register(email, password, { full_name: fullName, role: "customer" });
+      // Registration should now work with our auto-confirm trigger
+      const result = await register(email, password, { full_name: fullName, role: "customer" });
       
-      // After registration, switch to login tab
-      toast.success("Registration successful! Please log in.");
-      setActiveTab("login");
-      setPassword(""); // Clear password for security
+      if (result.session) {
+        // If we got a session back directly, we can just redirect
+        toast.success("Registration successful! Logging you in...");
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 300);
+      } else {
+        // After registration, switch to login tab
+        toast.success("Registration successful! Please log in.");
+        setActiveTab("login");
+        setPassword(""); // Clear password for security
+      }
     } catch (error: any) {
       console.error("Registration error:", error);
-      // Toast is already handled in the register function
+      
+      // More descriptive error messages
+      if (error.message.includes("User already registered")) {
+        toast.error("This email is already registered. Please log in instead.");
+        setActiveTab("login");
+      } else {
+        // Toast is already handled in the register function
+        toast.error(`Registration failed: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }

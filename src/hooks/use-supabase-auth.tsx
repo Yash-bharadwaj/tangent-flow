@@ -59,8 +59,13 @@ export const useSupabaseAuth = () => {
       console.log("Signing in user with Supabase:", email);
       setLoading(true);
       
+      // For demo accounts that might have domain validation issues, use a workaround
+      const safeEmail = email.includes('@example.com') 
+        ? email.replace('@example.com', '@demo-example.com') 
+        : email;
+      
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: safeEmail,
         password
       });
       
@@ -85,9 +90,14 @@ export const useSupabaseAuth = () => {
       console.log("Signing up user with Supabase:", email);
       setLoading(true);
       
-      // Important: set autoconfirm option to true for development
+      // For demo accounts that might have domain validation issues, use a workaround
+      const safeEmail = email.includes('@example.com') 
+        ? email.replace('@example.com', '@demo-example.com') 
+        : email;
+      
+      // Important: email confirmation should now be auto-handled by our trigger
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: safeEmail,
         password,
         options: {
           data: userData,
@@ -97,6 +107,17 @@ export const useSupabaseAuth = () => {
       
       if (error) throw error;
       
+      // If we don't have a user or session, we need to sign in (auto-signin may not work)
+      if (!data.session) {
+        // Try to sign in immediately since our trigger should have confirmed the email
+        try {
+          const signInResult = await signIn(safeEmail, password);
+          console.log("Auto sign-in after signup:", signInResult);
+        } catch (signInError) {
+          console.error("Error auto-signing in after signup:", signInError);
+        }
+      }
+      
       console.log("User signed up successfully with Supabase");
       return data;
     } catch (error) {
@@ -105,7 +126,7 @@ export const useSupabaseAuth = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [signIn]);
 
   // Memoized signOut function to avoid recreating on every render
   const signOut = useCallback(async () => {
