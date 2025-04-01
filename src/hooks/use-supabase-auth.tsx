@@ -47,7 +47,7 @@ export const useSupabaseAuth = () => {
     };
   }, []);
 
-  // Simple sign in function without email domain transformations
+  // Simple sign in function
   const signIn = useCallback(async (email: string, password: string) => {
     try {
       console.log("Signing in user:", email);
@@ -73,7 +73,7 @@ export const useSupabaseAuth = () => {
     }
   }, []);
 
-  // Simple sign up function 
+  // Simple sign up function
   const signUp = useCallback(async (email: string, password: string, userData: any = {}) => {
     try {
       console.log("Signing up user:", email);
