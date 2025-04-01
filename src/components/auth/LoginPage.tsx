@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layers } from "lucide-react";
@@ -19,10 +18,10 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState("admin");
 
-  // Use useEffect to handle navigation after authentication state changes
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      console.log("Login page detected authenticated user, navigating to home");
+      navigate("/", { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -31,15 +30,16 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // For demo purposes - in production this would connect to a backend
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
-        login("superuser");
         toast.success("Admin login successful!");
-        // Navigation is now handled by the useEffect hook
+        setTimeout(() => {
+          login("superuser");
+        }, 100);
       } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
-        login("customer");
         toast.success("Customer login successful!");
-        // Navigation is now handled by the useEffect hook
+        setTimeout(() => {
+          login("customer");
+        }, 100);
       } else {
         toast.error(
           activeTab === "admin" 

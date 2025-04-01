@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       // Redirect to home if on login page
       if (location.pathname === "/login") {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     } else {
       setIsAuthenticated(false);
@@ -107,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Only redirect to login if not already on login page
       if (location.pathname !== "/login") {
         console.log("Not authenticated, redirecting to login");
-        navigate("/login");
+        navigate("/login", { replace: true });
       }
     }
   }, [user, loading, navigate, location.pathname]);
@@ -120,8 +120,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserRole(role);
     setPermissions(getRolePermissions(role));
     
-    // Navigate to the home page after login
-    navigate("/");
+    // Navigate to the home page after login - using replace to prevent back button issues
+    navigate("/", { replace: true });
   };
 
   const logout = async () => {
@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(false);
     setUserRole(null);
     setPermissions(getRolePermissions(""));
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   const hasPermission = (permission: keyof UserPermissions): boolean => {
