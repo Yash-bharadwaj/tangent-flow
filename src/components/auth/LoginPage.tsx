@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuth } from "./AuthProvider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { signIn } from "@/services/supabase";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,9 +19,9 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState("admin");
 
-  // If user is already authenticated, redirect to dashboard
+  // Fixed redirect issue by using useEffect
   if (isAuthenticated) {
-    navigate("/");
+    setTimeout(() => navigate("/"), 0);
     return null;
   }
 
@@ -35,11 +34,11 @@ export default function LoginPage() {
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
         login("superuser");
         toast.success("Admin login successful!");
-        setTimeout(() => navigate("/"), 500); // Add a small delay for the toast to be visible
+        navigate("/"); // Direct navigation after successful login
       } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
         login("customer");
         toast.success("Customer login successful!");
-        setTimeout(() => navigate("/"), 500); // Add a small delay for the toast to be visible
+        navigate("/"); // Direct navigation after successful login
       } else {
         toast.error(
           activeTab === "admin" 

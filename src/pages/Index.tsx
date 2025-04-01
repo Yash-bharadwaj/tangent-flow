@@ -18,6 +18,8 @@ import {
   DashboardCardHeader, 
   DashboardCardTitle 
 } from "../components/dashboard/DashboardCard";
+import { SalesChart } from "../components/dashboard/SalesChart";
+import { PieChartComponent } from "../components/dashboard/PieChartComponent";
 
 const Index = () => {
   // Recent orders for dashboard
@@ -25,6 +27,32 @@ const Index = () => {
   
   // Low stock items
   const lowStockItems = inventoryData.filter(item => item.inStock < item.minStock).slice(0, 5);
+
+  // Mock chart data
+  const monthlySalesData = [
+    { name: 'Jan', value: 42000 },
+    { name: 'Feb', value: 53000 },
+    { name: 'Mar', value: 48000 },
+    { name: 'Apr', value: 62000 },
+    { name: 'May', value: 56000 },
+    { name: 'Jun', value: 68000 }
+  ];
+
+  const productCategoryData = [
+    { name: 'Electronics', value: 400 },
+    { name: 'Clothing', value: 300 },
+    { name: 'Furniture', value: 200 },
+    { name: 'Books', value: 150 },
+    { name: 'Other', value: 100 }
+  ];
+  
+  const orderStatusData = [
+    { name: 'Delivered', value: 35 },
+    { name: 'Processing', value: 25 },
+    { name: 'Shipped', value: 20 },
+    { name: 'Pending', value: 15 },
+    { name: 'Cancelled', value: 5 }
+  ];
 
   return (
     <div className="flex-1">
@@ -87,6 +115,17 @@ const Index = () => {
             icon={<Package size={20} />}
             change={{ value: 2, trend: "down" }}
           />
+        </div>
+        
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <SalesChart data={monthlySalesData} title="Monthly Sales Performance" type="bar" />
+          <SalesChart data={monthlySalesData} title="Sales Trend" type="line" />
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <PieChartComponent data={productCategoryData} title="Sales by Product Category" />
+          <PieChartComponent data={orderStatusData} title="Orders by Status" />
         </div>
         
         {/* Recent Orders & Low Stock */}
