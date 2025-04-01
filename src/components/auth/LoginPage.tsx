@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layers } from "lucide-react";
 import { toast } from "sonner";
@@ -19,11 +19,12 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState("admin");
 
-  // Fixed redirect issue by using useEffect
-  if (isAuthenticated) {
-    setTimeout(() => navigate("/"), 0);
-    return null;
-  }
+  // Use useEffect to handle navigation after authentication state changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +35,11 @@ export default function LoginPage() {
       if (activeTab === "admin" && username === "superuser" && password === "admin123") {
         login("superuser");
         toast.success("Admin login successful!");
-        navigate("/"); // Direct navigation after successful login
+        // Navigation is now handled by the useEffect hook
       } else if (activeTab === "customer" && username === "customer" && password === "customer123") {
         login("customer");
         toast.success("Customer login successful!");
-        navigate("/"); // Direct navigation after successful login
+        // Navigation is now handled by the useEffect hook
       } else {
         toast.error(
           activeTab === "admin" 

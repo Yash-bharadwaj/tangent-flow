@@ -62,38 +62,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
-  const { user, signOut } = useSupabaseAuth(); // Get user and signOut from Supabase hook
+  const { user, signOut, loading } = useSupabaseAuth(); // Get user, signOut and loading from Supabase hook
   const navigate = useNavigate();
   const location = useLocation();
 
   console.log("Auth provider state:", { isAuthenticated, userRole, user, currentPath: location.pathname });
 
   useEffect(() => {
+    // Only proceed when loading is false (authentication state is determined)
+    if (loading) return;
+    
     // Check if user is authenticated based on Supabase user
     if (user) {
+      console.log("User authenticated:", user.id);
       setIsAuthenticated(true);
       
       // Fetch user role from profiles table
       const fetchUserRole = async () => {
-        const profile = await getProfile(user.id);
-        const role = profile?.role || 'customer';
-        setUserRole(role);
-        setPermissions(getRolePermissions(role));
+        try {
+          const profile = await getProfile(user.id);
+          const role = profile?.role || 'customer';
+          console.log("User role fetched:", role);
+          setUserRole(role);
+          setPermissions(getRolePermissions(role));
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+          // Default to customer role if profile fetch fails
+          setUserRole('customer');
+          setPermissions(getRolePermissions('customer'));
+        }
       };
       
       fetchUserRole();
+      
+      // Redirect to home if on login page
+      if (location.pathname === "/login") {
+        navigate("/");
+      }
     } else {
       setIsAuthenticated(false);
       setUserRole(null);
       setPermissions(getRolePermissions(""));
       
-      // Non-login pages should redirect to login when not authenticated
-      if (location.pathname !== "/login" && !isAuthenticated) {
+      // Only redirect to login if not already on login page
+      if (location.pathname !== "/login") {
         console.log("Not authenticated, redirecting to login");
         navigate("/login");
       }
     }
-  }, [user, navigate, location.pathname, isAuthenticated]);
+  }, [user, loading, navigate, location.pathname]);
 
   const login = (role: string) => {
     console.log("Login called with role:", role);
@@ -102,6 +119,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
     setUserRole(role);
     setPermissions(getRolePermissions(role));
+    
+    // Navigate to the home page after login
+    navigate("/");
   };
 
   const logout = async () => {
@@ -109,6 +129,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Call the Supabase signOut function
     await supabaseSignOut();
     // The rest will be handled by the auth state change listener
+    // But we'll clear the state explicitly as well
+    setIsAuthenticated(false);
+    setUserRole(null);
+    setPermissions(getRolePermissions(""));
     navigate("/login");
   };
 
