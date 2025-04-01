@@ -70,9 +70,35 @@ export const useSupabaseAuth = () => {
       setUser(data.user);
       
       console.log("User signed in successfully with Supabase");
-      return data;
+      return { user: data.user, session: data.session };
     } catch (error) {
       console.error("Error signing in with Supabase:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Add a signUp function to create new users
+  const signUp = useCallback(async (email: string, password: string, userData: any = {}) => {
+    try {
+      console.log("Signing up user with Supabase");
+      setLoading(true);
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: userData
+        }
+      });
+      
+      if (error) throw error;
+      
+      console.log("User signed up successfully with Supabase");
+      return data;
+    } catch (error) {
+      console.error("Error signing up with Supabase:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -105,6 +131,7 @@ export const useSupabaseAuth = () => {
     session,
     loading,
     signIn,
+    signUp,
     signOut,
     isAuthenticated: !!session,
   };

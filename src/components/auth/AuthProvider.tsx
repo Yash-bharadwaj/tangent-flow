@@ -14,7 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [permissions, setPermissions] = useState<UserPermissions>(getRolePermissions(""));
   
   // Use the Supabase hook and destructure its return values
-  const { user, loading, isAuthenticated: supabaseAuth, signIn, signOut } = useSupabaseAuth();
+  const { user, loading, isAuthenticated: supabaseAuth, signIn, signOut, signUp } = useSupabaseAuth();
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,10 +97,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Handle login with Supabase - Fix for the error related to data/error properties
+  // Handle login with Supabase
   const login = async (email: string, password: string) => {
     try {
-      // Fix: signIn returns { user, session } not { data, error }
+      // signIn now returns { user, session }
       const result = await signIn(email, password);
       
       toast.success("Logged in successfully");
@@ -108,6 +108,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       console.error("Login error:", error);
       toast.error(error.message || "Login failed");
+      throw error;
+    }
+  };
+
+  // Add register function to create new users
+  const register = async (email: string, password: string, userData: any = {}) => {
+    try {
+      const result = await signUp(email, password, userData);
+      
+      toast.success("Registration successful");
+      return result;
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      toast.error(error.message || "Registration failed");
       throw error;
     }
   };
@@ -141,7 +155,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       userRole, 
       permissions, 
       user, 
-      login, 
+      login,
+      register,
       logout, 
       hasPermission 
     }}>

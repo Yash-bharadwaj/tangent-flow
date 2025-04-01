@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
@@ -16,8 +15,8 @@ export const getProfile = async (userId: string): Promise<Profile | null> => {
     if (error) throw error;
     return data as Profile;
   } catch (error: any) {
-    toast.error(`Error fetching profile: ${error.message}`);
-    throw error;
+    console.error(`Error fetching profile: ${error.message}`);
+    return null;
   }
 };
 
@@ -39,6 +38,36 @@ export const updateProfile = async (userId: string, updates: Partial<Profile>): 
   }
 };
 
+// Create profile if it doesn't exist
+export const createProfile = async (profile: Partial<Profile>): Promise<Profile | null> => {
+  try {
+    // First check if the profile already exists
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", profile.id!)
+      .single();
+      
+    if (existingProfile) {
+      // If the profile exists, just return it
+      return existingProfile as Profile;
+    }
+    
+    // Insert new profile
+    const { data, error } = await supabase
+      .from("profiles")
+      .insert([profile])
+      .select()
+      .single();
+      
+    if (error) throw error;
+    return data as Profile;
+  } catch (error: any) {
+    console.error(`Error creating profile: ${error.message}`);
+    return null;
+  }
+};
+
 // Orders related functions
 export const getOrders = async (): Promise<Order[]> => {
   try {
@@ -55,6 +84,23 @@ export const getOrders = async (): Promise<Order[]> => {
   }
 };
 
+// Get orders for a specific user
+export const getOrdersForUser = async (userId: string): Promise<Order[]> => {
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+      
+    if (error) throw error;
+    return data as Order[];
+  } catch (error: any) {
+    toast.error(`Error fetching user orders: ${error.message}`);
+    throw error;
+  }
+};
+
 // Sales Orders related functions
 export const getSalesOrders = async (): Promise<SalesOrder[]> => {
   try {
@@ -67,6 +113,23 @@ export const getSalesOrders = async (): Promise<SalesOrder[]> => {
     return data as SalesOrder[];
   } catch (error: any) {
     toast.error(`Error fetching sales orders: ${error.message}`);
+    throw error;
+  }
+};
+
+// Get sales orders for a specific user
+export const getSalesOrdersForUser = async (userId: string): Promise<SalesOrder[]> => {
+  try {
+    const { data, error } = await supabase
+      .from("sales_orders")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+      
+    if (error) throw error;
+    return data as SalesOrder[];
+  } catch (error: any) {
+    toast.error(`Error fetching user sales orders: ${error.message}`);
     throw error;
   }
 };
@@ -174,6 +237,34 @@ export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
   }
 };
 
+// Get deliveries for a specific user
+export const getDeliveriesForUser = async (userId: string): Promise<Delivery[]> => {
+  try {
+    // Get the user's orders first
+    const { data: orders, error: ordersError } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("user_id", userId);
+      
+    if (ordersError) throw ordersError;
+    
+    if (!orders.length) return [];
+    
+    // Get deliveries for the user's orders
+    const orderIds = orders.map(order => order.id);
+    const { data, error } = await supabase
+      .from("deliveries")
+      .select("*")
+      .in("order_id", orderIds);
+      
+    if (error) throw error;
+    return data as Delivery[];
+  } catch (error: any) {
+    toast.error(`Error fetching user deliveries: ${error.message}`);
+    throw error;
+  }
+};
+
 // Real-time subscriptions
 export const subscribeToOrders = (callback: (payload: any) => void): RealtimeChannel => {
   const channel = supabase.channel('orders-channel');
@@ -208,7 +299,7 @@ export const subscribeToSalesOrders = (callback: (payload: any) => void): Realti
 };
 
 // Authentication functions
-export const signUp = async (email: string, password: string, userData: { full_name?: string }) => {
+export const signUp = async (email: string, password: string, userData: { full_name?: string, role?: string }) => {
   try {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -219,6 +310,17 @@ export const signUp = async (email: string, password: string, userData: { full_n
     });
     
     if (error) throw error;
+    
+    // Create profile for the new user
+    if (data.user) {
+      await createProfile({
+        id: data.user.id,
+        full_name: userData.full_name || '',
+        role: userData.role || 'customer',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    }
     
     toast.success("Sign up successful. Please check your email for verification link");
     return data;
@@ -256,5 +358,36 @@ export const signOut = async () => {
   } catch (error: any) {
     toast.error(`Sign out failed: ${error.message}`);
     throw error;
+  }
+};
+
+// Initialize demo users (call this once during app startup)
+export const initializeDemoUsers = async () => {
+  const demoUsers = [
+    { email: 'demo@example.com', password: 'password123', role: 'customer', full_name: 'Demo User' },
+    { email: 'admin@example.com', password: 'admin123', role: 'admin', full_name: 'Admin User' }
+  ];
+  
+  try {
+    for (const demoUser of demoUsers) {
+      // Check if user exists
+      const { data: { users } } = await supabase.auth.admin.listUsers();
+      const existingUser = users.find(u => u.email === demoUser.email);
+      
+      if (!existingUser) {
+        // Create the user
+        await signUp(demoUser.email, demoUser.password, {
+          full_name: demoUser.full_name,
+          role: demoUser.role
+        });
+        
+        console.log(`Created demo user: ${demoUser.email}`);
+      }
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error initializing demo users:", error);
+    return false;
   }
 };

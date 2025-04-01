@@ -1,5 +1,6 @@
 
 import { getProfile } from "@/services/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getRolePermissions } from "@/types/auth";
 
@@ -13,6 +14,36 @@ export const fetchUserRole = async (userId: string) => {
     toast.error("Could not fetch user profile");
     // Default to customer role if profile fetch fails
     return 'customer';
+  }
+};
+
+// Create or update profile if it doesn't exist
+export const ensureUserProfile = async (userId: string, role = 'customer', fullName = '') => {
+  try {
+    // First check if profile exists
+    const existingProfile = await getProfile(userId);
+    
+    if (!existingProfile) {
+      // Create profile if it doesn't exist
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert([{ 
+          id: userId, 
+          role, 
+          full_name: fullName,
+          created_at: new Date(),
+          updated_at: new Date()
+        }]);
+        
+      if (error) throw error;
+      
+      console.log("Created new user profile:", data);
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error ensuring user profile:", error);
+    return false;
   }
 };
 

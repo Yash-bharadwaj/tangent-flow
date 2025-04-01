@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { getOrders, subscribeToOrders } from '@/services/supabase';
+import { getOrders, getOrdersForUser, subscribeToOrders } from '@/services/supabase';
 import { Order } from '@/types/database';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,24 +11,36 @@ import '@/styles/status-pills.css';
 export const RealTimeOrdersList = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
 
   useEffect(() => {
     if (!user?.id) return;
 
     const fetchOrders = async () => {
-      // Fix: getOrders() doesn't expect arguments based on error
-      const data = await getOrders();
-      setOrders(data);
-      setLoading(false);
+      try {
+        // Get all orders for admins, or just user's orders for customers
+        const data = userRole === 'admin' 
+          ? await getOrders()
+          : await getOrdersForUser(user.id);
+          
+        setOrders(data);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchOrders();
 
     // Set up real-time subscription
-    // Fix: subscribeToOrders expects only one argument
     const channel = subscribeToOrders((payload) => {
       console.log('Realtime update received:', payload);
+      
+      if (userRole !== 'admin' && payload.new.user_id !== user.id) {
+        // Skip updates for orders that don't belong to this user (unless admin)
+        return;
+      }
       
       if (payload.eventType === 'INSERT') {
         setOrders(prev => [payload.new as Order, ...prev]);
@@ -44,7 +56,7 @@ export const RealTimeOrdersList = () => {
     return () => {
       channel.unsubscribe();
     };
-  }, [user]);
+  }, [user, userRole]);
 
   if (loading) {
     return (
@@ -67,8 +79,13 @@ export const RealTimeOrdersList = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Orders</CardTitle>
-        <CardDescription>View your recent orders and their status</CardDescription>
+        <CardTitle>{userRole === 'admin' ? 'All Orders' : 'Your Orders'}</CardTitle>
+        <CardDescription>
+          {userRole === 'admin' 
+            ? 'View all customer orders and their status' 
+            : 'View your recent orders and their status'
+          }
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {orders.length === 0 ? (

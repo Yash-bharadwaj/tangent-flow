@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/AuthProvider";
 import { Button } from "@/components/ui/button";
-import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ui/resizable";
 
 interface SidebarLinkProps {
   to: string;
@@ -67,36 +66,31 @@ export function Sidebar({ className = "" }: SidebarProps) {
       to: "/modules", 
       icon: <Cpu size={20} />, 
       text: "Modules",
-      // Fix: Use the correct permission key
-      visible: hasPermission("manageModules")
+      visible: hasPermission("manageModules") || hasPermission("canViewModules")
     },
     { 
       to: "/sales-orders", 
       icon: <ShoppingCart size={20} />, 
       text: "Sales Orders",
-      // Fix: Use the correct permission key
-      visible: hasPermission("manageSalesOrders")
+      visible: hasPermission("manageSalesOrders") || hasPermission("canViewSalesOrders")
     },
     { 
       to: "/inventory", 
       icon: <Package size={20} />, 
       text: "Inventory",
-      // Fix: Use the correct permission key
-      visible: hasPermission("manageInventory")
+      visible: hasPermission("manageInventory") || hasPermission("canViewInventory")
     },
     { 
       to: "/users", 
       icon: <Users size={20} />, 
       text: "Users",
-      // Fix: Use the correct permission key
-      visible: hasPermission("manageUsers")
+      visible: hasPermission("manageUsers") || hasPermission("canViewUsers")
     },
     { 
       to: "/deliveries", 
       icon: <Truck size={20} />, 
       text: "Deliveries",
-      // Fix: Use the correct permission key
-      visible: hasPermission("manageDeliveries")
+      visible: hasPermission("manageDeliveries") || hasPermission("canViewDeliveries")
     },
   ];
 

@@ -8,7 +8,6 @@ export interface UserPermissions {
   manageSalesOrders: boolean;
   manageInventory: boolean;
   manageDeliveries: boolean;
-  // Add these fields to match what's used in Sidebar.tsx
   canViewModules: boolean;
   canViewSalesOrders: boolean;
   canViewInventory: boolean;
@@ -22,6 +21,7 @@ export interface AuthContextType {
   permissions: UserPermissions;
   user: User | null;
   login: (email: string, password: string) => Promise<any>;
+  register: (email: string, password: string, userData?: any) => Promise<any>;
   logout: () => Promise<void>;
   hasPermission: (permission: keyof UserPermissions) => boolean;
 }
@@ -39,7 +39,6 @@ const defaultPermissions: UserPermissions = {
   manageSalesOrders: false,
   manageInventory: false,
   manageDeliveries: false,
-  // Add the new permission fields
   canViewModules: false,
   canViewSalesOrders: false,
   canViewInventory: false,
