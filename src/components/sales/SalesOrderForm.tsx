@@ -8,7 +8,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createSalesOrder, SalesOrder } from "@/services/supabase";
+import { createSalesOrder } from "@/services/supabase";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { toast } from "sonner";
 

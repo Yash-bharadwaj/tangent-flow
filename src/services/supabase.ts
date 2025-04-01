@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { Profile, Order, Product, Inventory, Delivery } from "@/types/database";
+import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "@/hooks/use-toast";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -67,19 +66,6 @@ export const getOrders = async (userId: string): Promise<Order[]> => {
 };
 
 // Sales Orders related functions
-export interface SalesOrder {
-  id: string;
-  order_number: string;
-  customer_name: string;
-  order_status: string;
-  material: string;
-  quantity: number;
-  expected_payment_date: string;
-  user_id: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 export const getSalesOrders = async (): Promise<SalesOrder[]> => {
   try {
     const { data, error } = await supabase
