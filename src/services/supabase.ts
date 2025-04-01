@@ -4,19 +4,18 @@ import { Profile, Order, Product, Inventory, Delivery } from "@/types/database";
 import { toast } from "@/hooks/use-toast";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
-// Mock data functions until tables are created in Supabase
+// Profile related functions
 export const getProfile = async (userId: string): Promise<Profile | null> => {
   try {
-    // This is a mock implementation until the profiles table exists
-    console.log("Getting profile for user:", userId);
-    return {
-      id: userId,
-      full_name: "Demo User",
-      avatar_url: null,
-      role: "customer",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    
+    if (error) throw error;
+    
+    return data;
   } catch (error: any) {
     toast({
       title: "Error fetching profile",
@@ -29,16 +28,21 @@ export const getProfile = async (userId: string): Promise<Profile | null> => {
 
 export const updateProfile = async (userId: string, updates: Partial<Profile>): Promise<Profile | null> => {
   try {
-    // This is a mock implementation until the profiles table exists
-    console.log("Updating profile for user:", userId, updates);
-    return {
-      id: userId,
-      full_name: updates.full_name || "Demo User",
-      avatar_url: updates.avatar_url || null,
-      role: updates.role || "customer",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', userId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been updated successfully",
+    });
+    
+    return data;
   } catch (error: any) {
     toast({
       title: "Error updating profile",
@@ -52,26 +56,15 @@ export const updateProfile = async (userId: string, updates: Partial<Profile>): 
 // Orders related functions
 export const getOrders = async (userId: string): Promise<Order[]> => {
   try {
-    // This is a mock implementation until the orders table exists
-    console.log("Getting orders for user:", userId);
-    return [
-      {
-        id: "1",
-        user_id: userId,
-        status: "Processing",
-        total_amount: 129.99,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: "2",
-        user_id: userId,
-        status: "Shipped",
-        total_amount: 79.95,
-        created_at: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-        updated_at: new Date(Date.now() - 86400000).toISOString()
-      }
-    ];
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    
+    return data || [];
   } catch (error: any) {
     toast({
       title: "Error fetching orders",
@@ -85,27 +78,14 @@ export const getOrders = async (userId: string): Promise<Order[]> => {
 // Products related functions
 export const getProducts = async (): Promise<Product[]> => {
   try {
-    // This is a mock implementation until the products table exists
-    return [
-      {
-        id: "1",
-        name: "Ergonomic Chair",
-        description: "Comfortable office chair with lumbar support",
-        price: 199.99,
-        stock: 15,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: "2",
-        name: "Standing Desk",
-        description: "Adjustable height desk for better posture",
-        price: 349.99,
-        stock: 8,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ];
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('name');
+    
+    if (error) throw error;
+    
+    return data || [];
   } catch (error: any) {
     toast({
       title: "Error fetching products",
@@ -119,25 +99,13 @@ export const getProducts = async (): Promise<Product[]> => {
 // Inventory related functions
 export const getInventory = async (): Promise<Inventory[]> => {
   try {
-    // This is a mock implementation until the inventory table exists
-    return [
-      {
-        id: "1",
-        product_id: "1",
-        quantity: 15,
-        location: "Warehouse A",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: "2",
-        product_id: "2",
-        quantity: 8,
-        location: "Warehouse B",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ];
+    const { data, error } = await supabase
+      .from('inventory')
+      .select('*, products(name)');
+    
+    if (error) throw error;
+    
+    return data || [];
   } catch (error: any) {
     toast({
       title: "Error fetching inventory",
@@ -151,31 +119,19 @@ export const getInventory = async (): Promise<Inventory[]> => {
 // Deliveries related functions
 export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
   try {
-    // This is a mock implementation until the deliveries table exists
-    let deliveries = [
-      {
-        id: "1",
-        order_id: "1",
-        status: "In Transit",
-        tracking_number: "TRK123456789",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      },
-      {
-        id: "2",
-        order_id: "2",
-        status: "Delivered",
-        tracking_number: "TRK987654321",
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        updated_at: new Date(Date.now() - 86400000).toISOString()
-      }
-    ];
+    let query = supabase
+      .from('deliveries')
+      .select('*');
     
     if (orderId) {
-      deliveries = deliveries.filter(delivery => delivery.order_id === orderId);
+      query = query.eq('order_id', orderId);
     }
     
-    return deliveries;
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    
+    return data || [];
   } catch (error: any) {
     toast({
       title: "Error fetching deliveries",
@@ -188,23 +144,18 @@ export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
 
 // Real-time subscriptions
 export const subscribeToOrders = (userId: string, callback: (payload: any) => void): RealtimeChannel => {
-  // This is a mock implementation for real-time updates
-  const channel = supabase.channel('orders-channel');
-  
-  setTimeout(() => {
-    // Simulate a real-time update after 5 seconds
-    callback({
-      eventType: 'INSERT',
-      new: {
-        id: "3",
-        user_id: userId,
-        status: "Processing",
-        total_amount: 59.99,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    });
-  }, 5000);
+  const channel = supabase
+    .channel('orders-changes')
+    .on('postgres_changes', 
+      {
+        event: '*',
+        schema: 'public',
+        table: 'orders',
+        filter: `user_id=eq.${userId}`
+      }, 
+      callback
+    )
+    .subscribe();
   
   return channel;
 };

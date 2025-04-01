@@ -24,7 +24,9 @@ export const RealTimeOrdersList = () => {
     fetchOrders();
 
     // Set up real-time subscription
-    const subscription = subscribeToOrders(user.id, (payload) => {
+    const channel = subscribeToOrders(user.id, (payload) => {
+      console.log('Realtime update received:', payload);
+      
       if (payload.eventType === 'INSERT') {
         setOrders(prev => [payload.new as Order, ...prev]);
       } else if (payload.eventType === 'UPDATE') {
@@ -37,7 +39,7 @@ export const RealTimeOrdersList = () => {
     });
 
     return () => {
-      subscription.unsubscribe();
+      channel.unsubscribe();
     };
   }, [user]);
 
@@ -94,7 +96,7 @@ export const RealTimeOrdersList = () => {
                       {order.status}
                     </span>
                   </TableCell>
-                  <TableCell>${order.total_amount}</TableCell>
+                  <TableCell>${Number(order.total_amount).toFixed(2)}</TableCell>
                   <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}

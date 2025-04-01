@@ -1,8 +1,8 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User } from "@supabase/supabase-js"; 
 import { useSupabaseAuth } from "@/hooks/use-supabase-auth";
+import { getProfile } from "@/services/supabase";
 
 // Expanded interface with permissions
 interface UserPermissions {
@@ -17,7 +17,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   userRole: string | null;
   permissions: UserPermissions;
-  user: User | null; // Added user property
+  user: User | null;
   login: (role: string) => void;
   logout: () => void;
   hasPermission: (permission: keyof UserPermissions) => boolean;
@@ -64,34 +64,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if user is authenticated on initial load
-    const storedAuth = localStorage.getItem("isAuthenticated");
-    const storedRole = localStorage.getItem("userRole");
-    
-    if (storedAuth === "true" && storedRole) {
+    // Check if user is authenticated based on Supabase user
+    if (user) {
       setIsAuthenticated(true);
-      setUserRole(storedRole);
-      setPermissions(getRolePermissions(storedRole));
-    } else if (location.pathname !== "/login") {
+      
+      // Fetch user role from profiles table
+      const fetchUserRole = async () => {
+        const profile = await getProfile(user.id);
+        const role = profile?.role || 'customer';
+        setUserRole(role);
+        setPermissions(getRolePermissions(role));
+      };
+      
+      fetchUserRole();
+    } else {
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setPermissions(getRolePermissions(""));
+      
       // If not authenticated and not on login page, redirect to login
-      navigate("/login");
+      if (location.pathname !== "/login") {
+        navigate("/login");
+      }
     }
-  }, [navigate, location]);
+  }, [user, navigate, location]);
 
   const login = (role: string) => {
+    // This function is kept for backward compatibility
+    // The actual authentication is now handled by Supabase
     setIsAuthenticated(true);
     setUserRole(role);
     setPermissions(getRolePermissions(role));
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("userRole", role);
   };
 
   const logout = () => {
+    // This now should call the Supabase signOut function
+    // But we keep the function for compatibility
     setIsAuthenticated(false);
     setUserRole(null);
     setPermissions(getRolePermissions(""));
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userRole");
     navigate("/login");
   };
 
