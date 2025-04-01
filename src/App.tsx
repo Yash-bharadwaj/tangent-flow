@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { useEffect } from "react";
+import { ResizablePanelGroup, ResizablePanel } from "./components/ui/resizable";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,9 +45,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   console.log("Authenticated, rendering protected content");
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <main className="flex-1 relative">
+      <main className="flex-1 ml-[72px] lg:ml-72 transition-all duration-500">
         {children}
       </main>
       <RightSidebar />

@@ -99,3 +99,58 @@
     radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
     radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
 }
+
+/* Wave pattern background */
+.pattern-waves {
+  background-color: hsla(0,0%,100%,.07);
+  background-image: 
+    linear-gradient(135deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(225deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(45deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(315deg, hsla(0,0%,100%,.1) 25%, transparent 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}
+
+.dark .pattern-waves {
+  background-color: hsla(0,0%,0%,.05);
+  background-image: 
+    linear-gradient(135deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(225deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(45deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(315deg, hsla(255,255%,255%,.05) 25%, transparent 25%);
+}
+
+.pattern-waves-bg {
+  position: relative;
+}
+
+.pattern-waves-bg::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.3;
+  background-image: 
+    linear-gradient(135deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(225deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(45deg, hsla(0,0%,100%,.1) 25%, transparent 25%),
+    linear-gradient(315deg, hsla(0,0%,100%,.1) 25%, transparent 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 40px 40px;
+  background-repeat: repeat;
+}
+
+.dark .pattern-waves-bg::before {
+  opacity: 0.2;
+  background-image: 
+    linear-gradient(135deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(225deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(45deg, hsla(255,255%,255%,.05) 25%, transparent 25%),
+    linear-gradient(315deg, hsla(255,255%,255%,.05) 25%, transparent 25%);
+}
+

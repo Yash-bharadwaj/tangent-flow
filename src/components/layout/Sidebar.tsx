@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/AuthProvider";
 import { Button } from "@/components/ui/button";
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ui/resizable";
 
 interface SidebarLinkProps {
   to: string;
@@ -101,7 +102,7 @@ export function Sidebar({ className = "" }: SidebarProps) {
       <div
         className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-in-out ${
           isCollapsed ? "w-20" : "w-72"
-        } ${className} bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-sidebar flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
+        } ${className} bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-waves flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
       >
         <div className="p-4 flex items-center justify-between">
           {!isCollapsed && (
