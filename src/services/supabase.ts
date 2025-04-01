@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "sonner";
@@ -431,10 +430,10 @@ export const initializeDemoUsers = async () => {
         console.log(`Checking if demo user exists: ${demoUser.email}`);
         await signIn(demoUser.email, demoUser.password);
         console.log(`Demo user exists: ${demoUser.email}`);
-      } catch (error) {
+      } catch (signInError) {
         console.log(`Demo user does not exist: ${demoUser.email}, creating...`);
         // If signin fails, create the user
-        const { data, error } = await supabase.auth.admin.createUser({
+        const { data, error: createError } = await supabase.auth.admin.createUser({
           email: demoUser.email,
           password: demoUser.password,
           email_confirm: true,
@@ -444,8 +443,8 @@ export const initializeDemoUsers = async () => {
           }
         });
         
-        if (error) {
-          console.error(`Error creating demo user ${demoUser.email}:`, error);
+        if (createError) {
+          console.error(`Error creating demo user ${demoUser.email}:`, createError);
           // Fall back to regular signup if admin create fails
           try {
             await signUp(demoUser.email, demoUser.password, {
