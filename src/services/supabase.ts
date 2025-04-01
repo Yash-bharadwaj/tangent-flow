@@ -160,23 +160,25 @@ export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
   }
 };
 
-// Real-time subscriptions
+// Real-time subscriptions - Fixed type issues with the RealtimeChannel interface
 export const subscribeToOrders = (userId: string, callback: (payload: any) => void): RealtimeChannel => {
-  // Create a dummy channel with .unsubscribe method
-  const dummyChannel: RealtimeChannel = {
-    send: () => Promise.resolve({ error: null }),
-    subscribe: (callback?: ((status: 'SUBSCRIBED' | 'TIMED_OUT' | 'CLOSED' | 'CHANNEL_ERROR', err?: Error) => void)) => {
-      if (callback) callback('SUBSCRIBED');
-      return dummyChannel;
-    },
-    unsubscribe: () => {
-      return Promise.resolve();
-    },
-    on: () => dummyChannel,
-    off: () => dummyChannel
-  };
+  // Create a mock channel that matches the RealtimeChannel interface
+  const channel = supabase.channel('orders-channel');
   
-  return dummyChannel;
+  channel
+    .on('postgres_changes', { 
+      event: '*', 
+      schema: 'public', 
+      table: 'orders',
+      filter: `user_id=eq.${userId}`
+    }, (payload) => {
+      callback(payload);
+    });
+  
+  // Subscribe to the channel
+  channel.subscribe();
+  
+  return channel;
 };
 
 // Authentication functions
