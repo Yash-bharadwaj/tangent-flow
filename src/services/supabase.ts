@@ -1,8 +1,13 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, Product, Inventory, Delivery, SalesOrder } from "@/types/database";
 import { toast } from "@/hooks/use-toast";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { crypto } from "crypto";
+
+// Helper function to generate mock IDs since browser doesn't have Node's crypto.randomUUID()
+const generateMockId = () => {
+  return 'mock-' + Math.random().toString(36).substring(2, 11);
+};
 
 // Profile related functions
 export const getProfile = async (userId: string): Promise<Profile | null> => {
@@ -163,8 +168,8 @@ export const createSalesOrder = async (salesOrder: Omit<SalesOrder, 'id' | 'crea
   } catch (error: any) {
     console.error("Falling back to mock data creation:", error);
     
-    // Create a mock order with a generated UUID for demonstration
-    const mockId = crypto.randomUUID ? crypto.randomUUID() : `mock-${Date.now()}`;
+    // Create a mock order with a generated ID for demonstration
+    const mockId = generateMockId();
     const timestamp = new Date().toISOString();
     
     const mockOrder: SalesOrder = {
