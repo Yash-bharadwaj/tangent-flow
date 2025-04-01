@@ -1,7 +1,9 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "@/types/database";
+import { Profile, Order, SalesOrder, Product, Inventory, Delivery } from "@/types/database";
 import { toast } from "sonner";
 import { ensureUserProfile } from "@/utils/authUtils";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 // Profile related functions
 export const getProfile = async (userId: string): Promise<Profile | null> => {
@@ -223,7 +225,7 @@ export const getSalesOrdersForUser = async (userId: string): Promise<SalesOrder[
   }
 };
 
-export const createSalesOrder = async (salesOrder: Omit<SalesOrder, 'id' | 'created_at' | 'updated_at'>): Promise<SalesOrder | null> => {
+export const createSalesOrder = async (salesOrder: Partial<SalesOrder>): Promise<SalesOrder | null> => {
   try {
     const { data, error } = await supabase
       .from("sales_orders")
