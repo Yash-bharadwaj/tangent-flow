@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Profile, Order, SalesOrder, Product, Inventory, Delivery } from "@/types/database";
 import { toast } from "sonner";
@@ -225,7 +224,17 @@ export const getSalesOrdersForUser = async (userId: string): Promise<SalesOrder[
   }
 };
 
-export const createSalesOrder = async (salesOrder: Partial<SalesOrder>): Promise<SalesOrder | null> => {
+type CreateSalesOrderInput = {
+  order_number: string;
+  customer_name: string;
+  order_status: string;
+  material: string;
+  quantity: number;
+  expected_payment_date: string;
+  user_id?: string;
+};
+
+export const createSalesOrder = async (salesOrder: CreateSalesOrderInput): Promise<SalesOrder | null> => {
   try {
     const { data, error } = await supabase
       .from("sales_orders")
