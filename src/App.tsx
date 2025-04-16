@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,7 +28,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
@@ -57,7 +55,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Inner routes component wrapped with AuthProvider
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
@@ -71,7 +68,6 @@ const AppRoutes = () => (
   </Routes>
 );
 
-// App component with all providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
