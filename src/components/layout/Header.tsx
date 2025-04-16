@@ -5,7 +5,7 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 export function Header() {
   return (
     <header className="sticky top-0 z-30 w-full border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-black/50 backdrop-blur-2xl">
-      <div className="flex h-16 items-center px-6">
+      <div className="flex h-14 items-center px-6">
         <div className="flex flex-1 items-center justify-between">
           <div className="hidden md:flex md:gap-2 lg:gap-10">
             {/* Main search bar */}
