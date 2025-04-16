@@ -1,4 +1,3 @@
-
 import { Bell, Search } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 
@@ -8,7 +7,6 @@ export function Header() {
       <div className="flex h-14 items-center px-6">
         <div className="flex flex-1 items-center justify-between">
           <div className="hidden md:flex md:gap-2 lg:gap-10">
-            {/* Main search bar */}
             <div className="relative w-full max-w-md">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <Search className="w-4 h-4 text-muted-foreground" />

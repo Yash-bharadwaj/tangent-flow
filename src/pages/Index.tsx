@@ -1,3 +1,4 @@
+import React from 'react';
 import { 
   BarChart3, 
   Box, 
@@ -22,29 +23,23 @@ import { SalesChart } from "../components/dashboard/SalesChart";
 import { PieChartComponent } from "../components/dashboard/PieChartComponent";
 
 const Index = () => {
-  // Fetch sales orders from backend
   const { data: salesOrders = [] } = useQuery({
     queryKey: ['salesOrders'],
     queryFn: getSalesOrders
   });
 
-  // Fetch inventory from backend
   const { data: inventoryItems = [] } = useQuery({
     queryKey: ['inventory'],
     queryFn: getInventory
   });
 
-  // Calculate dashboard statistics from real data
   const totalOrders = salesOrders.length;
   const pendingOrders = salesOrders.filter(order => order.order_status === "Pending").length;
   
-  // Calculate low stock items
   const lowStockItems = inventoryItems.filter(item => Number(item.quantity) < 50).slice(0, 5);
   
-  // Recent orders for dashboard
   const recentOrders = salesOrders.slice(0, 5);
 
-  // Mock chart data (we'll keep this for visualization)
   const monthlySalesData = [
     { name: 'Jan', value: 42000 },
     { name: 'Feb', value: 53000 },
@@ -83,14 +78,13 @@ const Index = () => {
       <Header />
       
       <div className="p-4 animate-in ml-[72px] lg:ml-72 transition-all duration-500">
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-3xl font-semibold tracking-wide premium-text-gradient">Dashboard</h1>
-          <p className="text-muted-foreground text-lg tracking-wide">
+          <p className="text-muted-foreground text-sm tracking-wide">
             Overview of your business metrics and key performance indicators.
           </p>
         </div>
         
-        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Orders"
@@ -141,7 +135,6 @@ const Index = () => {
           />
         </div>
         
-        {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <SalesChart data={monthlySalesData} title="Monthly Sales Performance" type="bar" />
           <SalesChart data={monthlySalesData} title="Sales Trend" type="line" />
@@ -152,7 +145,6 @@ const Index = () => {
           <PieChartComponent data={orderStatusData} title="Orders by Status" />
         </div>
         
-        {/* Recent Orders & Low Stock */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <DashboardCard className="premium-card">
             <DashboardCardHeader>
