@@ -27,7 +27,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protected route component with dynamic content adjustment
+// Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
@@ -36,20 +36,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
+  // Simplified check - only render if authenticated, otherwise redirect
   if (!isAuthenticated) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
   }
   
+  console.log("Authenticated, rendering protected content");
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <div className="flex-1 transition-all duration-300 ease-in-out 
-                    [&:has(+.translate-x-full)]:mr-0 [&:not(:has(+.translate-x-full))]:mr-72
-                    md:[&:has(+[data-state=closed])]:mr-0 md:[&:not(:has(+[data-state=closed]))]:mr-72
-                    [.w-20_+_&]:ml-20 [.w-72_+_&]:ml-72">
-        {children}
-      </div>
+      {children}
       <RightSidebar />
     </div>
   );
