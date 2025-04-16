@@ -66,7 +66,7 @@ export function SidebarProvider({
   }, [toggleSidebar])
 
   const state = open ? "expanded" : "collapsed"
-  const contextValue = React.useMemo<SidebarContext>(
+  const contextValue = React.useMemo<SidebarContextType>(
     () => ({
       state,
       open,
