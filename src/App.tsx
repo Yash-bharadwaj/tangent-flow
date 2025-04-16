@@ -1,8 +1,10 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 import { AuthProvider, useAuth } from "./components/auth/AuthProvider";
 import { ContentWrapper } from "./components/layout/ContentWrapper";
@@ -43,13 +45,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   console.log("Authenticated, rendering protected content");
   return (
-    <div className="flex min-h-screen bg-background pattern-waves-bg">
-      <Sidebar />
-      <ContentWrapper>
-        {children}
-      </ContentWrapper>
-      <RightSidebar />
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen bg-background pattern-waves-bg">
+        <Sidebar />
+        <ContentWrapper>
+          {children}
+        </ContentWrapper>
+        <RightSidebar />
+      </div>
+    </SidebarProvider>
   );
 };
 
