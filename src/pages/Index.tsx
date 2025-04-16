@@ -63,10 +63,10 @@ const Index = () => {
     <div className="flex-1">
       <Header />
       
-      <div className="p-4 animate-in ml-[72px] lg:ml-72 transition-all duration-500">
-        <div className="mb-4">
-          <h1 className="text-3xl font-semibold tracking-wide premium-text-gradient">Dashboard</h1>
-          <p className="text-muted-foreground text-sm tracking-wide">
+      <div className="px-4 mt-0 animate-in ml-[72px] lg:ml-72 transition-all duration-500">
+        <div className="pt-2 pb-1">
+          <h1 className="text-2xl font-semibold tracking-wide premium-text-gradient">Dashboard</h1>
+          <p className="text-xs text-muted-foreground tracking-wide">
             Overview of your business metrics and key performance indicators.
           </p>
         </div>

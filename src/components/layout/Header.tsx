@@ -1,10 +1,11 @@
+
 import { Bell, Search } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
   return (
     <header className="sticky top-0 z-30 w-full border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-black/50 backdrop-blur-2xl">
-      <div className="flex h-14 items-center px-6">
+      <div className="flex h-12 items-center px-4">
         <div className="flex flex-1 items-center justify-between">
           <div className="hidden md:flex md:gap-2 lg:gap-10">
             <div className="relative w-full max-w-md">
@@ -24,23 +25,23 @@ export function Header() {
           
           <div className="flex items-center gap-4">
             <button className="inline-flex items-center justify-center rounded-xl border border-black/5 dark:border-white/10
-                              backdrop-blur-lg bg-white/10 dark:bg-black/10 w-10 h-10 
+                              backdrop-blur-lg bg-white/10 dark:bg-black/10 w-8 h-8 
                               transition-all duration-300 hover:bg-white/20 dark:hover:bg-white/5 relative">
-              <Bell className="h-[1.2rem] w-[1.2rem]" />
-              <span className="absolute top-2 right-2.5 flex h-2 w-2 rounded-full bg-destructive"></span>
+              <Bell className="h-4 w-4" />
+              <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-destructive"></span>
             </button>
             
             <ThemeToggle />
             
             <div className="relative hidden md:flex items-center">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-black/5 dark:border-white/10">
-                  <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary">
+              <div className="flex items-center gap-2">
+                <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-black/5 dark:border-white/10">
+                  <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary text-xs">
                     AU
                   </div>
                 </div>
                 <div className="hidden lg:block">
-                  <p className="text-sm font-medium leading-none">Admin User</p>
+                  <p className="text-xs font-medium leading-none">Admin User</p>
                   <p className="text-xs text-muted-foreground">admin@example.com</p>
                 </div>
               </div>
