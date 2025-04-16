@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import { AuthProvider, useAuth } from "./components/auth/AuthProvider";
+import { ContentWrapper } from "./components/layout/ContentWrapper";
 import LoginPage from "./components/auth/LoginPage";
 import Index from "./pages/Index";
 import ModuleManagement from "./pages/ModuleManagement";
@@ -36,7 +36,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
-  // Simplified check - only render if authenticated, otherwise redirect
   if (!isAuthenticated) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
@@ -46,7 +45,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      {children}
+      <ContentWrapper>
+        {children}
+      </ContentWrapper>
       <RightSidebar />
     </div>
   );
