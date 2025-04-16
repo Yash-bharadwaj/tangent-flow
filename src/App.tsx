@@ -1,12 +1,11 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { SidebarProvider } from "./components/ui/sidebar";
 
 import { AuthProvider, useAuth } from "./components/auth/AuthProvider";
-import { ContentWrapper } from "./components/layout/ContentWrapper";
 import LoginPage from "./components/auth/LoginPage";
 import Index from "./pages/Index";
 import ModuleManagement from "./pages/ModuleManagement";
@@ -28,6 +27,7 @@ const queryClient = new QueryClient({
   },
 });
 
+// Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
@@ -36,6 +36,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
+  // Simplified check - only render if authenticated, otherwise redirect
   if (!isAuthenticated) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
@@ -43,18 +44,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   console.log("Authenticated, rendering protected content");
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen bg-background pattern-waves-bg">
-        <Sidebar />
-        <ContentWrapper>
-          {children}
-        </ContentWrapper>
-        <RightSidebar />
-      </div>
-    </SidebarProvider>
+    <div className="flex min-h-screen bg-background pattern-waves-bg">
+      <Sidebar />
+      {children}
+      <RightSidebar />
+    </div>
   );
 };
 
+// Inner routes component wrapped with AuthProvider
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
@@ -68,6 +66,7 @@ const AppRoutes = () => (
   </Routes>
 );
 
+// App component with all providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
