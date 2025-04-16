@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   ChevronLeft, 
   ChevronRight 
@@ -8,6 +8,14 @@ import { SidebarContent } from "../sidebar/SidebarContent";
 
 export function RightSidebar() {
   const [isOpen, setIsOpen] = useState(true);
+
+  // Dispatch custom event when sidebar state changes
+  useEffect(() => {
+    const event = new CustomEvent('rightsidebar-toggle', { 
+      detail: { isOpen } 
+    });
+    window.dispatchEvent(event);
+  }, [isOpen]);
 
   return (
     <div className="relative h-full">
@@ -28,6 +36,7 @@ export function RightSidebar() {
 
       {/* Sidebar */}
       <div
+        data-state={isOpen ? "open" : "closed"}
         className={`fixed right-0 top-0 z-20 h-full w-72 transform overflow-y-auto 
                     backdrop-blur-xl bg-white/10 dark:bg-black/30 border-l border-black/5 dark:border-white/5 
                     pattern-waves transition-all duration-500 ease-in-out ${

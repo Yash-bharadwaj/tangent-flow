@@ -16,7 +16,7 @@ import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,9 +31,28 @@ const queryClient = new QueryClient({
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   
   useEffect(() => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
+    
+    // Listen for custom events from the sidebars to track their state
+    const handleLeftSidebarToggle = (e: CustomEvent) => {
+      setLeftSidebarOpen(e.detail.isOpen);
+    };
+    
+    const handleRightSidebarToggle = (e: CustomEvent) => {
+      setRightSidebarOpen(e.detail.isOpen);
+    };
+    
+    window.addEventListener('leftsidebar-toggle' as any, handleLeftSidebarToggle as EventListener);
+    window.addEventListener('rightsidebar-toggle' as any, handleRightSidebarToggle as EventListener);
+    
+    return () => {
+      window.removeEventListener('leftsidebar-toggle' as any, handleLeftSidebarToggle as EventListener);
+      window.removeEventListener('rightsidebar-toggle' as any, handleRightSidebarToggle as EventListener);
+    };
   }, [isAuthenticated, location]);
   
   if (!isAuthenticated) {
@@ -44,10 +63,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <div className="flex-1 transition-all duration-300 ease-in-out 
-                    [&:has(+.translate-x-full)]:mr-0 [&:not(:has(+.translate-x-full))]:mr-72
-                    md:[&:has(+[data-state=closed])]:mr-0 md:[&:not(:has(+[data-state=closed]))]:mr-72
-                    [.w-20_+_&]:ml-20 [.w-72_+_&]:ml-72">
+      <div 
+        id="main-content"
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out
+                   ${leftSidebarOpen ? 'ml-72' : 'ml-20'} 
+                   ${rightSidebarOpen ? 'mr-72' : 'mr-0'}
+                   sm:${leftSidebarOpen ? 'ml-72' : 'ml-20'}
+                   sm:${rightSidebarOpen ? 'mr-72' : 'mr-0'}`}
+      >
         {children}
       </div>
       <RightSidebar />

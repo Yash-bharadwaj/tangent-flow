@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { 
   BarChart, 
@@ -54,6 +54,14 @@ interface SidebarProps {
 export function Sidebar({ className = "" }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { logout, userRole, hasPermission } = useAuth();
+
+  // Dispatch custom event when sidebar state changes
+  useEffect(() => {
+    const event = new CustomEvent('leftsidebar-toggle', { 
+      detail: { isOpen: !isCollapsed } 
+    });
+    window.dispatchEvent(event);
+  }, [isCollapsed]);
 
   const navItems = [
     { 

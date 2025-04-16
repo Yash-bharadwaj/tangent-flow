@@ -6,7 +6,7 @@ import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCard
 
 const DeliveryTracking = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="flex flex-col bg-background w-full">
       <Header />
       
       <div className="p-6 flex-1">
