@@ -1,5 +1,6 @@
 
 import React from "react";
+import { motion } from "framer-motion";
 
 interface DashboardCardProps {
   className?: string;
@@ -8,15 +9,23 @@ interface DashboardCardProps {
 
 export function DashboardCard({ className = "", children }: DashboardCardProps) {
   return (
-    <div 
+    <motion.div 
       className={`aesthetic-card backdrop-blur-xl 
-                 border border-black/5 dark:border-white/5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.2)] 
-                 dark:shadow-[0_8px_30px_rgba(0,0,0,0.8)] 
+                 border border-black/5 dark:border-white/5 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] 
+                 dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] 
                  overflow-hidden ${className} transition-all duration-300 
-                 hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] dark:hover:shadow-[0_10px_40px_rgba(0,0,0,0.85)]`}
+                 hover:shadow-[0_10px_40px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_10px_40px_rgba(0,0,0,0.6)]`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }}
+      whileHover={{ y: -4 }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -27,9 +36,14 @@ interface DashboardCardHeaderProps {
 
 export function DashboardCardHeader({ className = "", children }: DashboardCardHeaderProps) {
   return (
-    <div className={`p-6 flex flex-col space-y-1.5 ${className}`}>
+    <motion.div 
+      className={`p-6 flex flex-col space-y-1.5 ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1 }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -40,9 +54,14 @@ interface DashboardCardTitleProps {
 
 export function DashboardCardTitle({ className = "", children }: DashboardCardTitleProps) {
   return (
-    <h3 className={`text-lg font-semibold leading-none tracking-wide ${className}`}>
+    <motion.h3 
+      className={`text-lg font-semibold leading-none tracking-wide bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent ${className}`}
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.2 }}
+    >
       {children}
-    </h3>
+    </motion.h3>
   );
 }
 
@@ -53,9 +72,14 @@ interface DashboardCardDescriptionProps {
 
 export function DashboardCardDescription({ className = "", children }: DashboardCardDescriptionProps) {
   return (
-    <p className={`text-sm text-muted-foreground ${className}`}>
+    <motion.p 
+      className={`text-sm text-muted-foreground ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3 }}
+    >
       {children}
-    </p>
+    </motion.p>
   );
 }
 
@@ -66,9 +90,14 @@ interface DashboardCardContentProps {
 
 export function DashboardCardContent({ className = "", children }: DashboardCardContentProps) {
   return (
-    <div className={`p-6 pt-0 ${className}`}>
+    <motion.div 
+      className={`p-6 pt-0 ${className}`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -79,8 +108,13 @@ interface DashboardCardFooterProps {
 
 export function DashboardCardFooter({ className = "", children }: DashboardCardFooterProps) {
   return (
-    <div className={`flex items-center p-6 pt-0 ${className}`}>
+    <motion.div 
+      className={`flex items-center p-6 pt-0 ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.5 }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }
