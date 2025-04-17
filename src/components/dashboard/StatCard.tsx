@@ -9,6 +9,7 @@ import {
 } from "./DashboardCard";
 import { ArrowDown, ArrowUp, ChevronRight } from "lucide-react";
 import { MetricCardDrawer } from "./MetricCardDrawer";
+import { cn } from "@/lib/utils"; // Ensure this import exists
 
 interface StatCardProps {
   title: string;
@@ -71,12 +72,12 @@ export function StatCard({
         className={className}
       >
         <DashboardCard 
-          className={`group cursor-pointer ${className}`}
+          className={cn("group cursor-pointer", className)}
           onClick={() => drawerContent && setIsDrawerOpen(true)}
         >
           <DashboardCardHeader className="pb-2">
             <div className="flex justify-between items-center">
-              <DashboardCardTitle className="text-base font-medium tracking-wide">
+              <DashboardCardTitle className="text-base font-medium tracking-wide text-foreground">
                 {title}
               </DashboardCardTitle>
               <motion.div 
@@ -92,7 +93,7 @@ export function StatCard({
           <DashboardCardContent>
             <div className="flex flex-col">
               <motion.div 
-                className="text-2xl font-semibold bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent"
+                className="text-2xl font-semibold text-foreground"
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 1.5, repeat: 0, ease: "easeOut" }}
               >
