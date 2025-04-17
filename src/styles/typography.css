@@ -1,0 +1,34 @@
+
+/* Improved typography */
+.heading-xl {
+  @apply text-3xl font-bold tracking-tight;
+  letter-spacing: -0.025em;
+}
+
+.heading-lg {
+  @apply text-2xl font-semibold tracking-tight;
+  letter-spacing: -0.025em;
+}
+
+.heading-md {
+  @apply text-xl font-medium;
+  letter-spacing: -0.015em;
+}
+
+/* Skeleton loading animations */
+.skeleton-loading {
+  @apply bg-gray-200 dark:bg-gray-700 animate-pulse rounded;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 1024px) {
+  .ml-72 {
+    @apply ml-20;
+  }
+}
+
+@media (max-width: 640px) {
+  .ml-72, .ml-20 {
+    @apply ml-16;
+  }
+}

@@ -1,0 +1,28 @@
+
+/* Premium card styling */
+.premium-card {
+  @apply backdrop-blur-sm bg-primary/5 border-primary/10 shadow-xl;
+}
+
+.premium-text-gradient {
+  @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+}
+
+/* Tesla-inspired UI elements */
+.tesla-card {
+  @apply rounded-xl border border-white/10 bg-white/5 dark:bg-black/20 backdrop-blur-xl
+         shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all duration-300
+         hover:shadow-[0_10px_40px_rgba(0,0,0,0.15)] hover:-translate-y-1;
+}
+
+.tesla-button {
+  @apply px-5 py-2.5 rounded-md font-medium transition-all duration-300
+         bg-primary text-primary-foreground hover:bg-primary/90
+         hover:shadow-md hover:-translate-y-0.5;
+}
+
+.tesla-input {
+  @apply rounded-md border border-white/10 bg-white/5 dark:bg-black/20 
+         px-4 py-2.5 outline-none focus:border-primary/50 focus:ring-1
+         focus:ring-primary/30 transition-all duration-300;
+}

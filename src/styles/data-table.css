@@ -1,0 +1,20 @@
+
+.data-table-container {
+  @apply overflow-hidden border rounded-lg shadow-sm bg-white/50 dark:bg-black/20 backdrop-blur-sm;
+}
+
+.data-table {
+  @apply w-full text-sm;
+}
+
+.data-table-header th {
+  @apply bg-muted/30 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider backdrop-blur-sm;
+}
+
+.data-table tbody tr {
+  @apply border-t border-border hover:bg-accent/10 transition-all duration-200 hover:-translate-y-[1px] hover:shadow-sm;
+}
+
+.data-table td {
+  @apply px-4 py-3;
+}
