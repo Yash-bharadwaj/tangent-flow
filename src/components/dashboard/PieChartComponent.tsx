@@ -4,13 +4,13 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } fro
 import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "./DashboardCard";
 import { motion } from "framer-motion";
 
-// Light gradient color palette - using solid colors that match our gradient theme
-const LIGHT_COLORS = [
-  '#92c5eb', // Light blue
-  '#ffc285', // Light orange
-  '#f9f5af', // Light yellow
-  '#b9e5c0', // Light green
-  '#a1b5e3'  // Light purple
+// Vibrant gradient definitions for pie chart
+const GRADIENT_COLORS = [
+  { start: '#2193b0', end: '#6dd5ed' }, // Blue gradient
+  { start: '#ee9ca7', end: '#ffdde1' }, // Pink gradient
+  { start: '#ff9966', end: '#ff5e62' }, // Orange gradient
+  { start: '#56ab2f', end: '#a8e063' }, // Green gradient
+  { start: '#8E2DE2', end: '#4A00E0' }  // Purple gradient
 ];
 
 interface PieChartComponentProps {
@@ -79,6 +79,16 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
       <DashboardCardContent className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
+            {/* Define gradients */}
+            <defs>
+              {GRADIENT_COLORS.map((color, index) => (
+                <linearGradient key={`gradient-${index}`} id={`gradient-${index}`} x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor={color.start} />
+                  <stop offset="100%" stopColor={color.end} />
+                </linearGradient>
+              ))}
+            </defs>
+            
             <Pie
               data={enhancedData}
               cx="50%"
@@ -104,8 +114,8 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
               {data.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={LIGHT_COLORS[index % LIGHT_COLORS.length]} 
-                  opacity={activeIndex === index ? 1 : 0.8}
+                  fill={`url(#gradient-${index % GRADIENT_COLORS.length})`}
+                  opacity={activeIndex === index ? 1 : 0.9}
                   strokeWidth={activeIndex === index ? 2 : 1}
                   stroke={activeIndex === index ? "#fff" : "none"}
                 />
@@ -119,7 +129,7 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
                   initial={{ color: "var(--foreground)" }}
                   animate={{ 
                     color: hoveredItem?.name === value ? 
-                      LIGHT_COLORS[entry.index % LIGHT_COLORS.length] : "var(--foreground)" 
+                      GRADIENT_COLORS[entry.index % GRADIENT_COLORS.length].end : "var(--foreground)" 
                   }}
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
