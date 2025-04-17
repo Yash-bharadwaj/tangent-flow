@@ -94,7 +94,7 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
               animationEasing="ease-in-out"
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
-              {data.map((entry, index) => (
+              {enhancedData.map((_, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[index % COLORS.length]} 
@@ -106,20 +106,20 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              formatter={(value, entry) => (
+              formatter={(value: string) => (
                 <motion.span 
-                  className={activeIndex === entry.payload.index ? "font-medium" : ""}
+                  className={`legend-item ${hoveredItem?.name === value ? "font-medium" : ""}`}
                   initial={{ color: "var(--foreground)" }}
                   animate={{ 
                     color: hoveredItem?.name === value ? 
-                      entry.payload.fill : "var(--foreground)" 
+                      COLORS[data.findIndex(item => item.name === value) % COLORS.length] : "var(--foreground)" 
                   }}
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
                   {value}
                 </motion.span>
-              )} 
+              )}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -127,3 +127,4 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
     </DashboardCard>
   );
 };
+
