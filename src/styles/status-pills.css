@@ -1,6 +1,6 @@
 
 .status-pill {
-  @apply px-2 py-1 rounded-full text-xs font-medium relative;
+  @apply px-2 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1 relative;
   transition: all 0.3s ease;
 }
 
@@ -22,4 +22,29 @@
 
 .status-pill-danger {
   @apply bg-red-100 text-red-800 dark:bg-red-900/60 dark:text-red-100 border border-red-200 dark:border-red-800;
+}
+
+/* Add dot indicator for status pills */
+.status-pill::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-pill-success::before {
+  @apply bg-green-500;
+}
+
+.status-pill-info::before {
+  @apply bg-blue-500;
+}
+
+.status-pill-warning::before {
+  @apply bg-yellow-500;
+}
+
+.status-pill-danger::before {
+  @apply bg-red-500;
 }

@@ -1,4 +1,3 @@
-
 import { 
   BarChart3, 
   Box, 
@@ -24,29 +23,23 @@ import { PieChartComponent } from "../components/dashboard/PieChartComponent";
 import { motion } from "framer-motion";
 
 const Index = () => {
-  // Fetch sales orders from backend
   const { data: salesOrders = [] } = useQuery({
     queryKey: ['salesOrders'],
     queryFn: getSalesOrders
   });
 
-  // Fetch inventory from backend
   const { data: inventoryItems = [] } = useQuery({
     queryKey: ['inventory'],
     queryFn: getInventory
   });
 
-  // Calculate dashboard statistics from real data
   const totalOrders = salesOrders.length;
   const pendingOrders = salesOrders.filter(order => order.order_status === "Pending").length;
   
-  // Calculate low stock items
   const lowStockItems = inventoryItems.filter(item => Number(item.quantity) < 50).slice(0, 5);
   
-  // Recent orders for dashboard
   const recentOrders = salesOrders.slice(0, 5);
 
-  // Mock chart data (we'll keep this for visualization)
   const monthlySalesData = [
     { name: 'Jan', value: 42000 },
     { name: 'Feb', value: 53000 },
@@ -80,7 +73,6 @@ const Index = () => {
       { name: 'Cancelled', value: 5 }
     ];
 
-  // Create drawer content for each card
   const totalOrdersDrawer = (
     <div className="space-y-6">
       <p className="text-muted-foreground">
@@ -193,7 +185,6 @@ const Index = () => {
     </div>
   );
 
-  // Container animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -228,13 +219,12 @@ const Index = () => {
         variants={containerVariants}
       >
         <motion.div variants={childVariants} className="mb-8">
-          <h1 className="text-3xl font-semibold mb-2 tracking-wide premium-text-gradient">Dashboard</h1>
+          <h1 className="text-3xl font-semibold mb-2 tracking-wide text-primary">Dashboard</h1>
           <p className="text-muted-foreground text-lg tracking-wide">
             Overview of your business metrics and key performance indicators.
           </p>
         </motion.div>
         
-        {/* Stats Grid */}
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
           variants={containerVariants}
@@ -315,7 +305,6 @@ const Index = () => {
           </motion.div>
         </motion.div>
         
-        {/* Charts Section */}
         <motion.div 
           className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
           variants={containerVariants}
@@ -340,7 +329,6 @@ const Index = () => {
           </motion.div>
         </motion.div>
         
-        {/* Recent Orders & Low Stock */}
         <motion.div 
           className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
           variants={containerVariants}
@@ -348,7 +336,7 @@ const Index = () => {
           <motion.div variants={childVariants}>
             <DashboardCard className="premium-card">
               <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Recent Orders</DashboardCardTitle>
+                <DashboardCardTitle className="text-primary">Recent Orders</DashboardCardTitle>
               </DashboardCardHeader>
               <DashboardCardContent>
                 <DataTable
@@ -383,7 +371,7 @@ const Index = () => {
           <motion.div variants={childVariants}>
             <DashboardCard className="premium-card">
               <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Low Stock Items</DashboardCardTitle>
+                <DashboardCardTitle className="text-primary">Low Stock Items</DashboardCardTitle>
               </DashboardCardHeader>
               <DashboardCardContent>
                 <DataTable
