@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 interface DashboardCardProps {
   className?: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
-export function DashboardCard({ className = "", children }: DashboardCardProps) {
+export function DashboardCard({ className = "", children, onClick }: DashboardCardProps) {
   return (
     <motion.div 
       className={`aesthetic-card backdrop-blur-xl 
@@ -22,7 +23,7 @@ export function DashboardCard({ className = "", children }: DashboardCardProps) 
         stiffness: 300,
         damping: 30
       }}
-      whileHover={{ y: -4 }}
+      onClick={onClick}
     >
       {children}
     </motion.div>
