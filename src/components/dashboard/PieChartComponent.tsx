@@ -123,20 +123,26 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              formatter={(value, entry: any) => (
-                <motion.span 
-                  className={activeIndex === entry.index ? "font-medium" : ""}
-                  initial={{ color: "var(--foreground)" }}
-                  animate={{ 
-                    color: hoveredItem?.name === value ? 
-                      GRADIENT_COLORS[entry.index % GRADIENT_COLORS.length].end : "var(--foreground)" 
-                  }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {value}
-                </motion.span>
-              )} 
+              formatter={(value, entry: any) => {
+                // Safely access color info - fix for the error
+                const safeIndex = entry?.index !== undefined ? entry.index % GRADIENT_COLORS.length : 0;
+                const gradientColor = GRADIENT_COLORS[safeIndex] || { start: "#cccccc", end: "#cccccc" };
+                
+                return (
+                  <motion.span 
+                    className={activeIndex === entry?.index ? "font-medium" : ""}
+                    initial={{ color: "var(--foreground)" }}
+                    animate={{ 
+                      color: hoveredItem?.name === value ? 
+                        gradientColor.end : "var(--foreground)" 
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {value}
+                  </motion.span>
+                );
+              }} 
             />
           </PieChart>
         </ResponsiveContainer>
