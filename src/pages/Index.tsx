@@ -1,27 +1,10 @@
-
-import { 
-  BarChart3, 
-  Box, 
-  DollarSign, 
-  Package, 
-  ShoppingCart, 
-  Truck, 
-  Users 
-} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getSalesOrders, getInventory } from "@/services/supabase";
-import { DataTable } from "../components/ui/DataTable";
 import { Header } from "../components/layout/Header";
-import { StatCard } from "../components/dashboard/StatCard";
-import { 
-  DashboardCard, 
-  DashboardCardContent, 
-  DashboardCardHeader, 
-  DashboardCardTitle 
-} from "../components/dashboard/DashboardCard";
-import { SalesChart } from "../components/dashboard/SalesChart";
-import { PieChartComponent } from "../components/dashboard/PieChartComponent";
 import { motion } from "framer-motion";
+import { StatsGrid } from "../components/dashboard/StatsGrid";
+import { ChartsSection } from "../components/dashboard/ChartsSection";
+import { TablesSection } from "../components/dashboard/TablesSection";
 
 const Index = () => {
   // Fetch sales orders from backend
@@ -39,11 +22,7 @@ const Index = () => {
   // Calculate dashboard statistics from real data
   const totalOrders = salesOrders.length;
   const pendingOrders = salesOrders.filter(order => order.order_status === "Pending").length;
-  
-  // Calculate low stock items
   const lowStockItems = inventoryItems.filter(item => Number(item.quantity) < 50).slice(0, 5);
-  
-  // Recent orders for dashboard
   const recentOrders = salesOrders.slice(0, 5);
 
   // Mock chart data (we'll keep this for visualization)
@@ -80,143 +59,6 @@ const Index = () => {
       { name: 'Cancelled', value: 5 }
     ];
 
-  // Create drawer content for each card
-  const totalOrdersDrawer = (
-    <div className="space-y-6">
-      <p className="text-muted-foreground">
-        Overview of all orders in the system. Current total: <strong>{totalOrders}</strong>
-      </p>
-      
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium">Order Status Breakdown</h4>
-        <div className="grid grid-cols-2 gap-4">
-          {orderStatusData.map((status) => (
-            <motion.div 
-              key={status.name}
-              whileHover={{ scale: 1.02 }}
-              className="p-4 bg-white/20 dark:bg-black/20 rounded-lg border border-black/5 dark:border-white/10"
-            >
-              <div className="text-sm font-medium">{status.name}</div>
-              <div className="text-2xl font-bold">{status.value}</div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-      
-      <DataTable
-        data={recentOrders.slice(0, 3)}
-        columns={[
-          { header: "SO No.", accessor: "order_number" },
-          { header: "Customer", accessor: "customer_name" },
-          { header: "Status", accessor: "order_status" },
-        ]}
-        searchable={false}
-      />
-    </div>
-  );
-  
-  const pendingOrdersDrawer = (
-    <div className="space-y-6">
-      <p className="text-muted-foreground">
-        All orders currently pending action. Total pending: <strong>{pendingOrders}</strong>
-      </p>
-      
-      <DataTable
-        data={salesOrders.filter(order => order.order_status === "Pending")}
-        columns={[
-          { header: "SO No.", accessor: "order_number" },
-          { header: "Customer", accessor: "customer_name" },
-          { header: "Date", accessor: "expected_payment_date" },
-        ]}
-        searchable={false}
-      />
-    </div>
-  );
-  
-  const monthlySalesDrawer = (
-    <div className="space-y-6">
-      <p className="text-muted-foreground">
-        Monthly sales performance overview. Total: <strong>${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}</strong>
-      </p>
-      
-      <SalesChart data={monthlySalesData} title="Monthly Sales Detail" type="line" />
-      
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium">Monthly Breakdown</h4>
-        <div className="space-y-2">
-          {monthlySalesData.map((month) => (
-            <div key={month.name} className="flex justify-between items-center">
-              <span>{month.name}</span>
-              <span className="font-medium">${month.value.toLocaleString()}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-  
-  const inventoryDrawer = (
-    <div className="space-y-6">
-      <p className="text-muted-foreground">
-        All inventory items currently in stock. Total items: <strong>{inventoryItems.length}</strong>
-      </p>
-      
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium">Inventory Status</h4>
-        <div className="grid grid-cols-2 gap-4">
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="p-4 bg-white/20 dark:bg-black/20 rounded-lg border border-black/5 dark:border-white/10"
-          >
-            <div className="text-sm font-medium">Low Stock</div>
-            <div className="text-2xl font-bold">{lowStockItems.length}</div>
-          </motion.div>
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="p-4 bg-white/20 dark:bg-black/20 rounded-lg border border-black/5 dark:border-white/10"
-          >
-            <div className="text-sm font-medium">Out of Stock</div>
-            <div className="text-2xl font-bold">{inventoryItems.filter(item => Number(item.quantity) === 0).length}</div>
-          </motion.div>
-        </div>
-      </div>
-      
-      <DataTable
-        data={lowStockItems}
-        columns={[
-          { header: "Product ID", accessor: "product_id" },
-          { header: "Quantity", accessor: "quantity" },
-          { header: "Location", accessor: "location" },
-        ]}
-        searchable={false}
-      />
-    </div>
-  );
-
-  // Container animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30
-      }
-    }
-  };
-
   return (
     <div className="flex-1">
       <Header />
@@ -225,181 +67,33 @@ const Index = () => {
         className="p-6 animate-in ml-[72px] lg:ml-72 transition-all duration-500"
         initial="hidden"
         animate="visible"
-        variants={containerVariants}
       >
-        <motion.div variants={childVariants} className="mb-8">
+        <motion.div className="mb-8">
           <h1 className="text-3xl font-semibold mb-2 tracking-wide premium-text-gradient">Dashboard</h1>
           <p className="text-muted-foreground text-lg tracking-wide">
             Overview of your business metrics and key performance indicators.
           </p>
         </motion.div>
         
-        {/* Stats Grid */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Total Orders"
-              value={totalOrders}
-              icon={<ShoppingCart size={20} />}
-              change={{ value: 8.2, trend: "up" }}
-              drawerContent={totalOrdersDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Pending Orders"
-              value={pendingOrders}
-              icon={<Box size={20} />}
-              change={{ value: 2.1, trend: "down" }}
-              drawerContent={pendingOrdersDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Monthly Sales"
-              value={`$${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}`}
-              icon={<DollarSign size={20} />}
-              change={{ value: 12.5, trend: "up" }}
-              drawerContent={monthlySalesDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Inventory Items"
-              value={inventoryItems.length}
-              icon={<Package size={20} />}
-              change={{ value: 1.5, trend: "up" }}
-              drawerContent={inventoryDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Active Users"
-              value={22}
-              icon={<Users size={20} />}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="In-Transit Deliveries"
-              value={12}
-              icon={<Truck size={20} />}
-              change={{ value: 15, trend: "up" }}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Low Stock Items"
-              value={lowStockItems.length}
-              icon={<BarChart3 size={20} />}
-              change={{ value: 5, trend: "up" }}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Out of Stock"
-              value={inventoryItems.filter(item => Number(item.quantity) === 0).length}
-              icon={<Package size={20} />}
-              change={{ value: 2, trend: "down" }}
-            />
-          </motion.div>
-        </motion.div>
+        <StatsGrid
+          totalOrders={totalOrders}
+          pendingOrders={pendingOrders}
+          monthlySales={monthlySalesData.reduce((acc, curr) => acc + curr.value, 0)}
+          inventoryItems={inventoryItems}
+          lowStockItems={lowStockItems}
+          recentOrders={recentOrders}
+        />
         
-        {/* Charts Section */}
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <SalesChart data={monthlySalesData} title="Monthly Sales Performance" type="bar" />
-          </motion.div>
-          <motion.div variants={childVariants}>
-            <SalesChart data={monthlySalesData} title="Sales Trend" type="line" />
-          </motion.div>
-        </motion.div>
+        <ChartsSection
+          monthlySalesData={monthlySalesData}
+          productCategoryData={productCategoryData}
+          orderStatusData={orderStatusData}
+        />
         
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <PieChartComponent data={productCategoryData} title="Sales by Product Category" />
-          </motion.div>
-          <motion.div variants={childVariants}>
-            <PieChartComponent data={orderStatusData} title="Orders by Status" />
-          </motion.div>
-        </motion.div>
-        
-        {/* Recent Orders & Low Stock */}
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <DashboardCard className="premium-card">
-              <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Recent Orders</DashboardCardTitle>
-              </DashboardCardHeader>
-              <DashboardCardContent>
-                <DataTable
-                  data={recentOrders}
-                  columns={[
-                    { header: "SO No.", accessor: "order_number" },
-                    { header: "Customer", accessor: "customer_name" },
-                    { 
-                      header: "Status", 
-                      accessor: "order_status",
-                      cell: (item) => (
-                        <span className={`
-                          status-pill
-                          ${item.order_status === "Delivered" ? "status-pill-success" : 
-                            item.order_status === "Processing" ? "status-pill-info" : 
-                            item.order_status === "Shipped" ? "status-pill-info" : 
-                            item.order_status === "Cancelled" ? "status-pill-danger" : 
-                            "status-pill-warning"}
-                        `}>
-                          {item.order_status}
-                        </span>
-                      )
-                    },
-                    { header: "Payment Date", accessor: "expected_payment_date" },
-                  ]}
-                  searchable={false}
-                />
-              </DashboardCardContent>
-            </DashboardCard>
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <DashboardCard className="premium-card">
-              <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Low Stock Items</DashboardCardTitle>
-              </DashboardCardHeader>
-              <DashboardCardContent>
-                <DataTable
-                  data={lowStockItems}
-                  columns={[
-                    { header: "ID", accessor: "id" },
-                    { header: "Product ID", accessor: "product_id" },
-                    { header: "Quantity", accessor: "quantity" },
-                    { header: "Location", accessor: "location" },
-                  ]}
-                  searchable={false}
-                />
-              </DashboardCardContent>
-            </DashboardCard>
-          </motion.div>
-        </motion.div>
+        <TablesSection
+          recentOrders={recentOrders}
+          lowStockItems={lowStockItems}
+        />
       </motion.div>
     </div>
   );
