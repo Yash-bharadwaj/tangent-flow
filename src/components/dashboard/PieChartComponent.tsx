@@ -4,13 +4,13 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Sector } fro
 import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "./DashboardCard";
 import { motion } from "framer-motion";
 
-// Light gradient color palette
-const LIGHT_GRADIENT_COLORS = [
-  'linear-gradient(90deg, hsla(186, 33%, 94%, 1) 0%, hsla(216, 41%, 79%, 1) 100%)',
-  'linear-gradient(90deg, hsla(39, 100%, 77%, 1) 0%, hsla(22, 90%, 57%, 1) 100%)',
-  'linear-gradient(90deg, hsla(46, 73%, 75%, 1) 0%, hsla(176, 73%, 88%, 1) 100%)',
-  'linear-gradient(90deg, hsla(139, 70%, 75%, 1) 0%, hsla(63, 90%, 76%, 1) 100%)',
-  'linear-gradient(90deg, hsla(221, 45%, 73%, 1) 0%, hsla(220, 78%, 29%, 1) 100%)'
+// Light gradient color palette - using solid colors that match our gradient theme
+const LIGHT_COLORS = [
+  '#92c5eb', // Light blue
+  '#ffc285', // Light orange
+  '#f9f5af', // Light yellow
+  '#b9e5c0', // Light green
+  '#a1b5e3'  // Light purple
 ];
 
 interface PieChartComponentProps {
@@ -89,7 +89,7 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
               dataKey="value"
               activeIndex={activeIndex !== null ? activeIndex : undefined}
               activeShape={renderActiveShape}
-              onMouseEnter={(entry, index) => {
+              onMouseEnter={(_, index) => {
                 setActiveIndex(index);
                 setHoveredItem(data[index]);
               }}
@@ -104,7 +104,7 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
               {data.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={LIGHT_GRADIENT_COLORS[index % LIGHT_GRADIENT_COLORS.length]} 
+                  fill={LIGHT_COLORS[index % LIGHT_COLORS.length]} 
                   opacity={activeIndex === index ? 1 : 0.8}
                   strokeWidth={activeIndex === index ? 2 : 1}
                   stroke={activeIndex === index ? "#fff" : "none"}
@@ -113,13 +113,13 @@ export const PieChartComponent = ({ data, title, className = "" }: PieChartCompo
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              formatter={(value, entry) => (
+              formatter={(value, entry: any) => (
                 <motion.span 
-                  className={activeIndex === entry.payload?.dataKey ? "font-medium" : ""}
+                  className={activeIndex === entry.index ? "font-medium" : ""}
                   initial={{ color: "var(--foreground)" }}
                   animate={{ 
                     color: hoveredItem?.name === value ? 
-                      entry.payload?.fill : "var(--foreground)" 
+                      LIGHT_COLORS[entry.index % LIGHT_COLORS.length] : "var(--foreground)" 
                   }}
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
