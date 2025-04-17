@@ -92,7 +92,7 @@ export function StatCard({
           <DashboardCardContent>
             <div className="flex flex-col">
               <motion.div 
-                className="text-2xl font-semibold text-primary"
+                className="text-2xl font-semibold bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent"
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 1.5, repeat: 0, ease: "easeOut" }}
               >

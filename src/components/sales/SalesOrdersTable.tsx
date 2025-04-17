@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { SalesOrder } from "@/types/database";
-import { Badge } from "@/components/ui/badge";
 
 interface SalesOrdersTableProps {
   data: SalesOrder[];
