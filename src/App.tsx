@@ -1,4 +1,5 @@
 
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,7 @@ import LoginPage from "./components/auth/LoginPage";
 import Index from "./pages/Index";
 import ModuleManagement from "./pages/ModuleManagement";
 import SalesOrders from "./pages/SalesOrders";
+import BusinessPartners from "./pages/BusinessPartners";
 import Inventory from "./pages/Inventory";
 import UserManagement from "./pages/UserManagement";
 import DeliveryTracking from "./pages/DeliveryTracking";
@@ -59,6 +61,7 @@ const AppRoutes = () => (
     <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/modules" element={<ProtectedRoute><ModuleManagement /></ProtectedRoute>} />
     <Route path="/sales-orders" element={<ProtectedRoute><SalesOrders /></ProtectedRoute>} />
+    <Route path="/business-partners" element={<ProtectedRoute><BusinessPartners /></ProtectedRoute>} />
     <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
     <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
     <Route path="/deliveries" element={<ProtectedRoute><DeliveryTracking /></ProtectedRoute>} />
@@ -82,3 +85,4 @@ const App = () => (
 );
 
 export default App;
+

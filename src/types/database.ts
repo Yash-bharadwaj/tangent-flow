@@ -1,4 +1,5 @@
 
+
 import type { Database } from "@/integrations/supabase/types";
 
 // Profile type from the profiles table
@@ -62,6 +63,29 @@ export type Delivery = {
   order_id: string;
   status: string;
   tracking_number: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+// Business Partner type from the business_partners table
+export type BusinessPartner = {
+  id: string;
+  bp_code: string;
+  bp_name: string;
+  contact_person: string;
+  phone_country: string | null;
+  phone_number: string | null;
+  email: string | null;
+  address: string | null;
+  country: string | null;
+  payment_terms: string;
+  payment_method: string | null;
+  bp_type: string | null;
+  material_1: string | null;
+  material_2: string | null;
+  material_3: string | null;
+  communication_method: string | null;
+  shipping_method: string | null;
   created_at: string;
   updated_at: string;
 };

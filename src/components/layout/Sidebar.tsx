@@ -75,6 +75,12 @@ export function Sidebar({ className = "" }: SidebarProps) {
       visible: hasPermission("manageSalesOrders") || hasPermission("canViewSalesOrders")
     },
     { 
+      to: "/business-partners", 
+      icon: <Users size={20} />, 
+      text: "Business Partners",
+      visible: hasPermission("manageBusinessPartners") || hasPermission("canViewBusinessPartners") || true // Temporarily visible for all
+    },
+    { 
       to: "/inventory", 
       icon: <Package size={20} />, 
       text: "Inventory",
