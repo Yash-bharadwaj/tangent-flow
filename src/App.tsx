@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,7 +14,7 @@ import Inventory from "./pages/Inventory";
 import UserManagement from "./pages/UserManagement";
 import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
-import { Sidebar } from "./components/layout/Sidebar";
+import { Sidebar } from "./components/layout/sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { useEffect, useState } from "react";
 
