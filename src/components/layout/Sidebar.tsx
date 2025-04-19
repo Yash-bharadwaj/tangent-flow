@@ -1,185 +1,228 @@
-
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { 
-  BarChart, 
-  Box, 
-  ChevronLeft, 
-  ChevronRight, 
-  Cpu, 
-  Layers, 
-  LogOut,
-  Package, 
-  ShoppingCart, 
-  Truck, 
-  Users 
-} from "lucide-react";
-import { useAuth } from "../auth/AuthProvider";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  LayoutDashboard,
+  Settings,
+  Users,
+  Package2,
+  Truck,
+  Boxes,
+  LogOut,
+  Menu,
+} from "lucide-react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvider";
 
-interface SidebarLinkProps {
-  to: string;
-  icon: React.ReactNode;
-  text: string;
-  isCollapsed: boolean;
+interface UserPermissions {
+  canViewDashboard: boolean;
+  canViewModules: boolean;
+  canManageUsers: boolean;
+  canViewSalesOrders: boolean;
+  canViewInventory: boolean;
+  canViewDeliveries: boolean;
+  canViewBusinessPartners: boolean;
+  canManageBusinessPartners: boolean;
 }
 
-const SidebarLink = ({ to, icon, text, isCollapsed }: SidebarLinkProps) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex items-center py-3 px-3 my-1.5 rounded-xl transition-all duration-300 ${
-          isActive
-            ? "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/20"
-            : "text-sidebar-foreground/80 hover:bg-white/10 dark:hover:bg-white/5 hover:text-sidebar-foreground"
-        } ${isCollapsed ? "justify-center" : "justify-start"}`
-      }
-    >
-      <div className="flex items-center">
-        <div className={`${isCollapsed ? "mx-0" : "mr-3"}`}>{icon}</div>
-        {!isCollapsed && <span className="font-medium text-sm tracking-wide">{text}</span>}
-      </div>
-    </NavLink>
-  );
+const useUserPermissions = (): UserPermissions => {
+  const { user } = useAuth();
+  
+  // Default permissions - very permissive for now
+  return {
+    canViewDashboard: true,
+    canViewModules: true,
+    canManageUsers: true,
+    canViewSalesOrders: true,
+    canViewInventory: true,
+    canViewDeliveries: true,
+    canViewBusinessPartners: true,
+    canManageBusinessPartners: true,
+  };
 };
 
-interface SidebarProps {
-  className?: string;
-}
+export function Sidebar() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const permissions = useUserPermissions();
 
-export function Sidebar({ className = "" }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const { logout, userRole, hasPermission } = useAuth();
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
-  const navItems = [
-    { 
-      to: "/", 
-      icon: <BarChart size={20} />, 
-      text: "Dashboard",
-      visible: true // Everyone can see dashboard
+  const navigationItems = [
+    {
+      name: "Dashboard",
+      href: "/",
+      icon: LayoutDashboard,
+      permission: "canViewDashboard",
+      current: pathname === "/",
     },
-    { 
-      to: "/modules", 
-      icon: <Cpu size={20} />, 
-      text: "Modules",
-      visible: hasPermission("manageModules") || hasPermission("canViewModules")
+    {
+      name: "Modules",
+      href: "/modules",
+      icon: Boxes,
+      permission: "canViewModules",
+      current: pathname === "/modules",
     },
-    { 
-      to: "/sales-orders", 
-      icon: <ShoppingCart size={20} />, 
-      text: "Sales Orders",
-      visible: hasPermission("manageSalesOrders") || hasPermission("canViewSalesOrders")
+    {
+      name: "User Management",
+      href: "/users",
+      icon: Users,
+      permission: "canManageUsers",
+      current: pathname === "/users",
     },
-    { 
-      to: "/business-partners", 
-      icon: <Users size={20} />, 
-      text: "Business Partners",
-      visible: hasPermission("manageBusinessPartners") || hasPermission("canViewBusinessPartners") || true // Temporarily visible for all
+    {
+      name: "Sales Orders",
+      href: "/sales-orders",
+      icon: Package2,
+      permission: "canViewSalesOrders",
+      current: pathname === "/sales-orders",
     },
-    { 
-      to: "/inventory", 
-      icon: <Package size={20} />, 
-      text: "Inventory",
-      visible: hasPermission("manageInventory") || hasPermission("canViewInventory")
+    {
+      name: "Business Partners",
+      href: "/business-partners",
+      icon: Users,
+      permission: "canViewBusinessPartners",
+      current: pathname === "/business-partners",
     },
-    { 
-      to: "/users", 
-      icon: <Users size={20} />, 
-      text: "Users",
-      visible: hasPermission("manageUsers") || hasPermission("canViewUsers")
+    {
+      name: "Inventory",
+      href: "/inventory",
+      icon: Boxes,
+      permission: "canViewInventory",
+      current: pathname === "/inventory",
     },
-    { 
-      to: "/deliveries", 
-      icon: <Truck size={20} />, 
-      text: "Deliveries",
-      visible: hasPermission("manageDeliveries") || hasPermission("canViewDeliveries")
+    {
+      name: "Delivery Tracking",
+      href: "/deliveries",
+      icon: Truck,
+      permission: "canViewDeliveries",
+      current: pathname === "/deliveries",
     },
   ];
 
-  const visibleNavItems = navItems.filter(item => item.visible);
-
   return (
     <>
-      <div
-        className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-in-out ${
-          isCollapsed ? "w-20" : "w-72"
-        } ${className} bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-waves flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
-      >
-        <div className="p-4 flex items-center justify-between">
-          {!isCollapsed && (
-            <div className="flex items-center">
-              <Layers className="h-7 w-7 text-primary" />
-              <span className="ml-2 text-xl font-semibold tracking-wider premium-text-gradient">Tangent</span>
-            </div>
-          )}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg border border-black/5 dark:border-white/10 backdrop-blur-lg 
-                     bg-white/10 dark:bg-black/20 hover:bg-white/20 dark:hover:bg-white/5 transition-all duration-300"
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      <aside className="fixed left-0 top-0 z-50 flex h-full w-[72px] flex-col gap-2 border-r bg-secondary/80 backdrop-blur-sm">
+        <Link to="/" className="p-3">
+          <img src="/acme-logo.svg" alt="Logo" width="32" height="32" />
+        </Link>
+
+        <nav className="flex-1">
+          <ul className="grid h-full place-items-start gap-2">
+            {navigationItems.map(
+              (item, index) =>
+                permissions[item.permission as keyof UserPermissions] && (
+                  <li key={index}>
+                    <NavLink
+                      to={item.href}
+                      className={({ isActive }) =>
+                        `group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary`
+                      }
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span className="sr-only">{item.name}</span>
+                    </NavLink>
+                  </li>
+                )
+            )}
+          </ul>
+        </nav>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary"
+            >
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user?.avatar_url || ""} alt={user?.full_name || "User Avatar"} />
+                <AvatarFallback>{user?.full_name?.charAt(0) || "U"}</AvatarFallback>
+              </Avatar>
+              <span className="sr-only">Open user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" forceMount className="w-36">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </aside>
+
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            className="absolute left-3 top-3 rounded-full p-2 lg:hidden"
           >
-            {isCollapsed ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <ChevronLeft className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="flex w-full flex-col gap-2 border-r bg-secondary/80 backdrop-blur-sm md:w-[300px]"
+        >
+          <SheetHeader className="text-left">
+            <SheetTitle>Menu</SheetTitle>
+            <SheetDescription>
+              Navigate through the application.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="overflow-y-auto flex-1 py-6 px-3">
-          <nav className="space-y-1">
-            {visibleNavItems.map((item, index) => (
-              <SidebarLink
-                key={index}
-                to={item.to}
-                icon={item.icon}
-                text={item.text}
-                isCollapsed={isCollapsed}
-              />
-            ))}
+          <nav className="flex-1">
+            <ul className="grid h-full place-items-start gap-2">
+              {navigationItems.map(
+                (item, index) =>
+                  permissions[item.permission as keyof UserPermissions] && (
+                    <li key={index}>
+                      <NavLink
+                        to={item.href}
+                        className={({ isActive }) =>
+                          `group relative flex h-14 w-full items-center justify-start gap-4 px-3 transition-all hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary`
+                        }
+                      >
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.name}</span>
+                      </NavLink>
+                    </li>
+                  )
+              )}
+            </ul>
           </nav>
-        </div>
-
-        <div className="p-4 border-t border-black/5 dark:border-white/5">
-          <div className="flex items-center justify-between">
-            {!isCollapsed && (
-              <>
-                <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <Box className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-xs font-medium text-sidebar-foreground">{userRole || "Tangent Flow"}</p>
-                    <p className="text-xs text-sidebar-foreground/60">v1.0.0</p>
-                  </div>
-                </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={logout}
-                  className="h-9 w-9 rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </>
-            )}
-            {isCollapsed && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={logout}
-                className="h-9 w-9 mx-auto rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
