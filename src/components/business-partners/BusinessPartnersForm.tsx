@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -26,7 +27,7 @@ import {
   CommunicationMethods, 
   ShippingMethods 
 } from "@/types/businessPartner";
-import { createBusinessPartner } from "@/services/businessPartners";
+import { createBusinessPartner, BusinessPartnerInput } from "@/services/businessPartners";
 
 const formSchema = z.object({
   bp_name: z.string().min(1, "Business Partner Name is required").max(100),
@@ -75,7 +76,26 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
     try {
-      await createBusinessPartner(formData);
+      // Ensure all required fields are present with proper typing
+      const businessPartnerData: BusinessPartnerInput = {
+        bp_name: formData.bp_name,
+        contact_person: formData.contact_person,
+        phone_country: formData.phone_country || null,
+        phone_number: formData.phone_number || null,
+        email: formData.email || null,
+        address: formData.address || null,
+        country: formData.country || null,
+        payment_terms: formData.payment_terms,
+        payment_method: formData.payment_method || null,
+        bp_type: formData.bp_type || null,
+        material_1: formData.material_1 || null,
+        material_2: formData.material_2 || null,
+        material_3: formData.material_3 || null,
+        communication_method: formData.communication_method || null,
+        shipping_method: formData.shipping_method || null,
+      };
+      
+      await createBusinessPartner(businessPartnerData);
       form.reset();
       onSuccess?.();
     } finally {
