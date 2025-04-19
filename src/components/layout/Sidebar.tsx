@@ -58,7 +58,7 @@ const useUserPermissions = (): UserPermissions => {
 };
 
 export function Sidebar() {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
@@ -66,7 +66,7 @@ export function Sidebar() {
   const permissions = useUserPermissions();
 
   const handleSignOut = async () => {
-    await signOut();
+    await logout();
     navigate("/login");
   };
 
@@ -122,6 +122,11 @@ export function Sidebar() {
     },
   ];
 
+  // Get user avatar_url and full_name with fallbacks
+  const avatarUrl = user?.avatar_url || "";
+  const fullName = user?.full_name || "User";
+  const userInitial = fullName?.charAt(0) || "U";
+
   return (
     <>
       <aside className="fixed left-0 top-0 z-50 flex h-full w-[72px] flex-col gap-2 border-r bg-secondary/80 backdrop-blur-sm">
@@ -157,8 +162,8 @@ export function Sidebar() {
               className="group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary"
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user?.avatar_url || ""} alt={user?.full_name || "User Avatar"} />
-                <AvatarFallback>{user?.full_name?.charAt(0) || "U"}</AvatarFallback>
+                <AvatarImage src={avatarUrl} alt={fullName} />
+                <AvatarFallback>{userInitial}</AvatarFallback>
               </Avatar>
               <span className="sr-only">Open user menu</span>
             </Button>
