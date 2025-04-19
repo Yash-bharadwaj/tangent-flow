@@ -3,7 +3,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BusinessPartner } from "@/types/businessPartner";
 
-export const createBusinessPartner = async (data: Omit<BusinessPartner, 'id' | 'bp_code' | 'created_at' | 'updated_at'>): Promise<BusinessPartner | null> => {
+export const createBusinessPartner = async (data: {
+  bp_name: string;
+  contact_person: string;
+  phone_country?: string;
+  phone_number?: string;
+  email?: string;
+  address?: string;
+  country?: string;
+  payment_terms: string;
+  payment_method?: string;
+  bp_type?: string;
+  material_1?: string;
+  material_2?: string;
+  material_3?: string;
+  communication_method?: string;
+  shipping_method?: string;
+}): Promise<BusinessPartner | null> => {
   try {
     const { data: newPartner, error } = await supabase
       .from('business_partners')

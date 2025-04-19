@@ -20,18 +20,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PaymentTerms, PaymentMethods, BPTypes, CommunicationMethods, ShippingMethods } from "@/types/businessPartner";
+import { 
+  PaymentTerms, 
+  PaymentMethods, 
+  BPTypes, 
+  CommunicationMethods, 
+  ShippingMethods 
+} from "@/types/businessPartner";
 import { createBusinessPartner } from "@/services/businessPartners";
 
 const formSchema = z.object({
-  bp_name: z.string().min(1).max(100),
-  contact_person: z.string().min(1).max(50),
+  bp_name: z.string().min(1, "Business Partner Name is required").max(100),
+  contact_person: z.string().min(1, "Contact Person is required").max(50),
   phone_country: z.string().optional(),
   phone_number: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().optional(),
   country: z.string().optional(),
-  payment_terms: z.string().min(1),
+  payment_terms: z.string().min(1, "Payment Terms is required"),
   payment_method: z.string().optional(),
   bp_type: z.string().optional(),
   material_1: z.string().optional(),
@@ -67,10 +73,10 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
     try {
-      await createBusinessPartner(data);
+      await createBusinessPartner(formData);
       form.reset();
       onSuccess?.();
     } finally {
