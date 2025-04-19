@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -76,7 +75,26 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
     try {
-      await createBusinessPartner(formData);
+      // Ensure all required fields are present in the data we send
+      const dataToSubmit = {
+        bp_name: formData.bp_name,
+        contact_person: formData.contact_person,
+        phone_country: formData.phone_country,
+        phone_number: formData.phone_number,
+        email: formData.email,
+        address: formData.address,
+        country: formData.country,
+        payment_terms: formData.payment_terms,
+        payment_method: formData.payment_method,
+        bp_type: formData.bp_type,
+        material_1: formData.material_1,
+        material_2: formData.material_2,
+        material_3: formData.material_3,
+        communication_method: formData.communication_method,
+        shipping_method: formData.shipping_method,
+      };
+      
+      await createBusinessPartner(dataToSubmit);
       form.reset();
       onSuccess?.();
     } finally {

@@ -21,6 +21,8 @@ export const createBusinessPartner = async (data: {
   shipping_method?: string;
 }): Promise<BusinessPartner | null> => {
   try {
+    // The bp_code field is auto-generated on the server using a trigger
+    // so we don't need to provide it
     const { data: newPartner, error } = await supabase
       .from('business_partners')
       .insert(data)
