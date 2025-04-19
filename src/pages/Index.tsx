@@ -12,8 +12,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getSalesOrders, getInventory } from "@/services/supabase";
 import { DataTable } from "../components/ui/DataTable";
 import { Header } from "../components/layout/Header";
-import { StatCard } from "@/components/dashboard/stat-card"; // Updated import path
-import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "../components/dashboard/DashboardCard";
+import { StatCard } from "../components/dashboard/StatCard";
+import { 
+  DashboardCard, 
+  DashboardCardContent, 
+  DashboardCardHeader, 
+  DashboardCardTitle 
+} from "../components/dashboard/DashboardCard";
 import { SalesChart } from "../components/dashboard/SalesChart";
 import { PieChartComponent } from "../components/dashboard/PieChartComponent";
 import { motion } from "framer-motion";

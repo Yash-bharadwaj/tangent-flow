@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,14 +10,13 @@ import LoginPage from "./components/auth/LoginPage";
 import Index from "./pages/Index";
 import ModuleManagement from "./pages/ModuleManagement";
 import SalesOrders from "./pages/SalesOrders";
-import BusinessPartners from "./pages/BusinessPartners";
 import Inventory from "./pages/Inventory";
 import UserManagement from "./pages/UserManagement";
 import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
-import { Sidebar } from "./components/layout/sidebar";
+import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,10 +31,6 @@ const queryClient = new QueryClient({
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
-  const [sidebarExpanded, setSidebarExpanded] = useState(() => {
-    const savedState = localStorage.getItem('sidebar-expanded');
-    return savedState !== null ? savedState === 'true' : true;
-  });
   
   useEffect(() => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
@@ -50,9 +46,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'ml-64' : 'ml-[72px]'}`}>
-        {children}
-      </div>
+      {children}
       <RightSidebar />
     </div>
   );
@@ -65,7 +59,6 @@ const AppRoutes = () => (
     <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
     <Route path="/modules" element={<ProtectedRoute><ModuleManagement /></ProtectedRoute>} />
     <Route path="/sales-orders" element={<ProtectedRoute><SalesOrders /></ProtectedRoute>} />
-    <Route path="/business-partners" element={<ProtectedRoute><BusinessPartners /></ProtectedRoute>} />
     <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
     <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
     <Route path="/deliveries" element={<ProtectedRoute><DeliveryTracking /></ProtectedRoute>} />
