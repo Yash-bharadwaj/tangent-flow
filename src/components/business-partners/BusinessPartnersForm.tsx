@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +27,7 @@ import {
   ShippingMethods 
 } from "@/types/businessPartner";
 import { createBusinessPartner, BusinessPartnerInput } from "@/services/businessPartners";
+import { countries } from "@/utils/countryData";
 
 const formSchema = z.object({
   bp_name: z.string().min(1, "Business Partner Name is required").max(100),
@@ -76,7 +76,6 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
     try {
-      // Ensure all required fields are present with proper typing
       const businessPartnerData: BusinessPartnerInput = {
         bp_name: formData.bp_name,
         contact_person: formData.contact_person,
@@ -135,33 +134,76 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="phone_country"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Country Code</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="+1" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-col space-y-4">
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-          <FormField
-            control={form.control}
-            name="phone_number"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number</FormLabel>
-                <FormControl>
-                  <Input {...field} type="tel" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex space-x-2">
+            <div className="w-1/3">
+              <FormField
+                control={form.control}
+                name="phone_country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Code</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Code" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.phoneCode}>
+                            {country.phoneCode}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-2/3">
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="tel" placeholder="Phone number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <FormField
             control={form.control}
