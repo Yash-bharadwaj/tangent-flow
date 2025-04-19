@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,7 @@ import Inventory from "./pages/Inventory";
 import UserManagement from "./pages/UserManagement";
 import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
+import BusinessPartners from "./pages/BusinessPartners";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { useEffect } from "react";
@@ -62,6 +62,7 @@ const AppRoutes = () => (
     <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
     <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
     <Route path="/deliveries" element={<ProtectedRoute><DeliveryTracking /></ProtectedRoute>} />
+    <Route path="/business-partners" element={<ProtectedRoute><BusinessPartners /></ProtectedRoute>} />
     <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
   </Routes>
 );

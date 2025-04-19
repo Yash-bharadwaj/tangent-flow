@@ -1,70 +1,36 @@
 
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { 
-  BarChart, 
-  Box, 
-  ChevronLeft, 
-  ChevronRight, 
-  Cpu, 
-  Layers, 
-  LogOut,
-  Package, 
-  ShoppingCart, 
-  Truck, 
-  Users 
-} from "lucide-react";
 import { useAuth } from "../auth/AuthProvider";
 import { Button } from "@/components/ui/button";
+import { 
+  BarChart, 
+  Box,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  Package,
+  ShoppingCart,
+  Truck,
+  Users,
+  UserCheck
+} from "lucide-react";
 
-interface SidebarLinkProps {
-  to: string;
-  icon: React.ReactNode;
-  text: string;
-  isCollapsed: boolean;
-}
-
-const SidebarLink = ({ to, icon, text, isCollapsed }: SidebarLinkProps) => {
-  const location = useLocation();
-  const isActive = location.pathname === to;
-
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex items-center py-3 px-3 my-1.5 rounded-xl transition-all duration-300 ${
-          isActive
-            ? "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/20"
-            : "text-sidebar-foreground/80 hover:bg-white/10 dark:hover:bg-white/5 hover:text-sidebar-foreground"
-        } ${isCollapsed ? "justify-center" : "justify-start"}`
-      }
-    >
-      <div className="flex items-center">
-        <div className={`${isCollapsed ? "mx-0" : "mr-3"}`}>{icon}</div>
-        {!isCollapsed && <span className="font-medium text-sm tracking-wide">{text}</span>}
-      </div>
-    </NavLink>
-  );
-};
-
-interface SidebarProps {
-  className?: string;
-}
-
-export function Sidebar({ className = "" }: SidebarProps) {
+export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { logout, userRole, hasPermission } = useAuth();
+  const location = useLocation();
 
   const navItems = [
     { 
       to: "/", 
       icon: <BarChart size={20} />, 
       text: "Dashboard",
-      visible: true // Everyone can see dashboard
+      visible: true
     },
     { 
       to: "/modules", 
-      icon: <Cpu size={20} />, 
+      icon: <Box size={20} />, 
       text: "Modules",
       visible: hasPermission("manageModules") || hasPermission("canViewModules")
     },
@@ -73,6 +39,12 @@ export function Sidebar({ className = "" }: SidebarProps) {
       icon: <ShoppingCart size={20} />, 
       text: "Sales Orders",
       visible: hasPermission("manageSalesOrders") || hasPermission("canViewSalesOrders")
+    },
+    { 
+      to: "/business-partners", 
+      icon: <UserCheck size={20} />, 
+      text: "Business Partners",
+      visible: true
     },
     { 
       to: "/inventory", 
@@ -101,12 +73,12 @@ export function Sidebar({ className = "" }: SidebarProps) {
       <div
         className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-in-out ${
           isCollapsed ? "w-20" : "w-72"
-        } ${className} bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-waves flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
+        } bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-waves flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
       >
         <div className="p-4 flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center">
-              <Layers className="h-7 w-7 text-primary" />
+              <Box className="h-7 w-7 text-primary" />
               <span className="ml-2 text-xl font-semibold tracking-wider premium-text-gradient">Tangent</span>
             </div>
           )}
@@ -127,13 +99,22 @@ export function Sidebar({ className = "" }: SidebarProps) {
         <div className="overflow-y-auto flex-1 py-6 px-3">
           <nav className="space-y-1">
             {visibleNavItems.map((item, index) => (
-              <SidebarLink
+              <NavLink
                 key={index}
                 to={item.to}
-                icon={item.icon}
-                text={item.text}
-                isCollapsed={isCollapsed}
-              />
+                className={({ isActive }) =>
+                  `flex items-center py-3 px-3 my-1.5 rounded-xl transition-all duration-300 ${
+                    isActive
+                      ? "bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "text-sidebar-foreground/80 hover:bg-white/10 dark:hover:bg-white/5 hover:text-sidebar-foreground"
+                  }`
+                }
+              >
+                <div className="flex items-center">
+                  <div className={`${isCollapsed ? "mx-0" : "mr-3"}`}>{item.icon}</div>
+                  {!isCollapsed && <span className="font-medium text-sm tracking-wide">{item.text}</span>}
+                </div>
+              </NavLink>
             ))}
           </nav>
         </div>
@@ -141,36 +122,24 @@ export function Sidebar({ className = "" }: SidebarProps) {
         <div className="p-4 border-t border-black/5 dark:border-white/5">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
-              <>
-                <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <Box className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-xs font-medium text-sidebar-foreground">{userRole || "Tangent Flow"}</p>
-                    <p className="text-xs text-sidebar-foreground/60">v1.0.0</p>
-                  </div>
+              <div className="flex items-center">
+                <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Box className="h-5 w-5 text-primary" />
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={logout}
-                  className="h-9 w-9 rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </>
+                <div className="ml-3">
+                  <p className="text-xs font-medium text-sidebar-foreground">{userRole || "Tangent Flow"}</p>
+                  <p className="text-xs text-sidebar-foreground/60">v1.0.0</p>
+                </div>
+              </div>
             )}
-            {isCollapsed && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={logout}
-                className="h-9 w-9 mx-auto rounded-lg hover:bg-white/10 dark:hover:bg-white/5"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            )}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={logout}
+              className={`h-9 w-9 rounded-lg hover:bg-white/10 dark:hover:bg-white/5 ${isCollapsed ? "mx-auto" : ""}`}
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
