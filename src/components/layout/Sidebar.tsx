@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sheet,
   SheetContent,
@@ -26,6 +26,8 @@ import {
   Boxes,
   LogOut,
   Menu,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
@@ -63,11 +65,29 @@ export function Sidebar() {
   const location = useLocation();
   const { pathname } = location;
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const permissions = useUserPermissions();
+
+  // Load sidebar state from localStorage on initial render
+  useEffect(() => {
+    const savedState = localStorage.getItem('sidebar-expanded');
+    if (savedState !== null) {
+      setExpanded(savedState === 'true');
+    }
+  }, []);
+
+  // Save sidebar state to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('sidebar-expanded', String(expanded));
+  }, [expanded]);
 
   const handleSignOut = async () => {
     await logout();
     navigate("/login");
+  };
+
+  const toggleSidebar = () => {
+    setExpanded(!expanded);
   };
 
   const navigationItems = [
@@ -129,9 +149,28 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="fixed left-0 top-0 z-50 flex h-full w-[72px] flex-col gap-2 border-r bg-secondary/80 backdrop-blur-sm">
-        <Link to="/" className="p-3">
+      <aside 
+        className={`fixed left-0 top-0 z-50 flex h-full ${
+          expanded ? "w-64" : "w-[72px]"
+        } flex-col gap-2 border-r bg-secondary/80 backdrop-blur-sm transition-all duration-300`}
+      >
+        {/* Toggle button */}
+        <button
+          onClick={toggleSidebar}
+          className="absolute -right-3 top-20 z-30 flex h-6 w-6 items-center justify-center rounded-full 
+                   border border-white/10 bg-background shadow-md"
+          aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          {expanded ? (
+            <ChevronLeft className="h-3 w-3" />
+          ) : (
+            <ChevronRight className="h-3 w-3" />
+          )}
+        </button>
+
+        <Link to="/" className="flex items-center p-3">
           <img src="/acme-logo.svg" alt="Logo" width="32" height="32" />
+          {expanded && <span className="ml-3 font-semibold">ACME ERP</span>}
         </Link>
 
         <nav className="flex-1">
@@ -143,13 +182,14 @@ export function Sidebar() {
                     <NavLink
                       to={item.href}
                       className={({ isActive }) =>
-                        `group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary ${
+                        `group relative flex h-14 w-full items-center ${expanded ? "justify-start px-3" : "justify-center px-3"} transition-all hover:bg-primary/10 hover:text-primary ${
                           isActive ? "bg-primary/10 text-primary" : ""
                         }`
                       }
                     >
                       <item.icon className="h-5 w-5" />
-                      <span className="sr-only">{item.name}</span>
+                      {expanded && <span className="ml-3">{item.name}</span>}
+                      {!expanded && <span className="sr-only">{item.name}</span>}
                     </NavLink>
                   </li>
                 )
@@ -161,13 +201,14 @@ export function Sidebar() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary"
+              className={`group relative flex h-14 w-full items-center ${expanded ? "justify-start px-3" : "justify-center px-3"} transition-all hover:bg-primary/10 hover:text-primary`}
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={avatarUrl} alt={fullName} />
                 <AvatarFallback>{userInitial}</AvatarFallback>
               </Avatar>
-              <span className="sr-only">Open user menu</span>
+              {expanded && <span className="ml-3 truncate">{fullName}</span>}
+              {!expanded && <span className="sr-only">{fullName}</span>}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" forceMount className="w-36">
@@ -188,6 +229,7 @@ export function Sidebar() {
         </DropdownMenu>
       </aside>
 
+      {/* Mobile menu */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button

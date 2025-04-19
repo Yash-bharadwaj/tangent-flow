@@ -1,5 +1,4 @@
 
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,7 +17,7 @@ import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +32,10 @@ const queryClient = new QueryClient({
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const [sidebarExpanded, setSidebarExpanded] = useState(() => {
+    const savedState = localStorage.getItem('sidebar-expanded');
+    return savedState !== null ? savedState === 'true' : true;
+  });
   
   useEffect(() => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
@@ -48,7 +51,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      {children}
+      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'ml-64' : 'ml-[72px]'}`}>
+        {children}
+      </div>
       <RightSidebar />
     </div>
   );
@@ -85,4 +90,3 @@ const App = () => (
 );
 
 export default App;
-
