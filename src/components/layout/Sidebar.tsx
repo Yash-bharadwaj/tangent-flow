@@ -62,7 +62,7 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const permissions = useUserPermissions();
 
   const handleSignOut = async () => {
@@ -139,11 +139,13 @@ export function Sidebar() {
             {navigationItems.map(
               (item, index) =>
                 permissions[item.permission as keyof UserPermissions] && (
-                  <li key={index}>
+                  <li key={index} className="w-full">
                     <NavLink
                       to={item.href}
                       className={({ isActive }) =>
-                        `group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary`
+                        `group relative flex h-14 w-full items-center justify-center px-3 transition-all hover:bg-primary/10 hover:text-primary ${
+                          isActive ? "bg-primary/10 text-primary" : ""
+                        }`
                       }
                     >
                       <item.icon className="h-5 w-5" />
@@ -186,7 +188,7 @@ export function Sidebar() {
         </DropdownMenu>
       </aside>
 
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button
             variant="ghost"
@@ -212,11 +214,14 @@ export function Sidebar() {
               {navigationItems.map(
                 (item, index) =>
                   permissions[item.permission as keyof UserPermissions] && (
-                    <li key={index}>
+                    <li key={index} className="w-full">
                       <NavLink
                         to={item.href}
+                        onClick={() => setOpen(false)}
                         className={({ isActive }) =>
-                          `group relative flex h-14 w-full items-center justify-start gap-4 px-3 transition-all hover:bg-primary/10 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary`
+                          `group relative flex h-14 w-full items-center justify-start gap-4 px-3 transition-all hover:bg-primary/10 hover:text-primary ${
+                            isActive ? "bg-primary/10 text-primary" : ""
+                          }`
                         }
                       >
                         <item.icon className="h-5 w-5" />
