@@ -3,8 +3,9 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createBusinessPartner, BusinessPartnerInput } from "@/services/businessPartners";
+import { createBusinessPartner } from "@/services/businessPartners";
 import { useToast } from "@/hooks/use-toast";
+import { BusinessPartnerInput } from "@/types/businessPartner";
 
 const formSchema = z.object({
   bp_name: z.string().min(1, "Business Partner Name is required").max(100),

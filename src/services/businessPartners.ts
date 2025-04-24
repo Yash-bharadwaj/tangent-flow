@@ -1,37 +1,13 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { BusinessPartner } from "@/types/businessPartner";
-
-export type BusinessPartnerInput = {
-  bp_name: string;
-  contact_person: string;
-  phone_country?: string | null;
-  phone_number?: string | null;
-  email?: string | null;
-  address?: string | null;
-  country?: string | null;
-  payment_terms: string;
-  payment_method?: string | null;
-  bp_type?: string | null;
-  material_1?: string | null;
-  material_2?: string | null;
-  material_3?: string | null;
-  communication_method?: string | null;
-  shipping_method?: string | null;
-};
+import { BusinessPartner, BusinessPartnerInput } from "@/types/businessPartner";
 
 export const createBusinessPartner = async (data: BusinessPartnerInput): Promise<BusinessPartner | null> => {
   try {
     console.log("Creating business partner with data:", data);
     
-    // Set a shorter timeout for the insert operation
-    const insertOptions = {
-      count: 'exact',
-      timeoutMilliseconds: 10000, // 10 seconds timeout
-    };
-
-    // Use the "insert" method with shorter timeout
+    // We don't include bp_code as it's generated via a database trigger
     const { data: newPartner, error } = await supabase
       .from('business_partners')
       .insert(data)
