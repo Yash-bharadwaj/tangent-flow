@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { BusinessPartnersForm } from "@/components/business-partners/BusinessPartnersForm";
 import { BusinessPartnersTable } from "@/components/business-partners/BusinessPartnersTable";
 import { getBusinessPartners } from "@/services/businessPartners";
@@ -27,39 +26,26 @@ export default function BusinessPartners() {
 
   return (
     <div className="flex-1 ml-20 md:ml-72 p-6 space-y-8 transition-all duration-500">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Business Partners</h1>
-        <p className="text-muted-foreground">
-          Create and manage your business partners
-        </p>
-      </div>
-
-      <div>
-        <Button 
-          variant="outline" 
-          onClick={() => setShowForm(!showForm)}
-          className="mb-4"
-        >
-          {showForm ? (
-            <>
-              <EyeOff className="mr-2 h-4 w-4" />
-              Hide Form
-            </>
-          ) : (
-            <>
-              <Eye className="mr-2 h-4 w-4" />
-              Show Form
-            </>
-          )}
-        </Button>
-
-        {showForm && (
-          <div className="rounded-lg border bg-card p-6 space-y-6 mb-8">
-            <h2 className="text-lg font-semibold">Add New Business Partner</h2>
-            <BusinessPartnersForm onSuccess={loadPartners} />
+      <div className="mb-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Business Partners</h1>
+            <p className="text-muted-foreground">
+              Create and manage your business partners
+            </p>
           </div>
-        )}
+          <Button onClick={() => setShowForm(!showForm)}>
+            {showForm ? "Hide Form" : "Create Partner"}
+          </Button>
+        </div>
       </div>
+
+      {showForm && (
+        <div className="rounded-lg border bg-card p-6 space-y-6 mb-8">
+          <h2 className="text-lg font-semibold">Add New Business Partner</h2>
+          <BusinessPartnersForm onSuccess={loadPartners} />
+        </div>
+      )}
 
       <div className="rounded-lg border bg-card">
         <BusinessPartnersTable data={partners} isLoading={isLoading} />
