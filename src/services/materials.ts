@@ -9,9 +9,10 @@ export type MaterialInput = Omit<Material, 'id' | 'created_at' | 'updated_at' | 
 
 export const createMaterial = async (data: MaterialInput): Promise<Material | null> => {
   try {
+    // Here's the key fix: Insert with material_code explicitly set to null to trigger auto-generation
     const { data: newMaterial, error } = await supabase
       .from('materials')
-      .insert(data)
+      .insert({ ...data, material_code: null })
       .select()
       .single();
 
