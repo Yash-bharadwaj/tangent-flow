@@ -5,9 +5,10 @@ import { type BusinessPartner } from "@/types/businessPartner";
 interface BusinessPartnersTableProps {
   data: BusinessPartner[];
   isLoading?: boolean;
+  onRefresh?: () => void;
 }
 
-export function BusinessPartnersTable({ data, isLoading }: BusinessPartnersTableProps) {
+export function BusinessPartnersTable({ data, isLoading, onRefresh }: BusinessPartnersTableProps) {
   const columns = [
     {
       header: "BP Code",
