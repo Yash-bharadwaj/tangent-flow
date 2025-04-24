@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +29,7 @@ import {
 } from "@/types/businessPartner";
 import { createBusinessPartner, BusinessPartnerInput } from "@/services/businessPartners";
 import { countries } from "@/utils/countryData";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   bp_name: z.string().min(1, "Business Partner Name is required").max(100),
@@ -51,7 +53,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { toast } = useToast();
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,15 +76,18 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
     },
   });
 
+  // Watch the country field to update phone code
+  const selectedCountry = form.watch("country");
+  
+  // Update phone code when country changes
   useEffect(() => {
-    const country = form.watch("country");
-    if (country) {
-      const selectedCountry = countries.find((c) => c.code === country);
-      if (selectedCountry) {
-        form.setValue("phone_country", selectedCountry.phoneCode);
+    if (selectedCountry) {
+      const countryData = countries.find((c) => c.code === selectedCountry);
+      if (countryData) {
+        form.setValue("phone_country", countryData.phoneCode);
       }
     }
-  }, [form.watch("country")]);
+  }, [selectedCountry, form]);
 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
@@ -105,8 +111,19 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
       };
       
       await createBusinessPartner(businessPartnerData);
+      toast({
+        title: "Success",
+        description: "Business partner created successfully",
+      });
       form.reset();
       onSuccess?.();
+    } catch (error) {
+      console.error("Error creating business partner:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create business partner. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
