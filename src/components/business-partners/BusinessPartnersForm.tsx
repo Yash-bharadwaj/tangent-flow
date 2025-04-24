@@ -210,7 +210,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Code</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Code" />
@@ -218,7 +218,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
                       </FormControl>
                       <SelectContent>
                         {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.phoneCode}>
+                          <SelectItem key={`phone-code-${country.code}`} value={country.phoneCode}>
                             {country.phoneCode}
                           </SelectItem>
                         ))}
@@ -280,7 +280,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Payment Terms*</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment terms" />
@@ -305,7 +305,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Payment Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
@@ -330,7 +330,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Business Partner Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select partner type" />
@@ -397,7 +397,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Communication Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select communication method" />
@@ -422,7 +422,7 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Shipping Method</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select shipping method" />
