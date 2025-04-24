@@ -35,7 +35,7 @@ export const createBusinessPartner = async (data: BusinessPartnerInput): Promise
     const { data: newPartner, error } = await supabase
       .from('business_partners')
       .insert(data)
-      .select('*', insertOptions);
+      .select('*');
 
     if (error) {
       if (error.message.includes('timeout') || error.message.includes('statement timeout')) {

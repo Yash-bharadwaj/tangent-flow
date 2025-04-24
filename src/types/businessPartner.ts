@@ -21,6 +21,8 @@ export type BusinessPartner = {
   updated_at: string;
 };
 
+export type BusinessPartnerInput = Omit<BusinessPartner, 'id' | 'bp_code' | 'created_at' | 'updated_at'>;
+
 export const PaymentTerms = [
   "Immediate",
   "1 Week",
