@@ -53,6 +53,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
@@ -91,6 +92,8 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
+    setIsError(false);
+    
     try {
       const businessPartnerData: BusinessPartnerInput = {
         bp_name: formData.bp_name,
@@ -110,18 +113,29 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
         shipping_method: formData.shipping_method || null,
       };
       
-      await createBusinessPartner(businessPartnerData);
-      toast({
-        title: "Success",
-        description: "Business partner created successfully",
-      });
-      form.reset();
-      onSuccess?.();
+      const result = await createBusinessPartner(businessPartnerData);
+      
+      if (result) {
+        toast({
+          title: "Success",
+          description: "Business partner created successfully",
+        });
+        form.reset();
+        onSuccess?.();
+      } else {
+        setIsError(true);
+        toast({
+          title: "Error",
+          description: "Failed to create business partner. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Error creating business partner:", error);
+      setIsError(true);
       toast({
         title: "Error",
-        description: "Failed to create business partner. Please try again.",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
     } finally {

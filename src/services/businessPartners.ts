@@ -23,20 +23,31 @@ export type BusinessPartnerInput = {
 
 export const createBusinessPartner = async (data: BusinessPartnerInput): Promise<BusinessPartner | null> => {
   try {
-    // The bp_code field is auto-generated on the server using a trigger
-    // so we don't need to provide it
+    // Set a timeout for the request (10 seconds)
     const { data: newPartner, error } = await supabase
       .from('business_partners')
-      .insert(data as any) // Using type assertion to bypass TypeScript's check
+      .insert(data)
       .select()
-      .single();
+      .single()
+      .timeout(10000);
 
-    if (error) throw error;
+    if (error) {
+      if (error.message.includes('timeout') || error.message.includes('statement timeout')) {
+        toast.error('Request timed out. Please try again.');
+      } else if (error.message.includes('duplicate key')) {
+        toast.error('A business partner with this code already exists.');
+      } else {
+        toast.error(`Error creating business partner: ${error.message}`);
+      }
+      console.error('Supabase error:', error);
+      return null;
+    }
     
     toast.success('Business Partner created successfully');
     return newPartner;
   } catch (error: any) {
-    toast.error(`Error creating business partner: ${error.message}`);
+    console.error('Unexpected error:', error);
+    toast.error(`Error creating business partner: ${error.message || 'Unknown error'}`);
     return null;
   }
 };
@@ -46,12 +57,23 @@ export const getBusinessPartners = async (): Promise<BusinessPartner[]> => {
     const { data, error } = await supabase
       .from('business_partners')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .timeout(10000);
 
-    if (error) throw error;
-    return data;
+    if (error) {
+      if (error.message.includes('timeout') || error.message.includes('statement timeout')) {
+        toast.error('Request timed out while fetching business partners.');
+      } else {
+        toast.error(`Error fetching business partners: ${error.message}`);
+      }
+      console.error('Supabase error:', error);
+      return [];
+    }
+    
+    return data || [];
   } catch (error: any) {
-    toast.error(`Error fetching business partners: ${error.message}`);
+    console.error('Unexpected error:', error);
+    toast.error(`Error fetching business partners: ${error.message || 'Unknown error'}`);
     return [];
   }
 };
