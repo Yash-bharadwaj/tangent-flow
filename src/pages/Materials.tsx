@@ -35,7 +35,7 @@ export default function Materials() {
             </p>
           </div>
           <Button onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Hide Form" : "Create Material"}
+            {showForm ? "Hide Form" : "Add Materials"}
           </Button>
         </div>
       </div>
