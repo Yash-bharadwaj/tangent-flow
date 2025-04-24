@@ -35,7 +35,7 @@ export default function BusinessPartners() {
             </p>
           </div>
           <Button onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Hide Form" : "Create Partner"}
+            {showForm ? "Cancel" : "Create Partner"}
           </Button>
         </div>
       </div>

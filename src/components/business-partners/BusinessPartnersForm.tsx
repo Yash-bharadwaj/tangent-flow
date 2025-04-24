@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -72,6 +72,16 @@ export function BusinessPartnersForm({ onSuccess }: { onSuccess?: () => void }) 
       shipping_method: "",
     },
   });
+
+  useEffect(() => {
+    const country = form.watch("country");
+    if (country) {
+      const selectedCountry = countries.find((c) => c.code === country);
+      if (selectedCountry) {
+        form.setValue("phone_country", selectedCountry.phoneCode);
+      }
+    }
+  }, [form.watch("country")]);
 
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
