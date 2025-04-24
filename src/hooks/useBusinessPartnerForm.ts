@@ -1,0 +1,114 @@
+
+import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createBusinessPartner, BusinessPartnerInput } from "@/services/businessPartners";
+import { useToast } from "@/hooks/use-toast";
+
+const formSchema = z.object({
+  bp_name: z.string().min(1, "Business Partner Name is required").max(100),
+  contact_person: z.string().min(1, "Contact Person is required").max(50),
+  phone_country: z.string().optional(),
+  phone_number: z.string().optional(),
+  email: z.string().email().optional().or(z.literal('')),
+  address: z.string().optional(),
+  country: z.string().optional(),
+  payment_terms: z.string().min(1, "Payment Terms is required"),
+  payment_method: z.string().optional(),
+  bp_type: z.string().optional(),
+  material_1: z.string().optional(),
+  material_2: z.string().optional(),
+  material_3: z.string().optional(),
+  communication_method: z.string().optional(),
+  shipping_method: z.string().optional(),
+});
+
+export type FormValues = z.infer<typeof formSchema>;
+
+export function useBusinessPartnerForm({ onSuccess }: { onSuccess?: () => void }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const { toast } = useToast();
+  
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      bp_name: "",
+      contact_person: "",
+      phone_country: "",
+      phone_number: "",
+      email: "",
+      address: "",
+      country: "",
+      payment_terms: "",
+      payment_method: "",
+      bp_type: "",
+      material_1: "",
+      material_2: "",
+      material_3: "",
+      communication_method: "",
+      shipping_method: "",
+    },
+  });
+
+  const onSubmit = async (formData: FormValues) => {
+    setIsLoading(true);
+    setIsError(false);
+    
+    try {
+      const businessPartnerData: BusinessPartnerInput = {
+        bp_name: formData.bp_name,
+        contact_person: formData.contact_person,
+        phone_country: formData.phone_country || null,
+        phone_number: formData.phone_number || null,
+        email: formData.email || null,
+        address: formData.address || null,
+        country: formData.country || null,
+        payment_terms: formData.payment_terms,
+        payment_method: formData.payment_method || null,
+        bp_type: formData.bp_type || null,
+        material_1: formData.material_1 || null,
+        material_2: formData.material_2 || null,
+        material_3: formData.material_3 || null,
+        communication_method: formData.communication_method || null,
+        shipping_method: formData.shipping_method || null,
+      };
+      
+      const result = await createBusinessPartner(businessPartnerData);
+      
+      if (result) {
+        toast({
+          title: "Success",
+          description: "Business partner created successfully",
+        });
+        form.reset();
+        onSuccess?.();
+      } else {
+        setIsError(true);
+        toast({
+          title: "Error",
+          description: "Failed to create business partner. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating business partner:", error);
+      setIsError(true);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    form,
+    isLoading,
+    isError,
+    onSubmit: form.handleSubmit(onSubmit)
+  };
+}
