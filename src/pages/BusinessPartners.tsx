@@ -24,7 +24,7 @@ export default function BusinessPartners() {
   }, []);
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="flex-1 ml-20 md:ml-72 p-6 space-y-8 transition-all duration-500">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Business Partners</h1>
         <p className="text-muted-foreground">

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -45,7 +46,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      {children}
+      <div className="flex-1 w-full relative">
+        {children}
+      </div>
       <RightSidebar />
     </div>
   );
