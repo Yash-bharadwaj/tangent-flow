@@ -14,6 +14,7 @@ import UserManagement from "./pages/UserManagement";
 import DeliveryTracking from "./pages/DeliveryTracking";
 import NotFound from "./pages/NotFound";
 import BusinessPartners from "./pages/BusinessPartners";
+import Materials from "./pages/Materials";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
 import { useEffect } from "react";
@@ -27,7 +28,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
@@ -36,7 +36,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     console.log("ProtectedRoute check:", { isAuthenticated, path: location.pathname });
   }, [isAuthenticated, location]);
   
-  // Simplified check - only render if authenticated, otherwise redirect
   if (!isAuthenticated) {
     console.log("Not authenticated, redirecting to login from ProtectedRoute");
     return <Navigate to="/login" replace />;
@@ -52,7 +51,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Inner routes component wrapped with AuthProvider
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
@@ -63,11 +61,11 @@ const AppRoutes = () => (
     <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
     <Route path="/deliveries" element={<ProtectedRoute><DeliveryTracking /></ProtectedRoute>} />
     <Route path="/business-partners" element={<ProtectedRoute><BusinessPartners /></ProtectedRoute>} />
+    <Route path="/materials" element={<ProtectedRoute><Materials /></ProtectedRoute>} />
     <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
   </Routes>
 );
 
-// App component with all providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>

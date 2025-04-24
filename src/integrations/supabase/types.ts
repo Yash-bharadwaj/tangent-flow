@@ -145,6 +145,99 @@ export type Database = {
           },
         ]
       }
+      materials: {
+        Row: {
+          batch_managed: boolean | null
+          created_at: string | null
+          documentation_required: boolean | null
+          gr_location: string | null
+          id: string
+          inbound_supply_type: string | null
+          material_code: string
+          material_name: string
+          notes: string | null
+          preferred_vendor_1: string | null
+          preferred_vendor_2: string | null
+          processing_time: number | null
+          processing_time_unit: string | null
+          procurement_type: string | null
+          product_type: string
+          qm_tolerance_percentage: number | null
+          quality_check: string | null
+          scrap_percentage: number | null
+          serial_no: string | null
+          specification: string | null
+          temperature_control: string | null
+          uom: string
+          updated_at: string | null
+        }
+        Insert: {
+          batch_managed?: boolean | null
+          created_at?: string | null
+          documentation_required?: boolean | null
+          gr_location?: string | null
+          id?: string
+          inbound_supply_type?: string | null
+          material_code: string
+          material_name: string
+          notes?: string | null
+          preferred_vendor_1?: string | null
+          preferred_vendor_2?: string | null
+          processing_time?: number | null
+          processing_time_unit?: string | null
+          procurement_type?: string | null
+          product_type: string
+          qm_tolerance_percentage?: number | null
+          quality_check?: string | null
+          scrap_percentage?: number | null
+          serial_no?: string | null
+          specification?: string | null
+          temperature_control?: string | null
+          uom: string
+          updated_at?: string | null
+        }
+        Update: {
+          batch_managed?: boolean | null
+          created_at?: string | null
+          documentation_required?: boolean | null
+          gr_location?: string | null
+          id?: string
+          inbound_supply_type?: string | null
+          material_code?: string
+          material_name?: string
+          notes?: string | null
+          preferred_vendor_1?: string | null
+          preferred_vendor_2?: string | null
+          processing_time?: number | null
+          processing_time_unit?: string | null
+          procurement_type?: string | null
+          product_type?: string
+          qm_tolerance_percentage?: number | null
+          quality_check?: string | null
+          scrap_percentage?: number | null
+          serial_no?: string | null
+          specification?: string | null
+          temperature_control?: string | null
+          uom?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materials_preferred_vendor_1_fkey"
+            columns: ["preferred_vendor_1"]
+            isOneToOne: false
+            referencedRelation: "business_partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materials_preferred_vendor_2_fkey"
+            columns: ["preferred_vendor_2"]
+            isOneToOne: false
+            referencedRelation: "business_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string | null
