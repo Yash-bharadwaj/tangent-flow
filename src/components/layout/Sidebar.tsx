@@ -47,6 +47,12 @@ export function Sidebar() {
       visible: true
     },
     { 
+      to: "/materials", 
+      icon: <Package size={20} />, 
+      text: "Materials",
+      visible: true
+    },
+    { 
       to: "/inventory", 
       icon: <Package size={20} />, 
       text: "Inventory",
