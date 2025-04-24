@@ -106,11 +106,27 @@ export function MaterialsForm({ onSuccess }: { onSuccess?: () => void }) {
   const onSubmit = async (formData: FormValues) => {
     setIsLoading(true);
     try {
+      // Convert formData to MaterialInput ensuring all fields match the expected types
       const materialData: MaterialInput = {
-        ...formData,
+        material_name: formData.material_name,
+        product_type: formData.product_type,
+        uom: formData.uom,
+        specification: formData.specification || null,
+        procurement_type: formData.procurement_type || null,
         scrap_percentage: formData.scrap_percentage || null,
         processing_time: formData.processing_time || null,
+        processing_time_unit: formData.processing_time_unit,
+        quality_check: formData.quality_check || null,
         qm_tolerance_percentage: formData.qm_tolerance_percentage || null,
+        documentation_required: formData.documentation_required,
+        batch_managed: formData.batch_managed,
+        preferred_vendor_1: formData.preferred_vendor_1 || null,
+        preferred_vendor_2: formData.preferred_vendor_2 || null,
+        inbound_supply_type: formData.inbound_supply_type || null,
+        serial_no: formData.serial_no || null,
+        notes: formData.notes || null,
+        gr_location: formData.gr_location || null,
+        temperature_control: formData.temperature_control || null,
       };
       
       await createMaterial(materialData);

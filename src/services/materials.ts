@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { Material } from "@/types/material";
 import { BusinessPartner } from "@/types/businessPartner";
 
-export type MaterialInput = Omit<Material, 'id' | 'material_code' | 'created_at' | 'updated_at'>;
+// Updated MaterialInput type to remove material_code from required fields
+export type MaterialInput = Omit<Material, 'id' | 'created_at' | 'updated_at' | 'material_code'>;
 
 export const createMaterial = async (data: MaterialInput): Promise<Material | null> => {
   try {
