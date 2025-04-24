@@ -40,7 +40,7 @@ export function ContactSection({ form }: ContactSectionProps) {
                 </FormControl>
                 <SelectContent>
                   {countries.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
+                    <SelectItem key={`country-${country.code}`} value={country.code}>
                       {country.name}
                     </SelectItem>
                   ))}
@@ -68,7 +68,7 @@ export function ContactSection({ form }: ContactSectionProps) {
                   </FormControl>
                   <SelectContent>
                     {countries.map((country) => (
-                      <SelectItem key={`phone-${country.code}`} value={country.phoneCode}>
+                      <SelectItem key={`phone-code-${country.code}`} value={country.phoneCode}>
                         {country.phoneCode}
                       </SelectItem>
                     ))}

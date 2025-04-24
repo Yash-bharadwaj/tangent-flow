@@ -11,7 +11,7 @@ const formSchema = z.object({
   contact_person: z.string().min(1, "Contact Person is required").max(50),
   phone_country: z.string().optional(),
   phone_number: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
+  email: z.string().email("Invalid email address").optional().or(z.literal('')),
   address: z.string().optional(),
   country: z.string().optional(),
   payment_terms: z.string().min(1, "Payment Terms is required"),
@@ -57,20 +57,21 @@ export function useBusinessPartnerForm({ onSuccess }: { onSuccess?: () => void }
     setIsError(false);
     
     try {
+      // Clean up data before submission - convert empty strings to null
       const businessPartnerData: BusinessPartnerInput = {
-        bp_name: formData.bp_name,
-        contact_person: formData.contact_person,
-        phone_country: formData.phone_country || null,
-        phone_number: formData.phone_number || null,
-        email: formData.email || null,
-        address: formData.address || null,
+        bp_name: formData.bp_name.trim(),
+        contact_person: formData.contact_person.trim(),
+        phone_country: formData.phone_country?.trim() || null,
+        phone_number: formData.phone_number?.trim() || null,
+        email: formData.email?.trim() || null,
+        address: formData.address?.trim() || null,
         country: formData.country || null,
         payment_terms: formData.payment_terms,
         payment_method: formData.payment_method || null,
         bp_type: formData.bp_type || null,
-        material_1: formData.material_1 || null,
-        material_2: formData.material_2 || null,
-        material_3: formData.material_3 || null,
+        material_1: formData.material_1?.trim() || null,
+        material_2: formData.material_2?.trim() || null,
+        material_3: formData.material_3?.trim() || null,
         communication_method: formData.communication_method || null,
         shipping_method: formData.shipping_method || null,
       };

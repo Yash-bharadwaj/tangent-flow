@@ -1,10 +1,10 @@
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/hooks/useBusinessPartnerForm";
-import { PaymentTerms, PaymentMethods, BPTypes, CommunicationMethods, ShippingMethods } from "@/types/businessPartner";
+import { PaymentMethods, PaymentTerms, BPTypes, CommunicationMethods, ShippingMethods } from "@/types/businessPartner";
 
 interface BusinessDetailsSectionProps {
   form: UseFormReturn<FormValues>;
@@ -26,8 +26,8 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {PaymentTerms.map((term) => (
-                  <SelectItem key={term} value={term}>
+                {PaymentTerms.map((term, index) => (
+                  <SelectItem key={`payment-term-${index}`} value={term}>
                     {term}
                   </SelectItem>
                 ))}
@@ -51,8 +51,8 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {PaymentMethods.map((method) => (
-                  <SelectItem key={method} value={method}>
+                {PaymentMethods.map((method, index) => (
+                  <SelectItem key={`payment-method-${index}`} value={method}>
                     {method}
                   </SelectItem>
                 ))}
@@ -76,8 +76,8 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {BPTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
+                {BPTypes.map((type, index) => (
+                  <SelectItem key={`bp-type-${index}`} value={type}>
                     {type}
                   </SelectItem>
                 ))}
@@ -87,23 +87,6 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
           </FormItem>
         )}
       />
-
-      {["material_1", "material_2", "material_3"].map((materialField, index) => (
-        <FormField
-          key={materialField}
-          control={form.control}
-          name={materialField as keyof FormValues}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Material {index + 1}</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      ))}
 
       <FormField
         control={form.control}
@@ -118,8 +101,8 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {CommunicationMethods.map((method) => (
-                  <SelectItem key={method} value={method}>
+                {CommunicationMethods.map((method, index) => (
+                  <SelectItem key={`comm-method-${index}`} value={method}>
                     {method}
                   </SelectItem>
                 ))}
@@ -143,8 +126,8 @@ export function BusinessDetailsSection({ form }: BusinessDetailsSectionProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {ShippingMethods.map((method) => (
-                  <SelectItem key={method} value={method}>
+                {ShippingMethods.map((method, index) => (
+                  <SelectItem key={`shipping-method-${index}`} value={method}>
                     {method}
                   </SelectItem>
                 ))}
