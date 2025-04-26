@@ -88,7 +88,7 @@ export const subscribeToSalesOrders = (callback: (payload: any) => void) => {
     .subscribe()
 };
 
-export const getBusinessPartnersForSelect = async (): Promise<BusinessPartner[]> => {
+export const getBusinessPartnersForSelect = async (): Promise<Pick<BusinessPartner, 'id' | 'bp_name' | 'bp_code'>[]> => {
   try {
     const { data, error } = await supabase
       .from('business_partners')
@@ -106,7 +106,7 @@ export const getBusinessPartnersForSelect = async (): Promise<BusinessPartner[]>
   }
 };
 
-export const getMaterialsForSelect = async (): Promise<Material[]> => {
+export const getMaterialsForSelect = async (): Promise<Pick<Material, 'id' | 'material_name' | 'material_code'>[]> => {
   try {
     const { data, error } = await supabase
       .from('materials')

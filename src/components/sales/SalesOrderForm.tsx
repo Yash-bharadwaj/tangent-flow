@@ -17,7 +17,6 @@ import { BusinessPartner } from "@/types/businessPartner";
 import { Material } from "@/types/material";
 
 const formSchema = z.object({
-  order_number: z.string().min(1, "Order number is required"),
   customer_name: z.string().min(1, "Customer name is required"),
   order_status: z.enum(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]),
   material: z.string().min(1, "Material is required"),
@@ -31,8 +30,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
   const { user, isAuthenticated } = useAuth();
-  const [businessPartners, setBusinessPartners] = useState<BusinessPartner[]>([]);
-  const [materials, setMaterials] = useState<Material[]>([]);
+  const [businessPartners, setBusinessPartners] = useState<Pick<BusinessPartner, 'id' | 'bp_name' | 'bp_code'>[]>([]);
+  const [materials, setMaterials] = useState<Pick<Material, 'id' | 'material_name' | 'material_code'>[]>([]);
   
   useEffect(() => {
     const loadData = async () => {
@@ -49,7 +48,6 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      order_number: "",
       customer_name: "",
       order_status: "Pending",
       material: "",
@@ -67,11 +65,9 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
     }
 
     try {
-      // Create a user_id to associate with the order
       const userId = user?.id || "mock-user-id";
       
       const newOrder = await createSalesOrder({
-        order_number: values.order_number,
         customer_name: values.customer_name,
         order_status: values.order_status,
         material: values.material,
@@ -100,20 +96,6 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="order_number"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Order Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="SO-12345" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
               <FormField
                 control={form.control}
                 name="customer_name"
