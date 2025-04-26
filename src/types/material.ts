@@ -26,21 +26,23 @@ export type Material = {
 };
 
 export const ProductTypes = [
-  "Wire Bar",
+  "Wire",
+  "Bar",
   "Plates",
   "Ingot",
   "Tube"
 ] as const;
 
 export const UOMByProductType: Record<string, string> = {
-  "Wire Bar": "Meters",
-  "Plates": "Sheets",
+  "Wire": "Kilograms",
+  "Bar": "Kilograms",
+  "Plates": "Kilograms",
   "Ingot": "Kilograms",
-  "Tube": "Pieces"
+  "Tube": "Kilograms"
 };
 
 export const SpecificationsByProductType: Record<string, string[]> = {
-  "Wire Bar": ["10 Gauge", "14 Gauge", "16 Gauge", "18 Gauge", "20 Gauge", "22 Gauge"],
+  "Wire": ["10 Gauge", "14 Gauge", "16 Gauge", "18 Gauge", "20 Gauge", "22 Gauge"],
   "Bar": ["Standard"],
   "Plates": ["50 X 50 X 1.2mm Thickness"],
   "Ingot": ["Standard"],
