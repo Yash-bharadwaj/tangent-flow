@@ -1,9 +1,10 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { BusinessPartner } from "@/types/businessPartner";
 import { Material } from "@/types/material";
 import { SalesOrder } from "@/types/database";
 
-export const createSalesOrder = async (data: Omit<SalesOrder, 'id' | 'created_at' | 'updated_at'>): Promise<SalesOrder | null> => {
+export const createSalesOrder = async (data: Omit<SalesOrder, 'id' | 'created_at' | 'updated_at' | 'order_number'>): Promise<SalesOrder | null> => {
   try {
     const { data: newOrder, error } = await supabase
       .from('sales_orders')

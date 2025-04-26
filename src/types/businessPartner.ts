@@ -22,9 +22,7 @@ export type BusinessPartner = {
 };
 
 // Updated type definition to make bp_code optional
-export type BusinessPartnerInput = Omit<BusinessPartner, 'id' | 'created_at' | 'updated_at'> & {
-  bp_code?: string; // Make bp_code optional since it's auto-generated
-};
+export type BusinessPartnerInput = Omit<BusinessPartner, 'id' | 'created_at' | 'updated_at' | 'bp_code'>;
 
 export const PaymentTerms = [
   "Immediate",
