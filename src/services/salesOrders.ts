@@ -8,7 +8,7 @@ export const createSalesOrder = async (data: Omit<SalesOrder, 'id' | 'created_at
   try {
     const { data: newOrder, error } = await supabase
       .from('sales_orders')
-      .insert([data])
+      .insert({...data, order_number: '' }) // Provide a placeholder that will be overwritten by the trigger
       .select()
       .single();
 
