@@ -4,14 +4,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createSalesOrder } from "@/services/supabase";
+import { createSalesOrder, getBusinessPartnersForSelect, getMaterialsForSelect } from "@/services/salesOrders";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { SalesOrder } from "@/types/database";
+import { useEffect, useState } from "react";
+import { BusinessPartner } from "@/types/businessPartner";
+import { Material } from "@/types/material";
 
 const formSchema = z.object({
   order_number: z.string().min(1, "Order number is required"),
@@ -28,6 +31,21 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
   const { user, isAuthenticated } = useAuth();
+  const [businessPartners, setBusinessPartners] = useState<BusinessPartner[]>([]);
+  const [materials, setMaterials] = useState<Material[]>([]);
+  
+  useEffect(() => {
+    const loadData = async () => {
+      const [bpData, materialsData] = await Promise.all([
+        getBusinessPartnersForSelect(),
+        getMaterialsForSelect()
+      ]);
+      setBusinessPartners(bpData);
+      setMaterials(materialsData);
+    };
+    loadData();
+  }, []);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +70,6 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
       // Create a user_id to associate with the order
       const userId = user?.id || "mock-user-id";
       
-      // Ensuring all required fields are passed (non-optional)
       const newOrder = await createSalesOrder({
         order_number: values.order_number,
         customer_name: values.customer_name,
@@ -103,9 +120,20 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Customer Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Customer name" {...field} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a customer" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {businessPartners.map((bp) => (
+                          <SelectItem key={bp.id} value={bp.bp_name}>
+                            {bp.bp_name} ({bp.bp_code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -119,9 +147,20 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Material</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Material name" {...field} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a material" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {materials.map((material) => (
+                          <SelectItem key={material.id} value={material.material_name}>
+                            {material.material_name} ({material.material_code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
