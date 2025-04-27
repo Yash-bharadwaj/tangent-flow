@@ -325,6 +325,7 @@ export type Database = {
       sales_orders: {
         Row: {
           created_at: string | null
+          currency: string
           customer_name: string
           expected_payment_date: string
           id: string
@@ -338,6 +339,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          currency?: string
           customer_name: string
           expected_payment_date: string
           id?: string
@@ -351,6 +353,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          currency?: string
           customer_name?: string
           expected_payment_date?: string
           id?: string

@@ -15,12 +15,21 @@ import { useEffect, useState } from "react";
 import { BusinessPartner } from "@/types/businessPartner";
 import { Material } from "@/types/material";
 
+const CURRENCY_OPTIONS = [
+  { value: 'USD', label: 'US Dollar ($)' },
+  { value: 'INR', label: 'Indian Rupee (₹)' },
+  { value: 'EUR', label: 'Euro (€)' },
+  { value: 'GBP', label: 'British Pound (£)' },
+  { value: 'JPY', label: 'Japanese Yen (¥)' },
+];
+
 const formSchema = z.object({
   customer_name: z.string().min(1, "Customer name is required"),
   order_status: z.enum(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]),
   material: z.string().min(1, "Material is required"),
   quantity: z.coerce.number().positive("Quantity must be greater than 0"),
   price: z.coerce.number().min(0, "Price must be 0 or greater"),
+  currency: z.enum(CURRENCY_OPTIONS.map(c => c.value as any)),
   expected_payment_date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: "Invalid date format",
   }),
@@ -53,6 +62,7 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
       material: "",
       quantity: 1,
       price: 0,
+      currency: "USD",
       expected_payment_date: new Date().toISOString().split('T')[0],
     },
   });
@@ -74,6 +84,7 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
         material: values.material,
         quantity: values.quantity,
         price: values.price,
+        currency: values.currency,
         expected_payment_date: values.expected_payment_date,
         user_id: userId,
       });
@@ -200,6 +211,33 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CURRENCY_OPTIONS.map((currency) => (
+                          <SelectItem key={currency.value} value={currency.value}>
+                            {currency.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

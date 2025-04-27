@@ -10,6 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { updateSalesOrder } from "@/services/salesOrders";
 import { SalesOrder } from "@/types/database";
 
+const CURRENCY_OPTIONS = [
+  { value: 'USD', label: 'US Dollar ($)' },
+  { value: 'INR', label: 'Indian Rupee (₹)' },
+  { value: 'EUR', label: 'Euro (€)' },
+  { value: 'GBP', label: 'British Pound (£)' },
+  { value: 'JPY', label: 'Japanese Yen (¥)' },
+];
+
 const formSchema = z.object({
   order_number: z.string().min(1, "Order number is required"),
   customer_name: z.string().min(1, "Customer name is required"),
@@ -17,6 +25,7 @@ const formSchema = z.object({
   material: z.string().min(1, "Material is required"),
   quantity: z.coerce.number().positive("Quantity must be greater than 0"),
   price: z.coerce.number().min(0, "Price must be 0 or greater"),
+  currency: z.enum(CURRENCY_OPTIONS.map(c => c.value as any)),
   expected_payment_date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: "Invalid date format",
   }),
@@ -41,6 +50,7 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
       material: salesOrder?.material || "",
       quantity: salesOrder?.quantity || 1,
       price: salesOrder?.price || 0,
+      currency: (salesOrder?.currency as any) || "USD",
       expected_payment_date: salesOrder?.expected_payment_date
         ? typeof salesOrder.expected_payment_date === 'string'
           ? salesOrder.expected_payment_date.split('T')[0]
@@ -58,6 +68,7 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
         material: salesOrder.material || "",
         quantity: salesOrder.quantity || 1,
         price: salesOrder.price || 0,
+        currency: (salesOrder.currency as any) || "USD",
         expected_payment_date: salesOrder.expected_payment_date
           ? typeof salesOrder.expected_payment_date === 'string'
             ? salesOrder.expected_payment_date.split('T')[0]
@@ -195,6 +206,31 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
                   <FormControl>
                     <Input type="number" min="0" step="0.01" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select currency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {CURRENCY_OPTIONS.map((currency) => (
+                        <SelectItem key={currency.value} value={currency.value}>
+                          {currency.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

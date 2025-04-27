@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { SalesOrder } from "@/types/database";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SalesOrdersTableProps {
   data: SalesOrder[];
@@ -15,10 +16,46 @@ interface SalesOrdersTableProps {
 }
 
 export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrdersTableProps) {
+  const [selectedCurrency, setSelectedCurrency] = React.useState<string | null>(null);
+
+  // Currency display mapping
+  const currencySymbols: { [key: string]: string } = {
+    'USD': '$',
+    'INR': '₹',
+    'EUR': '€',
+    'GBP': '£',
+    'JPY': '¥'
+  };
+
+  // Filter data based on selected currency
+  const filteredData = selectedCurrency 
+    ? data.filter(order => order.currency === selectedCurrency)
+    : data;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sales Orders</CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle>Sales Orders</CardTitle>
+          <div className="w-[200px]">
+            <Select 
+              onValueChange={(value) => setSelectedCurrency(value === 'All' ? null : value)}
+              defaultValue="All"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by Currency" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Currencies</SelectItem>
+                <SelectItem value="USD">US Dollar ($)</SelectItem>
+                <SelectItem value="INR">Indian Rupee (₹)</SelectItem>
+                <SelectItem value="EUR">Euro (€)</SelectItem>
+                <SelectItem value="GBP">British Pound (£)</SelectItem>
+                <SelectItem value="JPY">Japanese Yen (¥)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
@@ -46,8 +83,8 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
                     </div>
                   </TableCell>
                 </TableRow>
-              ) : data.length > 0 ? (
-                data.map((order) => (
+              ) : filteredData.length > 0 ? (
+                filteredData.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.order_number}</TableCell>
                     <TableCell>{order.customer_name}</TableCell>
@@ -65,7 +102,9 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
                     </TableCell>
                     <TableCell>{order.material}</TableCell>
                     <TableCell>{order.quantity}</TableCell>
-                    <TableCell>${order.price.toFixed(2)}</TableCell>
+                    <TableCell>
+                      {currencySymbols[order.currency] || ''}{order.price.toFixed(2)}
+                    </TableCell>
                     <TableCell>{formatDate(order.expected_payment_date)}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">

@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { BusinessPartner } from "@/types/businessPartner";
 import { Material } from "@/types/material";
