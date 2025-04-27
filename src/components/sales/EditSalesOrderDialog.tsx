@@ -1,14 +1,13 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { updateSalesOrder } from "@/services/supabase";
+import { updateSalesOrder } from "@/services/salesOrders";
 import { SalesOrder } from "@/types/database";
 
 const formSchema = z.object({
@@ -17,6 +16,7 @@ const formSchema = z.object({
   order_status: z.enum(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]),
   material: z.string().min(1, "Material is required"),
   quantity: z.coerce.number().positive("Quantity must be greater than 0"),
+  price: z.coerce.number().min(0, "Price must be 0 or greater"),
   expected_payment_date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: "Invalid date format",
   }),
@@ -40,6 +40,7 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
       order_status: (salesOrder?.order_status as any) || "Pending",
       material: salesOrder?.material || "",
       quantity: salesOrder?.quantity || 1,
+      price: salesOrder?.price || 0,
       expected_payment_date: salesOrder?.expected_payment_date
         ? typeof salesOrder.expected_payment_date === 'string'
           ? salesOrder.expected_payment_date.split('T')[0]
@@ -56,6 +57,7 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
         order_status: (salesOrder.order_status as any) || "Pending",
         material: salesOrder.material || "",
         quantity: salesOrder.quantity || 1,
+        price: salesOrder.price || 0,
         expected_payment_date: salesOrder.expected_payment_date
           ? typeof salesOrder.expected_payment_date === 'string'
             ? salesOrder.expected_payment_date.split('T')[0]
@@ -178,6 +180,20 @@ export function EditSalesOrderDialog({ salesOrder, open, onOpenChange, onSuccess
                   <FormLabel>Payment Due Date</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input type="number" min="0" step="0.01" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

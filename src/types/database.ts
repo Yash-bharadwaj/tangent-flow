@@ -1,4 +1,3 @@
-
 import type { Database } from "@/integrations/supabase/types";
 
 // Profile type from the profiles table
@@ -29,6 +28,7 @@ export type SalesOrder = {
   order_status: string;
   material: string;
   quantity: number;
+  price: number;
   expected_payment_date: string;
   user_id: string | null;
   created_at: string;

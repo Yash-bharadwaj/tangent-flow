@@ -30,6 +30,7 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
                 <TableHead>Status</TableHead>
                 <TableHead>Material</TableHead>
                 <TableHead>Quantity</TableHead>
+                <TableHead>Price</TableHead>
                 <TableHead>Payment Due</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -37,7 +38,7 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={8} className="text-center py-8">
                     <div className="flex items-center justify-center space-x-2">
                       <div className="w-4 h-4 rounded-full bg-primary/60 animate-pulse"></div>
                       <div className="w-4 h-4 rounded-full bg-primary/60 animate-pulse delay-150"></div>
@@ -64,6 +65,7 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
                     </TableCell>
                     <TableCell>{order.material}</TableCell>
                     <TableCell>{order.quantity}</TableCell>
+                    <TableCell>${order.price.toFixed(2)}</TableCell>
                     <TableCell>{formatDate(order.expected_payment_date)}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
@@ -87,7 +89,7 @@ export function SalesOrdersTable({ data, isLoading, onEdit, onDelete }: SalesOrd
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={8} className="text-center py-8">
                     No sales orders found
                   </TableCell>
                 </TableRow>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createSalesOrder, getBusinessPartnersForSelect, getMaterialsForSelect } from "@/services/salesOrders";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { toast } from "sonner";
 import { SalesOrder } from "@/types/database";
 import { useEffect, useState } from "react";
@@ -21,6 +20,7 @@ const formSchema = z.object({
   order_status: z.enum(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]),
   material: z.string().min(1, "Material is required"),
   quantity: z.coerce.number().positive("Quantity must be greater than 0"),
+  price: z.coerce.number().min(0, "Price must be 0 or greater"),
   expected_payment_date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: "Invalid date format",
   }),
@@ -52,6 +52,7 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
       order_status: "Pending",
       material: "",
       quantity: 1,
+      price: 0,
       expected_payment_date: new Date().toISOString().split('T')[0],
     },
   });
@@ -72,6 +73,7 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
         order_status: values.order_status,
         material: values.material,
         quantity: values.quantity,
+        price: values.price,
         expected_payment_date: values.expected_payment_date,
         user_id: userId,
       });
@@ -197,6 +199,22 @@ export function SalesOrderForm({ onSuccess }: { onSuccess: () => void }) {
                     <FormLabel>Payment Due Date</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="0" step="0.01" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

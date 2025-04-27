@@ -331,6 +331,7 @@ export type Database = {
           material: string
           order_number: string
           order_status: string
+          price: number
           quantity: number
           updated_at: string | null
           user_id: string | null
@@ -343,6 +344,7 @@ export type Database = {
           material: string
           order_number: string
           order_status: string
+          price?: number
           quantity: number
           updated_at?: string | null
           user_id?: string | null
@@ -355,6 +357,7 @@ export type Database = {
           material?: string
           order_number?: string
           order_status?: string
+          price?: number
           quantity?: number
           updated_at?: string | null
           user_id?: string | null
