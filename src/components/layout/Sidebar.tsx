@@ -80,25 +80,13 @@ export function Sidebar() {
         isCollapsed ? "w-20" : "w-72"
       } bg-white/20 dark:bg-black/30 backdrop-blur-xl pattern-waves flex flex-col border-r border-black/5 dark:border-white/5 shadow-2xl`}
     >
-      <div className="p-4 flex items-center justify-between">
+      <div className="p-4 flex items-center">
         {!isCollapsed && (
           <div className="flex items-center">
             <Box className="h-7 w-7 text-primary" />
             <span className="ml-2 text-xl font-semibold tracking-wider premium-text-gradient">Tangent</span>
           </div>
         )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 rounded-lg border border-black/5 dark:border-white/10 backdrop-blur-lg 
-                   bg-white/10 dark:bg-black/20 hover:bg-white/20 dark:hover:bg-white/5 transition-all duration-300"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="h-5 w-5" />
-          ) : (
-            <ChevronLeft className="h-5 w-5" />
-          )}
-        </button>
       </div>
 
       <div className="overflow-y-auto flex-1 py-6 px-3">

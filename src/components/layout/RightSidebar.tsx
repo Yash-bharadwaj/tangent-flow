@@ -12,33 +12,6 @@ export function RightSidebar() {
 
   return (
     <div className="relative h-full">
-      {/* Toggle button - positioned to the left of the sidebar */}
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed ${isOpen ? "right-72" : "right-0"} top-20 z-30 flex h-10 w-10 items-center justify-center rounded-full 
-                   border border-white/10 bg-background/80 shadow-xl backdrop-blur-lg transition-all duration-300 
-                   hover:bg-accent/20 dark:hover:bg-white/10`}
-        aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={isOpen ? "close" : "open"}
-            initial={{ opacity: 0, rotate: isOpen ? -90 : 90 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: isOpen ? 90 : -90 }}
-            transition={{ duration: 0.2 }}
-          >
-            {isOpen ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <ChevronLeft className="h-5 w-5" />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </motion.button>
 
       {/* Sidebar */}
       <motion.div
