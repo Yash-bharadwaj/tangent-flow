@@ -18,6 +18,7 @@ import BusinessPartners from "./pages/BusinessPartners";
 import Materials from "./pages/Materials";
 import { Sidebar } from "./components/layout/Sidebar";
 import { RightSidebar } from "./components/layout/RightSidebar";
+import { Header } from "./components/layout/Header";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient({
@@ -44,11 +45,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   console.log("Authenticated, rendering protected content");
   return (
-    <div className="flex min-h-screen bg-background pattern-waves-bg">
+    <div className="min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <div className="flex-1 w-full relative">
-        {children}
+      <div className="fixed top-0 left-[72px] lg:left-72 right-72 z-10">
+        <Header />
       </div>
+      <main className="fixed top-16 left-[72px] lg:left-72 right-72 bottom-0 overflow-y-auto">
+        <div className="p-6">
+          {children}
+        </div>
+      </main>
       <RightSidebar />
     </div>
   );

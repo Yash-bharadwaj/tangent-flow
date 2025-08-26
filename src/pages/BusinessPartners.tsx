@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { BusinessPartnersForm } from "@/components/business-partners/BusinessPartnersForm";
 import { BusinessPartnersTable } from "@/components/business-partners/BusinessPartnersTable";
@@ -37,7 +36,7 @@ export default function BusinessPartners() {
   };
 
   return (
-    <div className="flex-1 ml-20 md:ml-72 p-6 space-y-8 transition-all duration-500">
+    <div className="space-y-8">
       <div className="mb-8">
         <div className="flex justify-between items-center">
           <div>

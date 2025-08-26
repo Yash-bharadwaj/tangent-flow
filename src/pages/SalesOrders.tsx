@@ -1,10 +1,7 @@
-
 import { useState, useEffect } from "react";
-import { Header } from "../components/layout/Header";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSalesOrders, deleteSalesOrder, subscribeToSalesOrders } from "@/services/supabase";
 import { SalesOrder } from "@/types/database";
-import { DashboardCard, DashboardCardContent, DashboardCardHeader, DashboardCardTitle } from "../components/dashboard/DashboardCard";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -77,62 +74,58 @@ const SalesOrders = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background pattern-waves-bg">
-      <Header />
-      
-      <main className="flex-1 p-6 ml-[72px] lg:ml-72 transition-all duration-500">
-        <div className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Sales Orders</h1>
-              <p className="text-muted-foreground">
-                View and manage customer sales orders.
-              </p>
-            </div>
-            <Button onClick={() => setFormVisible(!formVisible)}>
-              {formVisible ? "Hide Form" : "Create Order"}
-            </Button>
+    <div>
+      <div className="mb-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Sales Orders</h1>
+            <p className="text-muted-foreground">
+              View and manage customer sales orders.
+            </p>
           </div>
+          <Button onClick={() => setFormVisible(!formVisible)}>
+            {formVisible ? "Hide Form" : "Create Order"}
+          </Button>
         </div>
-        
-        {!isAuthenticated && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              You must be logged in to manage sales orders
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        {formVisible && (
-          <div className="mb-6">
-            <SalesOrderForm onSuccess={handleFormSuccess} />
-          </div>
-        )}
-        
-        {isError && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Error loading sales orders: {(error as Error)?.message || "Unknown error"}
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        <SalesOrdersTable
-          data={salesOrders || []}
-          isLoading={isLoading}
-          onEdit={handleEditOrder}
-          onDelete={handleDeleteOrder}
-        />
-        
-        <EditSalesOrderDialog
-          salesOrder={editingOrder}
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
-          onSuccess={handleFormSuccess}
-        />
-      </main>
+      </div>
+      
+      {!isAuthenticated && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            You must be logged in to manage sales orders
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {formVisible && (
+        <div className="mb-6">
+          <SalesOrderForm onSuccess={handleFormSuccess} />
+        </div>
+      )}
+      
+      {isError && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Error loading sales orders: {(error as Error)?.message || "Unknown error"}
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <SalesOrdersTable
+        data={salesOrders || []}
+        isLoading={isLoading}
+        onEdit={handleEditOrder}
+        onDelete={handleDeleteOrder}
+      />
+      
+      <EditSalesOrderDialog
+        salesOrder={editingOrder}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSuccess={handleFormSuccess}
+      />
     </div>
   );
 };

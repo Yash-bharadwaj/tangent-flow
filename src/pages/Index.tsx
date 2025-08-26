@@ -11,7 +11,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getSalesOrders, getInventory } from "@/services/supabase";
 import { DataTable } from "../components/ui/DataTable";
-import { Header } from "../components/layout/Header";
 import { StatCard } from "../components/dashboard/StatCard";
 import { 
   DashboardCard, 
@@ -210,189 +209,185 @@ const Index = () => {
   };
 
   return (
-    <div className="flex-1">
-      <Header />
+    <motion.div 
+      className="animate-in"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.div variants={childVariants} className="mb-8">
+        <h1 className="text-3xl font-semibold mb-2 tracking-wide text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground text-lg tracking-wide">
+          Overview of your business metrics and key performance indicators.
+        </p>
+      </motion.div>
       
       <motion.div 
-        className="p-6 animate-in ml-[72px] lg:ml-72 transition-all duration-500"
-        initial="hidden"
-        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
         variants={containerVariants}
       >
-        <motion.div variants={childVariants} className="mb-8">
-          <h1 className="text-3xl font-semibold mb-2 tracking-wide text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground text-lg tracking-wide">
-            Overview of your business metrics and key performance indicators.
-          </p>
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Total Orders"
+            value={totalOrders}
+            icon={<ShoppingCart size={20} />}
+            change={{ value: 8.2, trend: "up" }}
+            drawerContent={totalOrdersDrawer}
+            className="text-foreground"
+          />
         </motion.div>
         
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Total Orders"
-              value={totalOrders}
-              icon={<ShoppingCart size={20} />}
-              change={{ value: 8.2, trend: "up" }}
-              drawerContent={totalOrdersDrawer}
-              className="text-foreground"
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Pending Orders"
-              value={pendingOrders}
-              icon={<Box size={20} />}
-              change={{ value: 2.1, trend: "down" }}
-              drawerContent={pendingOrdersDrawer}
-              className="text-foreground"
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Monthly Sales"
-              value={`$${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}`}
-              icon={<DollarSign size={20} />}
-              change={{ value: 12.5, trend: "up" }}
-              drawerContent={monthlySalesDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Inventory Items"
-              value={inventoryItems.length}
-              icon={<Package size={20} />}
-              change={{ value: 1.5, trend: "up" }}
-              drawerContent={inventoryDrawer}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Active Users"
-              value={22}
-              icon={<Users size={20} />}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="In-Transit Deliveries"
-              value={12}
-              icon={<Truck size={20} />}
-              change={{ value: 15, trend: "up" }}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Low Stock Items"
-              value={lowStockItems.length}
-              icon={<BarChart3 size={20} />}
-              change={{ value: 5, trend: "up" }}
-            />
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <StatCard
-              title="Out of Stock"
-              value={inventoryItems.filter(item => Number(item.quantity) === 0).length}
-              icon={<Package size={20} />}
-              change={{ value: 2, trend: "down" }}
-            />
-          </motion.div>
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Pending Orders"
+            value={pendingOrders}
+            icon={<Box size={20} />}
+            change={{ value: 2.1, trend: "down" }}
+            drawerContent={pendingOrdersDrawer}
+            className="text-foreground"
+          />
         </motion.div>
         
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <SalesChart data={monthlySalesData} title="Monthly Sales Performance" type="bar" />
-          </motion.div>
-          <motion.div variants={childVariants}>
-            <SalesChart data={monthlySalesData} title="Sales Trend" type="line" />
-          </motion.div>
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Monthly Sales"
+            value={`$${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}`}
+            icon={<DollarSign size={20} />}
+            change={{ value: 12.5, trend: "up" }}
+            drawerContent={monthlySalesDrawer}
+          />
         </motion.div>
         
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <PieChartComponent data={productCategoryData} title="Sales by Product Category" />
-          </motion.div>
-          <motion.div variants={childVariants}>
-            <PieChartComponent data={orderStatusData} title="Orders by Status" />
-          </motion.div>
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Inventory Items"
+            value={inventoryItems.length}
+            icon={<Package size={20} />}
+            change={{ value: 1.5, trend: "up" }}
+            drawerContent={inventoryDrawer}
+          />
         </motion.div>
         
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-          variants={containerVariants}
-        >
-          <motion.div variants={childVariants}>
-            <DashboardCard className="premium-card">
-              <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Recent Orders</DashboardCardTitle>
-              </DashboardCardHeader>
-              <DashboardCardContent>
-                <DataTable
-                  data={recentOrders}
-                  columns={[
-                    { header: "SO No.", accessor: "order_number" },
-                    { header: "Customer", accessor: "customer_name" },
-                    { 
-                      header: "Status", 
-                      accessor: "order_status",
-                      cell: (item) => (
-                        <span className={`
-                          status-pill
-                          ${item.order_status === "Delivered" ? "status-pill-success" : 
-                            item.order_status === "Processing" ? "status-pill-info" : 
-                            item.order_status === "Shipped" ? "status-pill-info" : 
-                            item.order_status === "Cancelled" ? "status-pill-danger" : 
-                            "status-pill-warning"}
-                        `}>
-                          {item.order_status}
-                        </span>
-                      )
-                    },
-                    { header: "Payment Date", accessor: "expected_payment_date" },
-                  ]}
-                  searchable={false}
-                />
-              </DashboardCardContent>
-            </DashboardCard>
-          </motion.div>
-          
-          <motion.div variants={childVariants}>
-            <DashboardCard className="premium-card">
-              <DashboardCardHeader>
-                <DashboardCardTitle className="premium-text-gradient">Low Stock Items</DashboardCardTitle>
-              </DashboardCardHeader>
-              <DashboardCardContent>
-                <DataTable
-                  data={lowStockItems}
-                  columns={[
-                    { header: "ID", accessor: "id" },
-                    { header: "Product ID", accessor: "product_id" },
-                    { header: "Quantity", accessor: "quantity" },
-                    { header: "Location", accessor: "location" },
-                  ]}
-                  searchable={false}
-                />
-              </DashboardCardContent>
-            </DashboardCard>
-          </motion.div>
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Active Users"
+            value={22}
+            icon={<Users size={20} />}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="In-Transit Deliveries"
+            value={12}
+            icon={<Truck size={20} />}
+            change={{ value: 15, trend: "up" }}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Low Stock Items"
+            value={lowStockItems.length}
+            icon={<BarChart3 size={20} />}
+            change={{ value: 5, trend: "up" }}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Out of Stock"
+            value={inventoryItems.filter(item => Number(item.quantity) === 0).length}
+            icon={<Package size={20} />}
+            change={{ value: 2, trend: "down" }}
+          />
         </motion.div>
       </motion.div>
-    </div>
+      
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+        variants={containerVariants}
+      >
+        <motion.div variants={childVariants}>
+          <SalesChart data={monthlySalesData} title="Monthly Sales Performance" type="bar" />
+        </motion.div>
+        <motion.div variants={childVariants}>
+          <SalesChart data={monthlySalesData} title="Sales Trend" type="line" />
+        </motion.div>
+      </motion.div>
+      
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+        variants={containerVariants}
+      >
+        <motion.div variants={childVariants}>
+          <PieChartComponent data={productCategoryData} title="Sales by Product Category" />
+        </motion.div>
+        <motion.div variants={childVariants}>
+          <PieChartComponent data={orderStatusData} title="Orders by Status" />
+        </motion.div>
+      </motion.div>
+      
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+        variants={containerVariants}
+      >
+        <motion.div variants={childVariants}>
+          <DashboardCard className="premium-card">
+            <DashboardCardHeader>
+              <DashboardCardTitle className="premium-text-gradient">Recent Orders</DashboardCardTitle>
+            </DashboardCardHeader>
+            <DashboardCardContent>
+              <DataTable
+                data={recentOrders}
+                columns={[
+                  { header: "SO No.", accessor: "order_number" },
+                  { header: "Customer", accessor: "customer_name" },
+                  { 
+                    header: "Status", 
+                    accessor: "order_status",
+                    cell: (item) => (
+                      <span className={`
+                        status-pill
+                        ${item.order_status === "Delivered" ? "status-pill-success" : 
+                          item.order_status === "Processing" ? "status-pill-info" : 
+                          item.order_status === "Shipped" ? "status-pill-info" : 
+                          item.order_status === "Cancelled" ? "status-pill-danger" : 
+                          "status-pill-warning"}
+                      `}>
+                        {item.order_status}
+                      </span>
+                    )
+                  },
+                  { header: "Payment Date", accessor: "expected_payment_date" },
+                ]}
+                searchable={false}
+              />
+            </DashboardCardContent>
+          </DashboardCard>
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <DashboardCard className="premium-card">
+            <DashboardCardHeader>
+              <DashboardCardTitle className="premium-text-gradient">Low Stock Items</DashboardCardTitle>
+            </DashboardCardHeader>
+            <DashboardCardContent>
+              <DataTable
+                data={lowStockItems}
+                columns={[
+                  { header: "ID", accessor: "id" },
+                  { header: "Product ID", accessor: "product_id" },
+                  { header: "Quantity", accessor: "quantity" },
+                  { header: "Location", accessor: "location" },
+                ]}
+                searchable={false}
+              />
+            </DashboardCardContent>
+          </DashboardCard>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
