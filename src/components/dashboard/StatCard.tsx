@@ -77,7 +77,7 @@ export function StatCard({
         >
           <DashboardCardHeader className="pb-2">
             <div className="flex justify-between items-center">
-              <DashboardCardTitle className="text-base font-medium tracking-wide text-foreground">
+              <DashboardCardTitle className="text-sm font-medium tracking-wide text-foreground">
                 {title}
               </DashboardCardTitle>
               <motion.div 
@@ -93,7 +93,7 @@ export function StatCard({
           <DashboardCardContent>
             <div className="flex flex-col">
               <motion.div 
-                className="text-2xl font-semibold text-foreground"
+                className="text-xl font-semibold text-foreground"
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 1.5, repeat: 0, ease: "easeOut" }}
               >
