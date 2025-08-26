@@ -9,10 +9,10 @@ interface ProcessStepperProps {
 
 export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
   return (
-    <div className="w-full py-4">
+    <div className="w-full py-2">
       <div className="flex items-center justify-between relative">
         {/* Connector Line Base */}
-        <div className="absolute top-6 left-0 right-0 h-0.5 bg-border -z-10">
+        <div className="absolute top-4 left-0 right-0 h-0.5 bg-border -z-10">
           <motion.div
             className="h-full bg-primary"
             initial={{ width: "0%" }}
@@ -34,8 +34,8 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
                   isCompleted
                     ? "bg-primary text-primary-foreground"
                     : isCurrent
@@ -49,21 +49,21 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.2, delay: 0.1 }}
                   >
-                    <Check className="w-5 h-5" />
+                    <Check className="w-3 h-3" strokeWidth={2.5} />
                   </motion.div>
                 ) : (
-                  <span className="text-sm font-medium">{index + 1}</span>
+                  <span className="text-[10px] font-medium">{index + 1}</span>
                 )}
               </motion.div>
               
               {/* Step Label */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
-                className="mt-2 text-center max-w-[80px]"
+                transition={{ duration: 0.4, delay: index * 0.05 + 0.1 }}
+                className="mt-1 text-center max-w-[60px]"
               >
-                <span className={`text-xs font-medium ${
+                <span className={`text-[9px] font-medium leading-tight ${
                   isActive 
                     ? "text-foreground" 
                     : "text-muted-foreground"

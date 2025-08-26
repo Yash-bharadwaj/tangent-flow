@@ -37,8 +37,8 @@ const batchData: BatchData[] = [
     batchNo: "104",
     itemName: "Copper Wire",
     process: {
-      steps: ["Melting", "Electrolysis", "Wire Drawing", "Annealing", "Coating", "Spooling", "Testing"],
-      currentStep: 5
+      steps: ["Melting", "Electrolysis", "Wire Drawing", "Annealing", "Coating"],
+      currentStep: 4
     },
     percentage: 71,
     priority: "medium"
@@ -47,21 +47,11 @@ const batchData: BatchData[] = [
     batchNo: "105",
     itemName: "Aluminum Sheets",
     process: {
-      steps: ["Smelting", "Rolling", "Annealing", "Cutting", "Surface Treatment"],
+      steps: ["Smelting", "Rolling", "Annealing", "Cutting"],
       currentStep: 2
     },
     percentage: 40,
     priority: "low"
-  },
-  {
-    batchNo: "106",
-    itemName: "Steel Rods",
-    process: {
-      steps: ["Melting", "Continuous Casting", "Rolling", "Heat Treatment", "Straightening", "Cutting"],
-      currentStep: 4
-    },
-    percentage: 78,
-    priority: "high"
   }
 ];
 
