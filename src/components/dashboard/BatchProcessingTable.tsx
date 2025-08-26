@@ -103,7 +103,7 @@ export function BatchProcessingTable() {
               <th className="text-left py-3 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Item Name
               </th>
-              <th className="text-left py-3 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider min-w-[300px]">
+              <th className="text-left py-3 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider min-w-[400px]">
                 Process Flow
               </th>
               <th className="text-left py-3 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -136,10 +136,12 @@ export function BatchProcessingTable() {
                 </td>
                 
                 <td className="py-4 px-2">
-                  <ProcessStepper 
-                    steps={batch.process.steps}
-                    currentStep={batch.process.currentStep}
-                  />
+                  <div className="min-w-[400px]">
+                    <ProcessStepper 
+                      steps={batch.process.steps}
+                      currentStep={batch.process.currentStep}
+                    />
+                  </div>
                 </td>
                 
                 <td className="py-4 px-2">
