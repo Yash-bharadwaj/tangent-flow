@@ -28,7 +28,7 @@ export const MetricCardDrawer = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-[90]"
             onClick={onClose}
           />
           
@@ -52,7 +52,7 @@ export const MetricCardDrawer = ({
                 damping: 40
               }
             }}
-            className={`fixed right-0 top-0 z-[70] h-full w-[450px] overflow-y-auto 
+            className={`fixed right-0 top-0 z-[100] h-full w-[450px] overflow-y-auto 
                       backdrop-blur-xl bg-white/80 dark:bg-black/60 
                       border-l border-black/5 dark:border-white/10 shadow-2xl ${className}`}
           >
