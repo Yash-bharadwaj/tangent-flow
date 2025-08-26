@@ -63,7 +63,7 @@ const Index = () => {
     { name: 'Processing', value: 25 },
     { name: 'Shipped', value: 20 },
     { name: 'Pending', value: 0 },
-    { name: 'Cancelled', value: 5 }
+    { name: 'Cancelled', value: 0 }
   ];
 
   const totalOrdersDrawer = (
