@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface MetricCardDrawerProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ export const MetricCardDrawer = ({
   children,
   className = "",
 }: MetricCardDrawerProps) => {
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -89,6 +90,7 @@ export const MetricCardDrawer = ({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
