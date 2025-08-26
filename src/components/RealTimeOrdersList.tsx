@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { getOrders, getOrdersForUser, subscribeToOrders } from '@/services/supabase';
-import { Order } from '@/types/database';
+import { SalesOrder as Order } from '@/types/database';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -105,18 +105,18 @@ export const RealTimeOrdersList = () => {
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">{order.id.substring(0, 8)}</TableCell>
                   <TableCell>
-                    <span className={`
-                      status-pill
-                      ${order.status === "Delivered" ? "status-pill-success" : 
-                        order.status === "Processing" ? "status-pill-info" : 
-                        order.status === "Shipped" ? "status-pill-info" : 
-                        order.status === "Cancelled" ? "status-pill-danger" : 
-                        "status-pill-warning"}
-                    `}>
-                      {order.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>${Number(order.total_amount).toFixed(2)}</TableCell>
+                  <span className={`
+                    status-pill
+                    ${order.order_status === "Delivered" ? "status-pill-success" : 
+                      order.order_status === "Processing" ? "status-pill-info" : 
+                      order.order_status === "Shipped" ? "status-pill-info" : 
+                      order.order_status === "Cancelled" ? "status-pill-danger" : 
+                      "status-pill-warning"}
+                  `}>
+                    {order.order_status}
+                  </span>
+                </TableCell>
+                <TableCell>${Number(order.price || 0).toFixed(2)}</TableCell>
                   <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))}

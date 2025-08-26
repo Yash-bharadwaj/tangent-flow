@@ -25,7 +25,7 @@ const formSchema = z.object({
   material: z.string().min(1, "Material is required"),
   quantity: z.coerce.number().positive("Quantity must be greater than 0"),
   price: z.coerce.number().min(0, "Price must be 0 or greater"),
-  currency: z.enum(CURRENCY_OPTIONS.map(c => c.value as any)),
+  currency: z.enum(['USD', 'INR', 'EUR', 'GBP', 'JPY'] as const),
   expected_payment_date: z.string().refine(value => !isNaN(Date.parse(value)), {
     message: "Invalid date format",
   }),

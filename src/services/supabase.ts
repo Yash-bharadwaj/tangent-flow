@@ -158,11 +158,11 @@ export const signOut = async () => {
   }
 };
 
-// Orders related functions
+// Orders related functions (using sales_orders table)
 export const getOrders = async (): Promise<Order[]> => {
   try {
     const { data, error } = await supabase
-      .from("orders")
+      .from("sales_orders")
       .select("*")
       .order("created_at", { ascending: false });
       
@@ -178,7 +178,7 @@ export const getOrders = async (): Promise<Order[]> => {
 export const getOrdersForUser = async (userId: string): Promise<Order[]> => {
   try {
     const { data, error } = await supabase
-      .from("orders")
+      .from("sales_orders")
       .select("*")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
@@ -321,16 +321,28 @@ export const getInventory = async (): Promise<Inventory[]> => {
 // Deliveries related functions
 export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
   try {
-    let query = supabase.from("deliveries").select("*");
+    let query = supabase.from("sales_orders").select("*");
     
     if (orderId) {
-      query = query.eq("order_id", orderId);
+      query = query.eq("id", orderId);
     }
     
     const { data, error } = await query;
       
     if (error) throw error;
-    return data as Delivery[];
+    
+    // Map sales_orders data to delivery format
+    const mappedData = data.map(order => ({
+      id: order.id,
+      order_id: order.order_number,
+      status: order.order_status,
+      delivery_date: order.expected_payment_date,
+      address: order.customer_name,
+      created_at: order.created_at,
+      updated_at: order.updated_at
+    }));
+    
+    return mappedData as Delivery[];
   } catch (error: any) {
     toast.error(`Error fetching deliveries: ${error.message}`);
     throw error;
@@ -340,25 +352,25 @@ export const getDeliveries = async (orderId?: string): Promise<Delivery[]> => {
 // Get deliveries for a specific user
 export const getDeliveriesForUser = async (userId: string): Promise<Delivery[]> => {
   try {
-    // Get the user's orders first
-    const { data: orders, error: ordersError } = await supabase
-      .from("orders")
-      .select("id")
+    const { data, error } = await supabase
+      .from("sales_orders")
+      .select("*")
       .eq("user_id", userId);
       
-    if (ordersError) throw ordersError;
-    
-    if (!orders.length) return [];
-    
-    // Get deliveries for the user's orders
-    const orderIds = orders.map(order => order.id);
-    const { data, error } = await supabase
-      .from("deliveries")
-      .select("*")
-      .in("order_id", orderIds);
-      
     if (error) throw error;
-    return data as Delivery[];
+    
+    // Map sales_orders data to delivery format
+    const mappedData = data.map(order => ({
+      id: order.id,
+      order_id: order.order_number,
+      status: order.order_status,
+      delivery_date: order.expected_payment_date,
+      address: order.customer_name,
+      created_at: order.created_at,
+      updated_at: order.updated_at
+    }));
+    
+    return mappedData as Delivery[];
   } catch (error: any) {
     toast.error(`Error fetching user deliveries: ${error.message}`);
     throw error;
@@ -367,13 +379,13 @@ export const getDeliveriesForUser = async (userId: string): Promise<Delivery[]> 
 
 // Real-time subscriptions
 export const subscribeToOrders = (callback: (payload: any) => void): RealtimeChannel => {
-  const channel = supabase.channel('orders-channel');
+  const channel = supabase.channel('sales-orders-channel');
   
   channel
     .on('postgres_changes', { 
       event: '*', 
       schema: 'public', 
-      table: 'orders'
+      table: 'sales_orders'
     }, (payload) => {
       callback(payload);
     })
