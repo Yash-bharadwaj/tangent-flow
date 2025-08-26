@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children, showRightSidebar = false }: { children: React.ReactNode; showRightSidebar?: boolean }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   
@@ -47,15 +47,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-background pattern-waves-bg">
       <Sidebar />
-      <div className="fixed top-0 left-[72px] lg:left-72 right-72 z-10">
+      <div className={`fixed top-0 left-[72px] lg:left-72 z-10 ${showRightSidebar ? 'right-72' : 'right-0'}`}>
         <Header />
       </div>
-      <main className="fixed top-16 left-[72px] lg:left-72 right-72 bottom-0 overflow-y-auto">
+      <main className={`fixed top-16 left-[72px] lg:left-72 bottom-0 overflow-y-auto ${showRightSidebar ? 'right-72' : 'right-0'}`}>
         <div className="p-6">
           {children}
         </div>
       </main>
-      <RightSidebar />
+      {showRightSidebar && <RightSidebar />}
     </div>
   );
 };
@@ -63,7 +63,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<LoginPage />} />
-    <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+    <Route path="/" element={<ProtectedRoute showRightSidebar={true}><Index /></ProtectedRoute>} />
     <Route path="/modules" element={<ProtectedRoute><ModuleManagement /></ProtectedRoute>} />
     <Route path="/sales-orders" element={<ProtectedRoute><SalesOrders /></ProtectedRoute>} />
     <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
