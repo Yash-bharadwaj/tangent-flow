@@ -153,14 +153,14 @@ const Index = () => {
             whileHover={{ scale: 1.02 }}
             className="p-4 bg-white/20 dark:bg-black/20 rounded-lg border border-black/5 dark:border-white/10"
           >
-            <div className="text-sm font-medium">Low Stock</div>
+            <div className="text-sm font-medium">Raw Material</div>
             <div className="text-2xl font-bold">{lowStockItems.length}</div>
           </motion.div>
           <motion.div 
             whileHover={{ scale: 1.02 }}
             className="p-4 bg-white/20 dark:bg-black/20 rounded-lg border border-black/5 dark:border-white/10"
           >
-            <div className="text-sm font-medium">Out of Stock</div>
+            <div className="text-sm font-medium">Finished Goods</div>
             <div className="text-2xl font-bold">{inventoryItems.filter(item => Number(item.quantity) === 0).length}</div>
           </motion.div>
         </div>
