@@ -83,8 +83,8 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                 <div 
                   className="absolute top-4 z-0" 
                   style={{
-                    left: '36px',
-                    width: '34px',
+                    left: '32px',
+                    width: '38px',
                     height: '2px'
                   }}
                 >
