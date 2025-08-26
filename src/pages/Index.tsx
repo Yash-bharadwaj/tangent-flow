@@ -244,8 +244,8 @@ const Index = () => {
         
         <motion.div variants={childVariants}>
           <StatCard
-            title="Pending Orders"
-            value={pendingOrders}
+            title="Dispatch Tracker"
+            value="₹4,00,000"
             icon={<Box size={20} />}
             change={{ value: 2.1, trend: "down" }}
             drawerContent={pendingOrdersDrawer}
