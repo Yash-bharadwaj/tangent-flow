@@ -2,6 +2,7 @@ import React from 'react';
 import { 
   BarChart3, 
   Box, 
+  CreditCard,
   DollarSign, 
   Package, 
   ShoppingCart, 
@@ -220,7 +221,7 @@ const Index = () => {
       </motion.div>
       
       <motion.div 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8"
         variants={containerVariants}
       >
         <motion.div variants={childVariants}>
@@ -248,10 +249,19 @@ const Index = () => {
         <motion.div variants={childVariants}>
           <StatCard
             title="Monthly Sales"
-            value={`$${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}`}
+            value={`₹${monthlySalesData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}`}
             icon={<DollarSign size={20} />}
             change={{ value: 12.5, trend: "up" }}
             drawerContent={monthlySalesDrawer}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Account Receivables"
+            value="₹8,50,000"
+            icon={<CreditCard size={20} />}
+            change={{ value: 4.3, trend: "up" }}
           />
         </motion.div>
         
