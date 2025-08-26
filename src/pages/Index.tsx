@@ -20,6 +20,7 @@ import {
 } from "../components/dashboard/DashboardCard";
 import { SalesChart } from "../components/dashboard/SalesChart";
 import { PieChartComponent } from "../components/dashboard/PieChartComponent";
+import { BatchProcessingTable } from "../components/dashboard/BatchProcessingTable";
 import { motion } from "framer-motion";
 
 const Index = () => {
@@ -220,6 +221,10 @@ const Index = () => {
         <p className="text-muted-foreground text-lg tracking-wide">
           Overview of your business metrics and key performance indicators.
         </p>
+      </motion.div>
+      
+      <motion.div variants={childVariants} className="mb-8">
+        <BatchProcessingTable />
       </motion.div>
       
       <motion.div 
