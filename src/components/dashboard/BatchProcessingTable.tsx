@@ -123,7 +123,7 @@ export function BatchProcessingTable() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="border-b border-border/20 hover:bg-muted/30 transition-colors duration-200"
               >
-                <td className="py-4 px-2">
+                <td className="py-2 px-2">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
                       <span className="text-xs font-bold text-primary">#{batch.batchNo}</span>
@@ -131,11 +131,11 @@ export function BatchProcessingTable() {
                   </div>
                 </td>
                 
-                <td className="py-4 px-2">
+                <td className="py-2 px-2">
                   <div className="font-medium text-sm text-foreground">{batch.itemName}</div>
                 </td>
                 
-                <td className="py-4 px-2">
+                <td className="py-2 px-2">
                   <div className="min-w-[400px]">
                     <ProcessStepper 
                       steps={batch.process.steps}
@@ -144,7 +144,7 @@ export function BatchProcessingTable() {
                   </div>
                 </td>
                 
-                <td className="py-4 px-2">
+                <td className="py-2 px-2">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">{batch.percentage}%</span>
@@ -160,7 +160,7 @@ export function BatchProcessingTable() {
                   </div>
                 </td>
                 
-                <td className="py-4 px-2">
+                <td className="py-2 px-2">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getPriorityColor(batch.priority)}`}>
                     {batch.priority.charAt(0).toUpperCase() + batch.priority.slice(1)}
                   </span>
