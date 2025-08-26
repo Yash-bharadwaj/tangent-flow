@@ -58,21 +58,13 @@ const Index = () => {
     { name: 'Other', value: 100 }
   ];
   
-  const orderStatusData = salesOrders.length > 0 ? 
-    [
-      { name: 'Delivered', value: salesOrders.filter(o => o.order_status === 'Delivered').length },
-      { name: 'Processing', value: salesOrders.filter(o => o.order_status === 'Processing').length },
-      { name: 'Shipped', value: salesOrders.filter(o => o.order_status === 'Shipped').length },
-      { name: 'Pending', value: salesOrders.filter(o => o.order_status === 'Pending').length },
-      { name: 'Cancelled', value: salesOrders.filter(o => o.order_status === 'Cancelled').length }
-    ] :
-    [
-      { name: 'Delivered', value: 10 },
-      { name: 'Processing', value: 25 },
-      { name: 'Shipped', value: 20 },
-      { name: 'Pending', value: 0 },
-      { name: 'Cancelled', value: 5 }
-    ];
+  const orderStatusData = [
+    { name: 'Delivered', value: 10 },
+    { name: 'Processing', value: 25 },
+    { name: 'Shipped', value: 20 },
+    { name: 'Pending', value: 0 },
+    { name: 'Cancelled', value: 5 }
+  ];
 
   const totalOrdersDrawer = (
     <div className="space-y-6">
