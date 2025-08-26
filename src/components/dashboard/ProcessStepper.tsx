@@ -48,9 +48,9 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.2, delay: 0.1 }}
-                    className="flex items-center justify-center w-full h-full"
+                    className="absolute inset-0 flex items-center justify-center"
                   >
-                    <Check className="w-[40%] h-[40%]" strokeWidth={3} />
+                    <Check className="w-3 h-3" strokeWidth={3} />
                   </motion.div>
                 ) : (
                   <span className="text-[10px] font-medium">{index + 1}</span>
