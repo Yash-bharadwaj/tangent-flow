@@ -135,8 +135,8 @@ export function BatchProcessingTable() {
                 </td>
                 
                 <td className="py-1 px-2">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2 items-center justify-center h-full">
+                    <div className="flex items-center justify-center">
                       <span className="text-sm font-medium">{batch.percentage}%</span>
                     </div>
                     <div className="w-16 bg-muted rounded-full h-2">
