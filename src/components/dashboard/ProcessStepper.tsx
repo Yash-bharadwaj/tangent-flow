@@ -12,7 +12,7 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
     <div className="w-full py-2">
       <div className="flex items-center justify-between relative">
         {/* Connector Line Base */}
-        <div className="absolute top-4 left-0 right-0 h-0.5 bg-border -z-10">
+        <div className="absolute left-0 right-0 h-0.5 bg-border -z-10" style={{ top: '50%', transform: 'translateY(-50%)' }}>
           <motion.div
             className="h-full bg-primary"
             initial={{ width: "0%" }}
