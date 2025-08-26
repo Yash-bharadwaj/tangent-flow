@@ -35,7 +35,7 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
+                className={`relative flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
                   isCompleted
                     ? "bg-primary text-primary-foreground"
                     : isCurrent
@@ -48,7 +48,6 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.2, delay: 0.1 }}
-                    className="absolute inset-0 flex items-center justify-center"
                   >
                     <Check className="w-3 h-3" strokeWidth={3} />
                   </motion.div>
