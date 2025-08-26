@@ -67,10 +67,10 @@ const Index = () => {
       { name: 'Cancelled', value: salesOrders.filter(o => o.order_status === 'Cancelled').length }
     ] :
     [
-      { name: 'Delivered', value: 35 },
+      { name: 'Delivered', value: 10 },
       { name: 'Processing', value: 25 },
       { name: 'Shipped', value: 20 },
-      { name: 'Pending', value: 15 },
+      { name: 'Pending', value: 0 },
       { name: 'Cancelled', value: 5 }
     ];
 
