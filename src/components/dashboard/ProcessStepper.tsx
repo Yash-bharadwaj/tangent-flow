@@ -10,9 +10,9 @@ interface ProcessStepperProps {
 export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
   return (
     <div className="w-full py-2">
-      <div className="flex items-center justify-between relative">
-        {/* Connector Line Base */}
-        <div className="absolute left-0 right-0 h-0.5 bg-border -z-10" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+      <div className="flex items-start justify-between relative">
+        {/* Connector Line Base - positioned to align with circle centers */}
+        <div className="absolute left-0 right-0 h-0.5 bg-border -z-10" style={{ top: '16px' }}>
           <motion.div
             className="h-full bg-primary"
             initial={{ width: "0%" }}
