@@ -8,7 +8,7 @@ interface ProcessStepperProps {
 
 export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
   return (
-    <div className="py-4 px-2">
+    <div className="py-2 px-2">
       <div className="flex items-center justify-between relative" style={{ minWidth: `${steps.length * 80}px` }}>
         {steps.map((step, index) => {
           const isCompleted = index < currentStep;
@@ -83,8 +83,8 @@ export function ProcessStepper({ steps, currentStep }: ProcessStepperProps) {
                 <div 
                   className="absolute top-4 z-0" 
                   style={{
-                    left: '32px',
-                    right: '-38px',
+                    left: '36px',
+                    width: '34px',
                     height: '2px'
                   }}
                 >
