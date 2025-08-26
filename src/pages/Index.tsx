@@ -272,41 +272,6 @@ const Index = () => {
             drawerContent={inventoryDrawer}
           />
         </motion.div>
-        
-        <motion.div variants={childVariants}>
-          <StatCard
-            title="Active Users"
-            value={22}
-            icon={<Users size={20} />}
-          />
-        </motion.div>
-        
-        <motion.div variants={childVariants}>
-          <StatCard
-            title="In-Transit Deliveries"
-            value={12}
-            icon={<Truck size={20} />}
-            change={{ value: 15, trend: "up" }}
-          />
-        </motion.div>
-        
-        <motion.div variants={childVariants}>
-          <StatCard
-            title="Low Stock Items"
-            value={lowStockItems.length}
-            icon={<BarChart3 size={20} />}
-            change={{ value: 5, trend: "up" }}
-          />
-        </motion.div>
-        
-        <motion.div variants={childVariants}>
-          <StatCard
-            title="Out of Stock"
-            value={inventoryItems.filter(item => Number(item.quantity) === 0).length}
-            icon={<Package size={20} />}
-            change={{ value: 2, trend: "down" }}
-          />
-        </motion.div>
       </motion.div>
       
       <motion.div 
@@ -390,6 +355,47 @@ const Index = () => {
               />
             </DashboardCardContent>
           </DashboardCard>
+        </motion.div>
+      </motion.div>
+      
+      {/* Bottom tiles section */}
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        variants={containerVariants}
+      >
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Active Users"
+            value={22}
+            icon={<Users size={20} />}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="In-Transit Deliveries"
+            value={12}
+            icon={<Truck size={20} />}
+            change={{ value: 15, trend: "up" }}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Low Stock Items"
+            value={lowStockItems.length}
+            icon={<BarChart3 size={20} />}
+            change={{ value: 5, trend: "up" }}
+          />
+        </motion.div>
+        
+        <motion.div variants={childVariants}>
+          <StatCard
+            title="Out of Stock"
+            value={inventoryItems.filter(item => Number(item.quantity) === 0).length}
+            icon={<Package size={20} />}
+            change={{ value: 2, trend: "down" }}
+          />
         </motion.div>
       </motion.div>
     </motion.div>
